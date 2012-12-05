@@ -1,0 +1,84 @@
+module Tests-Resolving
+
+language CSharpPartialClassses
+
+setup Header [[
+
+]]
+
+test Resolve class reference [[
+  namespace TestsResolving {
+	  class [[B]] {
+	    [[B]] b;
+	  }
+  }
+]] resolve #2 to #1
+
+test Resolve property access [[
+  namespace TestsResolving {
+	  class B {
+	    C v;
+	    
+	    C f() {
+	      return v.[[c]]; 
+	    }
+	  }
+	  
+	  class C {
+	    C [[c]];
+	  }
+  }
+]] resolve #1 to #2
+
+test Resolve field [[ 
+  namespace TestsResolving {
+	  class B {
+	    B [[x]];
+	    B f() {
+	      return [[x]];
+	    }
+	  }
+  }
+]] resolve #2 to #1
+
+test Resolve partial class field [[ 
+  namespace TestsResolving {
+		partial class B {
+			B [[x]];
+		}
+		
+	  partial class B {
+	    B f() {
+	      return [[x]];
+	    }
+	  }
+  }
+]] resolve #2 to #1
+
+test Resolve function [[ 
+  namespace TestsResolving {
+	  class B {
+	    B x;
+	    B [[f]]() {
+	      return x.[[f]]();
+	    }
+	  }
+  }
+]] resolve #2 to #1
+
+test Resolve partial class function [[ 
+  namespace TestsResolving {
+	  partial class B {
+	    B x;
+	    B [[fp]]() { 
+	      return x.f(); 
+      }
+	  }
+	  
+	  partial class B {
+	    B f() {
+	      return x.[[fp]]();
+	    }
+	  }
+  }
+]] resolve #2 to #1

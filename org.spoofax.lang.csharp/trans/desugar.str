@@ -1,0 +1,27 @@
+module desugar
+
+imports
+	
+  libstratego-lib
+  include/CSharp
+  lib/editor-common.generated
+  lib/index-library.generated
+  lib/analysis-library.generated
+  lib/compilation-library.generated
+  types
+  old-names
+  
+strategies
+
+	desugar-all = topdown(try(desugar))
+	
+rules
+		
+	desugar:
+		class -> class'
+		where
+			name   := <?Class(<id>, _) <+ ?Class(<id>, _, _) <+ ?PartialClass(<id>, _) <+ ?PartialClass(<id>, _, _)> class;
+			class' := <topdown(try(desugar-this(|name)))> class
+			
+	desugar-this(|name):
+		This() -> Type(name)

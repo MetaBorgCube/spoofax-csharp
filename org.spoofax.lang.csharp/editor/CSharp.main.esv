@@ -1,0 +1,16 @@
+module CSharp.main
+
+imports CSharp-Builders CSharp-Refactorings CSharp-Colorer CSharp-Completions CSharp-Folding CSharp-Outliner CSharp-References CSharp-Syntax
+
+language General properties
+                  
+  name          : CSharp
+  id            : csharp
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the CSharp language"
+  url           : http://strategoxt.org
+                  
+  extensions    : cs
+  table         : include/CSharp.tbl
+  start symbols : Start

@@ -1,0 +1,127 @@
+module old-names
+  
+imports
+
+  include/CSharp
+  desugar
+  
+namespaces
+
+  Program
+  Namespace
+  Using
+  
+  Class
+
+  Function
+  Field
+  
+  Variable
+  
+rules // Namespaces 
+
+  Namespace(x, _) :
+    defines non-unique Namespace x
+    scopes Namespace, Class
+    
+  UsingPart(x) :
+    defines non-unique Using x
+    refers to Namespace x
+    imports Class from Namespace x {current-file}
+    
+  UsingPart(u, x) :
+    refers to Namespace x in Namespace y
+    where u refers to Namespace y
+  
+rules // Classes
+
+  Class(x, _) :
+    defines unique Class x of type Type(x)
+    scopes Field, Function
+    
+  Class(x, y, _) :
+    defines unique Class x of type Type(x)
+    refers to Class y
+    scopes Field, Function
+    imports Field from Class y {transitive}
+    imports Function from Class y {transitive}
+    
+  Interface(x, _) :
+    defines unique Class x of type Type(x)
+    scopes Function
+    
+  Interface(x, y, _) :
+    defines unique Class x of type Type(x)
+    refers to Class y
+    scopes Function
+    imports Function from Class y {transitive}
+    
+  PartialClass(x, _) :
+    defines non-unique Class x of type Type(x)
+    scopes Field, Function
+    
+  PartialClass(x, y, _) :
+    defines non-unique Class x of type Type(x)
+    refers to Class y
+    scopes Field, Function
+    imports Field from Class y {transitive}
+    imports Function from Class y {transitive}
+
+  Type(c) :
+  	refers to Class c
+  	
+rules // Fields
+
+  FieldDef(t, x) :
+    defines Field x of type t 
+    
+  FieldAccess(exp, f) :
+    refers to Field f in Class e
+    where exp has type Type(e)
+    
+rules // Functions
+
+  FunDef(t, x, _) :
+    defines Function x of type t
+
+  FunDef(t, x, _, _) :
+    defines Function x of type t 
+    scopes Variable, Field
+    
+  FunCall(exp, f, _) :
+    refers to Function f in Class e
+    where exp has type Type(e)
+    
+  FunCall(x, _) : 
+    refers to Function x
+    
+  Param(t, x) :
+    defines Variable x of type t 
+    
+rules // Variables
+
+  VarDef(t, x, _) :
+    defines Variable x of type t in subsequent scope 
+
+  VarDef(t, x) :
+    defines Variable x of type t in subsequent scope 
+
+  VarRef(x) :
+    refers to Variable x
+    refers to Field x
+
+  Assign(x, _):
+    refers to Variable x
+    refers to Field x
+    
+rules // Flow control
+
+  For(t, x, init, cond, stmt, body) :
+    defines Variable x of type t in cond, stmt, body
+
+  ForEach(t, x, e, body) :
+    defines Variable x of type t in body
+
+  Block(stmt*) : 
+    scopes Variable
+    

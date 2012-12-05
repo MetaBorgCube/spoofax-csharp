@@ -1,0 +1,84 @@
+module CSharp
+
+imports Common
+
+exports
+
+  context-free start-symbols
+     
+    Start
+
+  context-free syntax
+    
+    %% Constructs
+    Using* Definition*                                  -> Start {"Start"}
+    "namespace" ID "{" Definition* "}"                  -> Definition {"Namespace"}
+    "partial" "class" ID "{" ClassBodyDecl* "}"         -> Definition {"PartialClass"}
+    "partial" "class" ID ":" ID  "{" ClassBodyDecl* "}" -> Definition {"PartialClass"}
+    "class" ID "{" ClassBodyDecl* "}"                   -> Definition {"Class"}
+    "class" ID ":" ID "{" ClassBodyDecl* "}"            -> Definition {"Class"}
+    "interface" ID "{" InterfaceBodyDecl* "}"           -> Definition {"Interface"}
+    "interface" ID ":" ID "{" InterfaceBodyDecl* "}"    -> Definition {"Interface"}
+    
+    "using" UsingPart ";" -> Using {"Using"}
+    ID                    -> UsingPart {"UsingPart"}
+    UsingPart "." ID      -> UsingPart {"UsingPart"}
+    
+    %% Class members
+    Type ID ";"                                           -> ClassBodyDecl {"FieldDef"}
+    MethodReturnType ID "(" {Param ","}* ")" "{" Stm* "}" -> ClassBodyDecl {"FunDef"}
+    
+    MethodReturnType ID "(" {Param ","}* ")" ";"					-> InterfaceBodyDecl {"FunDef"}
+    
+    %% Types
+    ID           -> Type {"Type"}
+    "void"       -> MethodReturnType {"VoidType", prefer}
+    "bool"       -> Type {ast("Type(\"Bool\")"), prefer}
+    "int"        -> Type {ast("Type(\"Int\")"), prefer}
+    "string"     -> Type {ast("Type(\"String\")"), prefer}
+    Type         -> MethodReturnType
+    Type "[" "]" -> Type {"ArrayType"}
+    
+    %% Statements & Expressions
+    ID "(" {Exp ","}* ")"         -> FunCall {"FunCall"}
+    Exp "." ID "(" {Exp ","}* ")" -> FunCall {"FunCall"}
+    Exp "." ID                    -> FieldAccess {"FieldAccess"}
+    
+    %% Statements
+    "return" Exp ";"                                    -> Stm {"Return", prefer}
+    Type ID ";"                                         -> Stm {"VarDef"}
+    Type ID "=" Exp ";"                                 -> Stm {"VarDef"}
+    ID "=" Exp ";"                                      -> Stm {"Assign"}
+    "if" "(" Exp ")" Block                              -> Stm {"If"}
+    "if" "(" Exp ")" Block "else" Block                 -> Stm {"IfElse"}
+    "for" "(" Type ID "=" Exp ";" Exp ";" Stm ")" Block -> Stm {"For"}
+    "foreach" "(" Type ID "in" Exp ")" Block            -> Stm {"ForEach"}
+    FunCall ";"                                         -> Stm
+    FieldAccess ";"                                     -> Stm
+    
+    %% Expessions
+    "true"      -> Exp {"True", prefer}
+    "false"     -> Exp {"False", prefer}
+    INT         -> Exp {"IntLit"}
+    STRING      -> Exp {"StrLit"}
+    ID          -> Exp {"VarRef"}
+    FunCall     -> Exp
+    FieldAccess -> Exp
+    "this" -> Exp {"This", prefer}
+    
+    Exp "+" Exp  -> Exp {"Add", prefer}
+    Exp "-" Exp  -> Exp {"Sub", prefer}
+    Exp "*" Exp  -> Exp {"Mul", prefer}
+    Exp "/" Exp  -> Exp {"Div", prefer}
+    Exp "==" Exp -> Exp {"Eq", prefer}
+    Exp "<" Exp  -> Exp {"Lt", prefer}
+    Exp "<=" Exp -> Exp {"Lte", prefer}
+    Exp ">" Exp  -> Exp {"Gt", prefer}
+    Exp ">=" Exp -> Exp {"Gte", prefer}
+    
+    %% Other
+    "{" Stm* "}" -> Block {"Block"}
+    Stm          -> Block
+    
+    Type ID -> Param {"Param"}
+    

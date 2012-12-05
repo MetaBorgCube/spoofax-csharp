@@ -1,0 +1,34 @@
+module check
+
+imports
+  
+  libstratego-lib
+  include/CSharp
+  lib/editor-common.generated
+  types
+
+rules // Types
+  
+  constraint-error:
+    FunDef(type, _, _, statements) -> errors
+    where
+      <collect-one(?Return(_))> statements; // At least one return statement can be found.
+      errors := <collect-all(constraint-error(|type), conc)> statements
+      
+  constraint-error(|methodType):
+    e@Return(exp) -> (e, $[Expected [<print-type> methodType] but found [<print-type> type].])
+    where
+      type := <type-of> exp;
+      not(<is-assignable-to> (methodType, type))
+      
+  constraint-error:
+    FunDef(type, _, _, statements) -> (type, $[Method of type [<print-type> type] does not return a value.])
+    where
+      not(<is-assignable-to> (type, <type-of> VoidType()));
+      not(<collect-one(?Return(_))> statements)
+    
+rules // Other
+
+  constraint-warning = fail
+  constraint-note = fail
+  

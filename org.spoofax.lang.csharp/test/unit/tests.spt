@@ -1,0 +1,232 @@
+module Tests
+
+language CSharpPartialClassses
+
+setup Header [[
+  using Hidden;
+  
+	namespace Tests {
+    class A {
+      P p;
+    }
+    
+    partial class P {
+      string a;
+      int i;
+    }
+	}
+	
+	namespace Hidden {
+	  class H {
+	    H h;
+	  }
+	}
+]]
+
+test Resolve property access [[
+  namespace Tests {
+	  partial class P {
+	    int n;
+	  }
+	    
+	  class B {
+	  	A a;
+	  	
+	    int b() {
+	    	return a.p.n;
+	    }
+	  }
+  }
+]]
+
+test Resolve property access fails [[
+  namespace Tests {
+    partial class P {
+      int n;
+    }
+      
+    class B {
+      A a;
+      
+      int b() {
+        return a.p.x;
+      }
+    }
+  }
+]] 1 error 
+
+test Resolve function call [[
+  namespace Tests {
+	  partial class P {
+	    string Geta() { return a; }
+	  }
+	  
+	  class B {
+      P p;
+      
+      string f() {
+        return p.Geta();
+      }
+    }
+  }
+]]
+
+test Resolve function call fails [[
+  namespace Tests {
+    class B {
+      P p;
+      
+      string f() {
+        return p.Geta();
+      }
+    }
+  }
+]] 1 error
+
+test Resolve type [[
+  namespace Tests {
+    class B {
+      A a;
+    }
+  }
+]]
+
+test Resolve type fails 1 [[
+  namespace Tests {
+    class B {
+      Q q;
+    }
+  }
+]] 1 error
+
+test Resolve type fails 2 [[
+  namespace NOTTests {
+    class B {
+      P p;
+    }
+  }
+]] 1 error
+
+test Resolve type from using [[
+  class B {
+    H h;
+  }
+]]
+
+test Return [[
+  namespace Tests {
+    class B {
+      A a;
+      
+      int getA() {
+        return a.p.i;
+      }
+    }
+  }
+]]
+
+test Unexpected return type 1 [[
+  namespace Tests {
+    class B {
+      A a;
+      
+      int getA() {
+        return a;
+      }
+    }
+  }
+]] 1 error
+
+test Unexpected return type 2 [[
+  namespace Tests {
+    partial class P {
+      string getA() {
+        return a;
+      }
+    }
+    class B {
+      A a;
+      
+      int getA() {
+        return a.p.getA();
+      }
+    }
+  }
+]] 1 error
+
+test Unexpected return types [[
+  namespace Tests {
+    class B {
+      A a;
+      
+      int getA() {
+        return a;
+        return a.p;
+        return a.p.a;
+      }
+    }
+  }
+]] 3 errors
+
+test No return in void method [[
+  namespace Tests {
+    class B {
+      void sideEffect() {}
+    }
+  }
+]]
+
+test No return in non-void method fails [[
+  namespace Tests {
+    class B {
+      int getA() {
+        
+      }
+    }
+  }
+]] 1 error
+
+test Duplicate class 1 fails [[
+  namespace Tests {
+    class B {}
+    class B {}
+  }
+]] 2 errors
+
+test Duplicate class 2 should fail [[
+  namespace Tests {
+    class B {}
+    partial class B {}
+  }
+]] 1 errors
+
+test Duplicate partial class allowed [[
+  namespace Tests {
+    partial class B {}
+    partial class B {}
+  }
+]]
+
+test Duplicate property fails [[
+  class B {
+    B b;
+    B b;
+  }
+]] 2 errors
+
+test Duplicate method fails [[
+  class B {
+    void f() {}
+    void f() {}
+  }
+]] 2 errors
+
+test Use before def allowed [[
+  namespace Tests {
+    class B {
+      C c;
+    }
+    
+    partial class C {}
+  }
+]]

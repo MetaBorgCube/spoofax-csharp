@@ -1,0 +1,69 @@
+module Tests-Completion
+
+language CSharpPartialClassses
+
+setup Header [[
+  namespace TestsCompletion {
+	  class A {
+	    B b;
+	    string string;
+	    void func() {}
+	  }
+	  class ABC {}
+  }
+]]
+
+test Complete property access [[
+  namespace TestsCompletion {
+	  class B {
+	    A a;
+	    
+	    B f() {
+	      return a.b.a.[[s]];
+	    }
+	  }
+  }
+]] complete to "string"
+
+test Complete function call [[
+  namespace TestsCompletion {
+	  class B {
+	    A a;
+	    void f() {
+	      return a.[[f]]();
+	    }
+	  }
+  }
+]] complete to "func"
+
+test Complete primitive type 1 [[
+  namespace TestsCompletion {
+	  class B {
+	    [[S]] s;
+	  }
+  }
+]] complete to "String"
+
+test Complete primitive type 2 [[
+  namespace TestsCompletion {
+	  class B {
+	    [[I]] f() {}
+	  }
+  }
+]] complete to "Int"
+
+test Complete class type 1 [[
+  namespace TestsCompletion {
+	  class Test {
+	    [[T]] s;
+	  }
+  }
+]] complete to "Test"
+
+test Complete class type 2 [[
+  namespace TestsCompletion {
+	  class Test {
+	    [[AB]] f() {}
+	  }
+  }
+]] complete to "ABC"
