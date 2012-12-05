@@ -1,6 +1,6 @@
 module Tests
 
-language CSharpPartialClassses
+language CSharp
 
 setup Header [[
   using Hidden;

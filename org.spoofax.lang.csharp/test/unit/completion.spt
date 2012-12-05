@@ -1,6 +1,6 @@
 module Tests-Completion
 
-language CSharpPartialClassses
+language CSharp
 
 setup Header [[
   namespace TestsCompletion {

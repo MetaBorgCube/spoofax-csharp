@@ -1,6 +1,6 @@
 module Tests-Resolving
 
-language CSharpPartialClassses
+language CSharp
 
 setup Header [[
 
