@@ -114,7 +114,7 @@ rules // Variables
     refers to Variable x
     refers to Field x
     
-rules // Flow control
+rules // Control flow
 
   For(t, x, init, cond, stmt, body) :
     defines Variable x of type t in cond, stmt, body

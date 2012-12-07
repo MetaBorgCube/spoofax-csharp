@@ -12,7 +12,7 @@ imports
   lib/compilation-library.generated
   lib/nbl-library.generated
   nbl/-
-  old-names
+  new-names
   check
   desugar
 
@@ -32,22 +32,11 @@ rules // Editor services
     (node, position, ast, path, project-path) -> use-path
     where
       <![<id>]; debug; ?_{Use(use-path)}> node
-      
-  // // Resolves a reference when the user control-clicks or presses F3 in the editor.
-  // editor-resolve:
-  //   (node, position, ast, path, project-path) -> target
-  //   where
-  //     index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-  //     index-transaction(
-  //       target := <index-lookup> node
-  //     )
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
   editor-hover:
-    (target, position, ast, path, project-path) -> (target, <type-of <+ !"no type">target) // $[[uriString]]
-    //where
-      //uriString := <index-uri-to-string> <index-uri> <index-find-key> target
+    (target, position, ast, path, project-path) -> (target, <type-of <+ !"no type">target)
 
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
