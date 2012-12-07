@@ -5,7 +5,7 @@ imports
   include/CSharp
   lib/index-library.generated
   lib/analysis-library.generated
-  old-names
+  new-names
 
 signature constructors
 

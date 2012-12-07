@@ -9,7 +9,6 @@ imports
   lib/analysis-library.generated
   lib/compilation-library.generated
   types
-  old-names
   
 strategies
 

@@ -1,0 +1,54 @@
+module new-names
+
+imports 
+	
+	include/CSharp
+	nbl/-
+	
+signature constructors
+	
+	Program   : Namespace
+	Namespace : Namespace
+	Class     : Namespace
+  Field     : Namespace 
+  Function  : Namespace
+	Variable  : Namespace
+	
+	Type      : Property
+	
+rules // type property
+	
+	type-of               = fail
+	match-type(|def-type) = fail
+	
+	calc-property            : PropCalc(Type(), x)  -> <type-of> x
+	match-property(|def-type): PropMatch(Type(), x) -> <match-type(|def-type)> x
+	
+rules // Classes
+	
+	nbl-def-site(cpaths, spaths, tasks|paths) =
+		?Class(x, _);
+		vdebug(!"enter ");
+		Class(nbl-def(cpaths, spaths, tasks|paths, Class(), Unique(), [Current()], [Field(), Function()]), id);
+		vdebug(!"leave ")
+	
+	nbl-prop-site(tasks|paths) =
+		?Class(x, _);
+		vdebug(!"enter ");
+		Class(nbl-props(tasks|[Prop((Class(), x), Type(), Type(x))]), id);
+		vdebug(!"leave ")
+		
+	nbl-use-site(tasks|paths) =
+		?Type(c);
+		vdebug(!"enter ");
+		Type(nbl-use(tasks|paths, [Candidate(Class(), [], Current(), [])]));
+		vdebug(!"leave ")
+		
+rules // Fields
+	
+	nbl-def-site(cpaths, spaths, tasks|paths) =
+		?FieldDef(t, x);
+		vdebug(!"enter ");
+		FieldDef(id, nbl-def(cpaths, spaths, tasks|paths, Field(), Unique(), [Current()], []));
+		vdebug(!"leave ")
+		
