@@ -28,7 +28,11 @@ rules // Analysis
       
       partition := $[[project-path]/[path]];
       index-setup(|<language>, [project-path], partition);
-      <filter(?Def(_)); index-add-all(|partition)> defs
+      <index-clear-file> partition;
+      <filter(\Def(x) -> Def(<to-index-path> x)\; index-add(|partition))> defs
+      
+   to-index-path:
+   	 [(ns, name, _)|tail] -> [ns, name|<map(?(_, <id>, _))> tail]
 
 rules // Editor services
 
@@ -37,7 +41,7 @@ rules // Editor services
     where
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
     	_{Use(use-path)} := node;
-    	definition := <index-get> Def(use-path)
+    	definition := <index-get> Def(<to-index-path> use-path)
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
