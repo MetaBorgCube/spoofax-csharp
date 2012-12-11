@@ -1,3 +1,10 @@
+
+
+class B {
+	A a;
+}
+
+
 class A {
 	A b1;
 	A b2;

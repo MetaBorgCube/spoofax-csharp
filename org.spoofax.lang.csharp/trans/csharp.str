@@ -24,14 +24,20 @@ rules // Analysis
     with
       editor-init;
       (ast', defs, uses, tasks) := <nbl-analyse> <desugar-all> ast;
-      <map(debug)> [ast', defs, uses, tasks]
+      <map(debug)> [ast', defs, uses, tasks];
+      
+      partition := $[[project-path]/[path]];
+      index-setup(|<language>, [project-path], partition);
+      <filter(?Def(_)); index-add-all(|partition)> defs
 
 rules // Editor services
 
   editor-resolve:
-    (node, position, ast, path, project-path) -> use-path
+    (node, position, ast, path, project-path) -> definition
     where
-      <![<id>]; debug; ?_{Use(use-path)}> node
+    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+    	_{Use(use-path)} := node;
+    	definition := <index-get> Def(use-path)
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
