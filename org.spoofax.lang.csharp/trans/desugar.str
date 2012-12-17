@@ -5,9 +5,6 @@ imports
   libstratego-lib
   include/CSharp
   lib/editor-common.generated
-  lib/index-library.generated
-  lib/analysis-library.generated
-  lib/compilation-library.generated
   types
   
 strategies

@@ -6,11 +6,7 @@ imports
   libstratego-aterm
   include/CSharp
   lib/editor-common.generated
-  lib/index-library.generated
-  lib/analysis-library.generated
-  lib/analysis-library-internal.generated
-  lib/compilation-library.generated
-  lib/nbl-library.generated
+  index/-
   nbl/-
   new-names
   check
@@ -23,16 +19,14 @@ rules // Analysis
     (ast, path, project-path) -> (ast', [], [], [])
     with
       editor-init;
-      (ast', defs, uses, tasks) := <nbl-analyse> <desugar-all> ast;
-      <map(debug)> [ast', defs, uses, tasks];
+      (ast', entries, errors) := <desugar-all; nbl-analyse> ast;
+      <map(debug(!"entry: "))> entries;
+      <map(debug(!"error: "))> errors;
       
       partition := $[[project-path]/[path]];
       index-setup(|<language>, [project-path], partition);
       <index-clear-file> partition;
-      <filter(\Def(x) -> Def(<to-index-path> x)\; index-add(|partition))> defs
-      
-   to-index-path:
-   	 [(ns, name, _)|tail] -> [ns, name|<map(?(_, <id>, _))> tail]
+      <index-add-all(|partition)> entries
 
 rules // Editor services
 
@@ -40,8 +34,14 @@ rules // Editor services
     (node, position, ast, path, project-path) -> definition
     where
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-    	_{Use(use-path)} := node;
-    	definition := <index-get> Def(<to-index-path> use-path)
+    	_{anno*} := node;
+    	definition := <collect-one(try-resolve)> anno*
+    	
+  try-resolve:
+    Result(number) -> definition
+    where
+      Use(uri) := <index-get-value> DoneTask(number, ());
+      definition := <index-get> Def(uri)
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
@@ -70,21 +70,12 @@ rules // Debugging
       filename := <guarantee-extension(|"aterm")> path;
       result   := <desugar-all> selected
       
-  // Prints the definition annotated abstract syntax ATerm of a selection.
-  debug-generate-deffed:
-    (selected, position, ast, path, project-path) -> (filename, result)
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      filename := <guarantee-extension(|"aterm")> path;
-      result   := <nbl-analyse> <desugar-all> selected
-      
   // Prints the analyzed annotated abstract syntax ATerm of a selection.
   debug-generate-analyzed:
-    (selected, position, ast, path, project-path) -> (filename, result)
+    (selected, position, ast, path, project-path) -> (filename, selected)
     with
       editor-init;
-      filename := <guarantee-extension(|"analyzed.aterm")> path;
-      result   := <nbl-analyse> <desugar-all> selected  
+      filename := <guarantee-extension(|"analyzed.aterm")> path
       
   // Prints the entries in the index of the current file.
   debug-index-show-current-file:

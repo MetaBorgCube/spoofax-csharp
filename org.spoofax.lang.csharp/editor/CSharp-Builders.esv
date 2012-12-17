@@ -1,13 +1,6 @@
-
 module CSharp-Builders
 
-imports CSharp-Builders.generated
-
-builders
-                                                                      
-  // This file can be used for custom analysis and builder rules.     
-  //                                                                  
-  // See the imported file for a brief introduction and examples.     
+imports CSharp-Builders.generated   
 
 builders
                                                                                                                             
@@ -16,11 +9,10 @@ builders
                                                                                                                             
   observer : editor-analyze (multifile)                                                     
                                                                                                                             
-  builder  : "Show abstract syntax"                = debug-generate-aterm (openeditor) (realtime) (meta) (source)           
-  builder  : "Show deffed syntax"                  = debug-generate-deffed (openeditor) (realtime) (meta) (source)          
-  builder  : "Show analyzed syntax"                = debug-generate-analyzed (openeditor) (realtime) (meta) (source)        
-  builder  : "Show index entries for current file" = debug-index-show-current-file (openeditor) (realtime) (meta) (source)  
-  builder  : "Show index entries for all files"    = debug-index-show-all-files (openeditor) (realtime) (meta) (source)     
-  builder  : "Clear index for current file"        = debug-index-clear-current (meta) (source)                              
-  builder  : "Clear index"                         = debug-index-clear (meta) (source)                                      
-  builder  : "Reload index"                        = debug-index-reload (meta) (source)                                                                           
+  builder  : "Show abstract syntax"                = debug-generate-aterm (openeditor) (realtime) (meta) (source)
+  builder  : "Show analyzed syntax"                = debug-generate-analyzed (openeditor) (realtime) (meta)
+  builder  : "Show index entries for current file" = debug-index-show-current-file (openeditor) (realtime) (meta)
+  builder  : "Show index entries for all files"    = debug-index-show-all-files (openeditor) (realtime) (meta)
+  builder  : "Clear index for current file"        = debug-index-clear-current (meta)
+  builder  : "Clear index"                         = debug-index-clear (meta)
+  builder  : "Reload index"                        = debug-index-reload (meta)

@@ -53,6 +53,9 @@
           <copy todir="${basedir}/lib/nbl" >  
             <fileset dir="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/nbl/" includes="**"/>  
           </copy>
+          <copy todir="${basedir}/lib/index" >  
+            <fileset dir="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/index/" includes="**"/>  
+          </copy>
         </target>
         
         <target name="link-lib-files" unless="isWin" depends="os-detection">
@@ -60,6 +63,11 @@
           <symlink 
             resource="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/nbl/" 
             link="${basedir}/lib/nbl" 
+            overwrite="true" 
+          />
+          <symlink 
+            resource="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/index/" 
+            link="${basedir}/lib/index" 
             overwrite="true" 
           />
         </target>

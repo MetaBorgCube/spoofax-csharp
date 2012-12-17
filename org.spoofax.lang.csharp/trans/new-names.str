@@ -6,6 +6,7 @@ imports
 	nbl/-
 	
 signature 
+
   constructors // Namespaces
 	
 		Program   : Namespace
@@ -21,11 +22,8 @@ signature
 	
 rules // Type property
 	
-	type-of               = fail
-	match-type(|def-type) = fail
-	
-	calc-property            : PropCalc(Type(), x)  -> <type-of> x
-	match-property(|def-type): PropMatch(Type(), x) -> <match-type(|def-type)> x
+  type-of = fail
+  calc-property(|elems): x -> x
 	
 rules // Namespaces
   
