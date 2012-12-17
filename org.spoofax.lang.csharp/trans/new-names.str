@@ -31,7 +31,7 @@ rules // Namespaces
   nbl-def-site(cpaths, spaths, tasks|paths) =
     ?Namespace(x, _);
     vdebug(!"enter ");
-    (nbl-def(cpaths, spaths, tasks|paths, Namespace(), NonUnique(), [Current()], [Namespace(), Class()]));
+    Namespace(nbl-def(cpaths, spaths, tasks|paths, Namespace(), NonUnique(), [Current()], [Namespace(), Class()]), id);
     vdebug(!"leave ")
 	
 	
