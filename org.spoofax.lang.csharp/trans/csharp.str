@@ -19,14 +19,9 @@ rules // Analysis
     (ast, path, project-path) -> (ast', [], [], [])
     with
       editor-init;
-      (ast', entries, errors) := <desugar-all; nbl-analyse> ast;
+      (ast', entries, errors) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
       <map(debug(!"entry: "))> entries;
-      <map(debug(!"error: "))> errors;
-      
-      partition := $[[project-path]/[path]];
-      index-setup(|<language>, [project-path], partition);
-      <index-clear-file> partition;
-      <index-add-all(|partition)> entries
+      <map(debug(!"error: "))> errors
 
 rules // Editor services
 
