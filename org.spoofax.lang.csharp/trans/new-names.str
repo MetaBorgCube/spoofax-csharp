@@ -28,19 +28,19 @@ rules // Type property
 rules // Namespaces
   
   // Namespace(x, _)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Namespace(x, _);
     vdebug(!"enter ");
-    Namespace(nbl-def(cpaths, spaths, tasks|paths, Namespace(), NonUnique(), [Current()], [Namespace(), Class()]), id);
+    Namespace(nbl-def(cpaths, spaths|lang, elems, tasks, paths, Namespace(), NonUnique(), [Current()], [Namespace(), Class()]), id);
     vdebug(!"leave ")
 	
 	
 	// UsingPart(x)
   // TODO: Import
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?UsingPart(x);
     vdebug(!"enter ");
-    UsingPart(nbl-use(tasks|paths, [Candidate(Namespace(), [], Current(), [])]));
+    UsingPart(nbl-use(|lang, elems, tasks, paths, [Candidate(Namespace(), [], Current(), [])]));
     vdebug(!"leave ")	
     
 	
@@ -50,88 +50,88 @@ rules // Namespaces
 rules // Classes
 	
 	// Class(x, _)
-	nbl-def-site(cpaths, spaths, tasks|paths) =
+	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
 		?Class(x, _);
 		vdebug(!"enter ");
-		Class(nbl-def(cpaths, spaths, tasks|paths, Class(), Unique(), [Current()], [Field(), Function()]), id);
+		Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, Class(), Unique(), [Current()], [Field(), Function()]), id);
 		vdebug(!"leave ")
 	
-	nbl-prop-site(tasks|paths) =
+	nbl-prop-site(|lang, elems, tasks, paths) =
 		?Class(x, _);
 		vdebug(!"enter ");
-		Class(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id);
+		Class(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id);
 		vdebug(!"leave ")
 		
 		
 	// Class(x, y, _)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(nbl-def(cpaths, spaths, tasks|paths, Class(), Unique(), [Current()], [Field(), Function()]), id, id);
+    Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, Class(), Unique(), [Current()], [Field(), Function()]), id, id);
     vdebug(!"leave ")
   
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id, id);
+    Class(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id, id);
     vdebug(!"leave ")
     
   // TODO: Import
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(id, nbl-use(tasks|paths, [Candidate(Class(), [], Current(), [])]), id);
+    Class(id, nbl-use(|lang, elems, tasks, paths, [Candidate(Class(), [], Current(), [])]), id);
     vdebug(!"leave ")
     
   
   // PartialClass(x, _)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, _);
     vdebug(!"enter ");
-    PartialClass(nbl-def(cpaths, spaths, tasks|paths, Class(), NonUnique(), [Current()], [Field(), Function()]), id);
+    PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, Class(), NonUnique(), [Current()], [Field(), Function()]), id);
     vdebug(!"leave ")
   
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, _);
     vdebug(!"enter ");
-    PartialClass(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id);
+    PartialClass(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id);
     vdebug(!"leave ")
     
     
   // PartialClass(x, y, _)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(nbl-def(cpaths, spaths, tasks|paths, Class(), NonUnique(), [Current()], [Field(), Function()]), id, id);
+    PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, Class(), NonUnique(), [Current()], [Field(), Function()]), id, id);
     vdebug(!"leave ")
   
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id, id);
+    PartialClass(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id, id);
     vdebug(!"leave ")
     	
   // TODO: Import
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(id, nbl-use(tasks|paths, [Candidate(Class(), [], Current(), [])]), id);
+    PartialClass(id, nbl-use(|lang, elems, tasks, paths, [Candidate(Class(), [], Current(), [])]), id);
     vdebug(!"leave ")
   
     	
 	// Type(c)
-	nbl-use-site(tasks|paths) =
+	nbl-use-site(|lang, elems, tasks, paths) =
 		?Type(c);
 		vdebug(!"enter ");
-		Type(nbl-use(tasks|paths, [Candidate(Class(), [], Current(), [])]));
+		Type(nbl-use(|lang, elems, tasks, paths, [Candidate(Class(), [], Current(), [])]));
 		vdebug(!"leave ")
 		
 rules // Fields
 	
-	nbl-def-site(cpaths, spaths, tasks|paths) =
+	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
 		?FieldDef(t, x);
 		vdebug(!"enter ");
-		FieldDef(id, nbl-def(cpaths, spaths, tasks|paths, Field(), Unique(), [Current()], []));
+		FieldDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Field(), Unique(), [Current()], []));
 		vdebug(!"leave ")
 		
 
@@ -142,31 +142,31 @@ rules // Functions
   
   // FunDef(t, x, _)
   // TODO: store parameter types
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _);
     vdebug(!"enter ");
-    FunDef(id, nbl-def(cpaths, spaths, tasks|paths, Function(), Unique(), [Current()], []), id);
+    FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Function(), Unique(), [Current()], []), id);
     vdebug(!"leave ")
     
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, _);
     vdebug(!"enter ");
-    FunDef(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id, id);
+    FunDef(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id, id);
     vdebug(!"leave ")
     
   
   // FunDef(t, x, _, _)
   // TODO: store parameter types
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _, _);
     vdebug(!"enter ");
-    FunDef(id, nbl-def(cpaths, spaths, tasks|paths, Function(), Unique(), [Current()], [Variable()]), id, id);
+    FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Function(), Unique(), [Current()], [Variable()]), id, id);
     vdebug(!"leave ")
     
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, _, _);
     vdebug(!"enter ");
-    FunDef(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id, id, id);
+    FunDef(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id, id, id);
     vdebug(!"leave ")
     
   
@@ -176,69 +176,69 @@ rules // Functions
   
   // FunCall(x, _)
   // TODO: match argument types against parameter types
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?FunCall(x, _);
     vdebug(!"enter ");
-    FunCall(nbl-use(tasks|paths, [Candidate(Function(), [], Current(), [])]), id);
+    FunCall(nbl-use(|lang, elems, tasks, paths, [Candidate(Function(), [], Current(), [])]), id);
     vdebug(!"leave ")
     
   
   // Param(t, x)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Param(t, x);
     vdebug(!"enter ");
-    Param(id, nbl-def(cpaths, spaths, tasks|paths, Variable(), Unique(), [Current()], []));
+    Param(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Variable(), Unique(), [Current()], []));
     vdebug(!"leave ")
     
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?Param(t, x);
     vdebug(!"enter ");
-    Param(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id);
+    Param(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id);
     vdebug(!"leave ")
   
 rules // Variable
   
   // VarDef(t, x, _)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x, _);
     vdebug(!"enter ");
-    VarDef(id, nbl-def(cpaths, spaths, tasks|paths, Variable(), Unique(), [Subsequent()], []), id);
+    VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Variable(), Unique(), [Subsequent()], []), id);
     vdebug(!"leave ")
     
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?VarDef(t, x, _);
     vdebug(!"enter ");
-    VarDef(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id, id);
+    VarDef(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id, id);
     vdebug(!"leave ")
     
   
   // VarDef(t, x)
-  nbl-def-site(cpaths, spaths, tasks|paths) =
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x);
     vdebug(!"enter ");
-    VarDef(id, nbl-def(cpaths, spaths, tasks|paths, Variable(), Unique(), [Subsequent()], []));
+    VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, Variable(), Unique(), [Subsequent()], []));
     vdebug(!"leave ")
     
-  nbl-prop-site(tasks|paths) =
+  nbl-prop-site(|lang, elems, tasks, paths) =
     ?VarDef(t, x);
     vdebug(!"enter ");
-    VarDef(nbl-props(tasks|[Prop(x, Type(), Type(x))]), id);
+    VarDef(nbl-props(|lang, elems, tasks, [Prop(x, Type(), Type(x))]), id);
     vdebug(!"leave ")
     
   
   // VarRef(x)
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?VarRef(x);
     vdebug(!"enter ");
-    VarRef(nbl-use(tasks|paths, [Candidate(Variable(), [], Current(), []), Candidate(Field(), [], Current(), [])]));
+    VarRef(nbl-use(|lang, elems, tasks, paths, [Candidate(Variable(), [], Current(), []), Candidate(Field(), [], Current(), [])]));
     vdebug(!"leave ")
     
   
   // Assign(x, _)
-  nbl-use-site(tasks|paths) =
+  nbl-use-site(|lang, elems, tasks, paths) =
     ?Assign(x, _);
     vdebug(!"enter ");
-    Assign(nbl-use(tasks|paths, [Candidate(Variable(), [], Current(), []), Candidate(Field(), [], Current(), [])]), id);
+    Assign(nbl-use(|lang, elems, tasks, paths, [Candidate(Variable(), [], Current(), []), Candidate(Field(), [], Current(), [])]), id);
     vdebug(!"leave ")
 
 rules // Control flow
