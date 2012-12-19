@@ -1,7 +1,7 @@
 class A {
 	A a;
-	
-	A method() {
+
+	void method() {
 		return a;
-	} 
-} 
+	}
+}

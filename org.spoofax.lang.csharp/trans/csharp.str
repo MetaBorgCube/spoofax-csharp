@@ -20,8 +20,8 @@ rules // Analysis
     with
       editor-init;
       (ast', entries, errors) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
-      <map(debug(!"entry: "))> entries;
-      <map(debug(!"error: "))> errors
+      <map(debug(!"Entry: "))> entries;
+      <map(debug(!"Error: "))> errors
 
 rules // Editor services
 
@@ -33,9 +33,9 @@ rules // Editor services
     	definition := <collect-one(try-resolve)> anno*
     	
   try-resolve:
-    Result(number) -> definition
+    Use(Result(number)) -> definition
     where
-      Use(uri) := <index-get-value> DoneTask(number, ());
+      uri := <index-get-value> DoneTask(number, ());
       definition := <index-get> Def(uri)
 
   // Returns "hover help" information for a particular node in the editor.
