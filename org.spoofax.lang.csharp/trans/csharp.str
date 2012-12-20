@@ -6,8 +6,9 @@ imports
   libstratego-aterm
   include/CSharp
   lib/editor-common.generated
-  index/-
-  nbl/-
+  lib/index-library.generated
+  lib/index/core
+  lib/nbl/-
   new-names
   check
   desugar
@@ -35,8 +36,8 @@ rules // Editor services
   try-resolve:
     Use(Result(number)) -> definition
     where
-      uri := <index-get-value> DoneTask(number, ());
-      definition := <index-get> Def(uri)
+      uri := <nbl-get-value> DoneTask(number, ());
+      definition := <nbl-get> Def(uri)
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
