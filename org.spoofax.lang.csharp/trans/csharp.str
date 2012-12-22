@@ -17,28 +17,31 @@ rules // Analysis
   
 	// Main entry point for analyzes, called when a single file is opened in the editor.
   editor-analyze:
-    (ast, path, project-path) -> (ast', [], [], [])
+    (ast, path, project-path) -> (ast', errors, warnings, notes)
     with
       editor-init;
-      (ast', entries, errors, dependent) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
+      (ast', entries, tasks, dependent) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
+      index-transaction(
+        errors                := <collect-all(constraint-error, conc)> ast';
+        warnings              := <collect-all(constraint-warning, conc)> ast';
+        notes                 := <collect-all(constraint-note, conc)> ast'
+      );
       <map(debug(!"Entry: "))> entries;
-      <map(debug(!"Error: "))> errors;
+      <map(debug(!"Tasks: "))> tasks;
       <map(debug(!"Dependency: "))> dependent
 
 rules // Editor services
+
+  constraint-error:
+    node -> (node, "Unresolved reference.")
+    where
+      nbl-is-unresolved
 
   editor-resolve:
     (node, position, ast, path, project-path) -> definition
     where
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-    	_{anno*} := node;
-    	definition := <collect-one(try-resolve)> anno*
-    	
-  try-resolve:
-    Use(Result(number)) -> definition
-    where
-      uri := <nbl-get-value> DoneTask(number, ());
-      definition := <nbl-get> Def(uri)
+    	definition := <nbl-resolve> node
 
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
