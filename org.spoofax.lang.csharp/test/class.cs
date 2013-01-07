@@ -1,7 +1,15 @@
+class Int {}
+
 class A {
 	A a;
-
-	A method() {
-		return a;
+	
+	void bla() {
+	  int b;
+	  
+	  return a; 
 	}
+}
+
+class B {
+  
 }
