@@ -6,10 +6,9 @@ class A {
 	void bla() {
 	  int b;
 	  
-	  return a; 
+	  return b; 
 	}
 }
 
-class B {
-  
+class B : A {
 }

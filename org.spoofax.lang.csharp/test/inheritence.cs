@@ -1,19 +1,11 @@
-namespace Inheritance {
-	class C  {
-	  int inherited() {
-	    return 2;
-	  }  
+namespace I {
+	class A {
+	  A a;
+	}
+	
+	class B : A {
+	  void b() {
+	    return a;
+	  }
 	} 
-	
-	class B : C {
-	  int inherited() {
-	    return 1;
-	  }
-	}
-	
-	class A : B {
-	  int test() {
-	    return inherited();
-	  }
-	}
-}
+} 
