@@ -1,14 +1,13 @@
-class Int {}
-
-class A {
-	A a;
+namespace Simple {
+	class Int {}
 	
-	void bla() {
-	  int b;
+	class A {
+	  A a;
 	  
-	  return b; 
+	  void bla() {
+	    int b;
+	    
+	    return b; 
+	  }
 	}
-}
-
-class B : A {
 }

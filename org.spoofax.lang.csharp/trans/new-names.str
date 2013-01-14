@@ -39,10 +39,10 @@ rules // Namespaces
 	
 	// UsingPart(x)
   // TODO: Import
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
     vdebug(!"enter ");
-    UsingPart(nbl-use(|lang, elems, tasks, paths, 
+    UsingPart(nbl-use(|lang, elems, tasks, paths, deps,
       Candidate(Namespace(), [], Current())
     ));
     vdebug(!"leave ")	
@@ -88,18 +88,19 @@ rules // Classes
   	]), id, id);
     vdebug(!"leave ")
     
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(id, nbl-use(|lang, elems, tasks, paths, 
+    Class(id, nbl-use(|lang, elems, tasks, paths, deps,
       Candidate(Class(), [], Current())), 
     id);
     vdebug(!"leave ")
     
-  nbl-import-site(|lang, elems, tasks, paths) =
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(id, nbl-import(|lang, elems, tasks, paths, Class(), [
+    Class(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
+    Class(), [
     	Import(lang, Field()), 
       Import(lang, Imported(Field())), 
       Import(lang, Function()), 
@@ -142,18 +143,19 @@ rules // Classes
   	id, id);
     vdebug(!"leave ")
     	
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(id, nbl-use(|lang, elems, tasks, paths, 
+    PartialClass(id, nbl-use(|lang, elems, tasks, paths, deps,
       Candidate(Class(), [], Current())), 
     id);
     vdebug(!"leave ")
   
-  nbl-import-site(|lang, elems, tasks, paths) =
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(id, nbl-import(|lang, elems, tasks, paths, Class(), [
+    PartialClass(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
+    Class(), [
       Import(lang, Field()), 
       Import(lang, Imported(Field())), 
       Import(lang, Function()), 
@@ -162,10 +164,10 @@ rules // Classes
     vdebug(!"leave ")
     	
 	// Type(c)
-	nbl-use-site(|lang, elems, tasks, paths) =
+	nbl-use-site(|lang, elems, tasks, paths, deps) =
 		?Type(c);
 		vdebug(!"enter ");
-		Type(nbl-use(|lang, elems, tasks, paths, 
+		Type(nbl-use(|lang, elems, tasks, paths, deps,
 		  Candidate(Class(), [], Current())
 	  ));
 		vdebug(!"leave ")
@@ -230,10 +232,10 @@ rules // Functions
   
   // FunCall(x, _)
   // TODO: match argument types against parameter types
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FunCall(x, _);
     vdebug(!"enter ");
-    FunCall(nbl-use(|lang, elems, tasks, paths, 
+    FunCall(nbl-use(|lang, elems, tasks, paths, deps,
       Candidate(Function(), [], Current())), 
     id);
     vdebug(!"leave ")
@@ -295,10 +297,10 @@ rules // Variable
     
   
   // VarRef(x)
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?VarRef(x);
     vdebug(!"enter ");
-    VarRef(nbl-use(|lang, elems, tasks, paths, [
+    VarRef(nbl-use(|lang, elems, tasks, paths, deps, [
     	Candidate(Variable(), [], Current()), 
     	Candidate(Field(), [], Current())
   	]));
@@ -306,10 +308,10 @@ rules // Variable
     
   
   // Assign(x, _)
-  nbl-use-site(|lang, elems, tasks, paths) =
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Assign(x, _);
     vdebug(!"enter ");
-    Assign(nbl-use(|lang, elems, tasks, paths, [
+    Assign(nbl-use(|lang, elems, tasks, paths, deps, [
     	Candidate(Variable(), [], Current()), 
     	Candidate(Field(), [], Current())
   	]), id);

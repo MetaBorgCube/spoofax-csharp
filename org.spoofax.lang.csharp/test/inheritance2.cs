@@ -1,4 +1,6 @@
 namespace I2 {
+	class Int {}
+	
   partial class A {
 	  int inherited() {
 	    return 1;
@@ -35,4 +37,4 @@ namespace I2 {
 	    return c.inherited("x");
 	  }
 	}
-} 
+}
