@@ -33,7 +33,7 @@ rules // Namespaces
     ?Namespace(x, _);
     vdebug(!"enter ");
     Namespace(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Namespace(), NonUnique(), [Current()], [Namespace(), Class()]), 
+      Namespace(), <nbl-nonunique-qualifier>, [Current()], [Namespace(), Class()]), 
     id);
     vdebug(!"leave ")
 	
@@ -59,7 +59,7 @@ rules // Classes
 		?Class(x, _);
 		vdebug(!"enter ");
 		Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-		  Class(), Unique(), [Current()], [Field(), Function()]), 
+		  Class(), <nbl-unique-qualifier>, [Current()], [Field(), Function()]), 
 	  id);
 		vdebug(!"leave ")
 	
@@ -77,7 +77,7 @@ rules // Classes
     ?Class(x, y, _);
     vdebug(!"enter ");
     Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), Unique(), [Current()], [Field(), Function()]), 
+      Class(), <nbl-unique-qualifier>, [Current()], [Field(), Function()]), 
     id, id);
     vdebug(!"leave ")
   
@@ -114,7 +114,7 @@ rules // Classes
     ?PartialClass(x, _);
     vdebug(!"enter ");
     PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), NonUnique(), [Current()], [Field(), Function()]),
+      Class(), <nbl-nonunique-qualifier>, [Current()], [Field(), Function()]),
     id);
     vdebug(!"leave ")
   
@@ -132,7 +132,7 @@ rules // Classes
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
     PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), NonUnique(), [Current()], [Field(), Function()]), 
+      Class(), <nbl-nonunique-qualifier>, [Current()], [Field(), Function()]), 
     id, id);
     vdebug(!"leave ")
   
@@ -179,7 +179,7 @@ rules // Fields
 		?FieldDef(t, x);
 		vdebug(!"enter ");
 		FieldDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-		  Field(), Unique(), [Current()], []
+		  Field(), <nbl-unique-qualifier>, [Current()], []
 	  ));
 		vdebug(!"leave ")
 		
@@ -215,7 +215,7 @@ rules // Functions
     ?FunDef(t, x, _);
     vdebug(!"enter ");
     FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Function(), Unique(), [Current()], []), 
+      Function(), <nbl-unique-qualifier>, [Current()], []), 
     id);
     vdebug(!"leave ")
     
@@ -234,7 +234,7 @@ rules // Functions
     ?FunDef(t, x, _, _);
     vdebug(!"enter ");
     FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Function(), Unique(), [Current()], [Variable()]), 
+      Function(), <nbl-unique-qualifier>, [Current()], [Variable()]), 
     id, id);
     vdebug(!"leave ")
     
@@ -280,7 +280,7 @@ rules // Functions
     ?Param(t, x);
     vdebug(!"enter ");
     Param(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), Unique(), [Current()], []
+      Variable(), <nbl-unique-qualifier>, [Current()], []
     ));
     vdebug(!"leave ")
     
@@ -299,7 +299,7 @@ rules // Variable
     ?VarDef(t, x, _);
     vdebug(!"enter ");
     VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), Unique(), [Subsequent()], []), 
+      Variable(), <nbl-unique-qualifier>, [Subsequent()], []), 
     id);
     vdebug(!"leave ")
     
@@ -317,7 +317,7 @@ rules // Variable
     ?VarDef(t, x);
     vdebug(!"enter ");
     VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), Unique(), [Subsequent()], []
+      Variable(), <nbl-unique-qualifier>, [Subsequent()], []
     ));
     vdebug(!"leave ")
     
