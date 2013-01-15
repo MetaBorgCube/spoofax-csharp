@@ -233,9 +233,19 @@ rules // Functions
     vdebug(!"leave ")
     
   
-  // TODO: FunCall(exp, f, _)
+  // FunCall(exp, f, _)
   // TODO: match argument types against parameter types
-  
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?FunCall(e, x, _);
+    vdebug(!"enter ");
+    where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
+    where (result2 := <new-task(|tasks)> Match("match_FunCall_3", result1));
+    FunCall(nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Function(), [], Context(result2, Class(), [], Current()))), 
+    id);
+    vdebug(!"leave ")
+    
+  match-term: ("match_FunCall_3", Type(t)) -> t
   
   // FunCall(x, _)
   // TODO: match argument types against parameter types
@@ -245,15 +255,6 @@ rules // Functions
     FunCall(nbl-use(|lang, elems, tasks, paths, deps,
       Candidate(Function(), [], Current())), 
     id);
-    vdebug(!"leave ")
-    
-  nbl-prop-site(|lang, elems, tasks, paths) =
-    ?FunCall(x, e);
-    vdebug(!"enter ");
-    where (result := <new-task(|tasks)> PropCalc(Type(), e));
-    FunCall(nbl-props(|lang, elems, tasks, [
-      Prop((), Type(), result)
-    ]), id);
     vdebug(!"leave ")
 
   
@@ -321,9 +322,6 @@ rules // Variable
     	Candidate(Field(), [], Current())
   	]));
     vdebug(!"leave ")
-    
-  // TODO: type
-    
   
   // Assign(x, _)
   nbl-use-site(|lang, elems, tasks, paths, deps) =

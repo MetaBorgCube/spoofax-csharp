@@ -4,12 +4,14 @@ namespace I {
 	}
 	
 	class B : A {
-
-	}
+    A b() {
+      return a;
+    }
+	} 
 	
 	class C : B {
-    void b() {
+    A b() {
       return a;
     }
 	}
-} 
+}

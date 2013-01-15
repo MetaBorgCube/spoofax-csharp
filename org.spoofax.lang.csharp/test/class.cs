@@ -4,10 +4,9 @@ namespace Simple {
 	class A {
 	  A a;
 	  
-	  void bla() {
-	    int b;
-	    
-	    return b; 
+	  A bla() {
+	  	a = 1;
+	    return a; 
 	  }
 	}
 }

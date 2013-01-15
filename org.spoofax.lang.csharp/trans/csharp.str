@@ -1,6 +1,7 @@
 module csharp
 
 imports
+  
   libstratego-lib
   libstratego-gpp
   libstratego-aterm
@@ -12,6 +13,7 @@ imports
   new-names
   check
   desugar
+  types
 
 rules // Analysis
   
@@ -44,7 +46,7 @@ rules // Editor services
     	definition := <nbl-resolve> node
 
   editor-hover:
-    (target, position, ast, path, project-path) -> (target, <type-of <+ !"Unknown type."> target)
+    (target, position, ast, path, project-path) -> <type-of; print-type <+ !"Unknown type."> target
 
   editor-complete:
     (node, position, ast, path, project-path) -> proposals
