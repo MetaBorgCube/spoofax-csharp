@@ -67,7 +67,7 @@ rules // Classes
 		?Class(x, _);
 		vdebug(!"enter ");
 		Class(nbl-props(|lang, elems, tasks, [
-			Prop((), Type(), Type(x))
+			Prop(Type(), Type(x))
 		]), id);
 		vdebug(!"leave ")
 		
@@ -85,7 +85,7 @@ rules // Classes
     ?Class(x, y, _);
     vdebug(!"enter ");
     Class(nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), Type(x))
+    	Prop(Type(), Type(x))
   	]), id, id);
     vdebug(!"leave ")
     
@@ -122,7 +122,7 @@ rules // Classes
     ?PartialClass(x, _);
     vdebug(!"enter ");
     PartialClass(nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), Type(x))
+    	Prop(Type(), Type(x))
   	]), id);
     vdebug(!"leave ")
     
@@ -140,7 +140,7 @@ rules // Classes
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
     PartialClass(nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), Type(x))]), 
+    	Prop(Type(), Type(x))]), 
   	id, id);
     vdebug(!"leave ")
     	
@@ -187,12 +187,26 @@ rules // Fields
     ?FieldDef(t, x);
     vdebug(!"enter ");
     FieldDef(id, nbl-props(|lang, elems, tasks, [
-      Prop((), Type(), t)
+      Prop(Type(), t)
     ]));
     vdebug(!"leave ")
     
-  // TODO: FieldAccess(exp, f)
-  
+  // FieldAccess(exp, f)
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?FieldAccess(e, f);
+    vdebug(!"enter ");
+    where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
+    where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FieldAccess_2", result1));
+    FieldAccess(id, nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Field(), [], result2)
+    ));
+    vdebug(!"leave ")
+    
+  match-term: 
+    ("nbl-use-site_match_FieldAccess_2", Type(_{anno*})) -> uri
+    where
+      Def(uri) := <collect-one(?Def(_))> anno*
+      
 rules // Functions
   
   // FunDef(t, x, _)
@@ -209,7 +223,7 @@ rules // Functions
     ?FunDef(t, x, _);
     vdebug(!"enter ");
     FunDef(id, nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), t)
+    	Prop(Type(), t)
   	]), id);
     vdebug(!"leave ")
     
@@ -228,7 +242,7 @@ rules // Functions
     ?FunDef(t, x, _, _);
     vdebug(!"enter ");
     FunDef(id, nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), t)
+    	Prop(Type(), t)
   	]), id, id);
     vdebug(!"leave ")
     
@@ -239,13 +253,16 @@ rules // Functions
     ?FunCall(e, x, _);
     vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
-    where (result2 := <new-task(|tasks)> Match("match_FunCall_3", result1));
-    FunCall(nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Function(), [], Context(result2, Class(), [], Current()))), 
+    where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FunCall_3", result1));
+    FunCall(id, nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Function(), [], result2)), 
     id);
     vdebug(!"leave ")
     
-  match-term: ("match_FunCall_3", Type(t)) -> t
+  match-term: 
+  	("nbl-use-site_match_FunCall_3", Type(_{anno*})) -> uri
+    where
+    	Def(uri) := <collect-one(?Def(_))> anno*
   
   // FunCall(x, _)
   // TODO: match argument types against parameter types
@@ -271,7 +288,7 @@ rules // Functions
     ?Param(t, x);
     vdebug(!"enter ");
     Param(id, nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), t)
+    	Prop(Type(), t)
   	]));
     vdebug(!"leave ")
   
@@ -290,7 +307,7 @@ rules // Variable
     ?VarDef(t, x, _);
     vdebug(!"enter ");
     VarDef(id, nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), t)
+    	Prop(Type(), t)
   	]), id);
     vdebug(!"leave ")
     
@@ -308,7 +325,7 @@ rules // Variable
     ?VarDef(t, x);
     vdebug(!"enter ");
     VarDef(id, nbl-props(|lang, elems, tasks, [
-    	Prop((), Type(), t)
+    	Prop(Type(), t)
   	]));
     vdebug(!"leave ")
     

@@ -1,12 +1,15 @@
 namespace Simple {
-	class Int {}
-	
-	class A {
+	partial class A {
 	  A a;
+	  A ab;
+	  A abc;
 	  
-	  A bla() {
-	  	a = 1;
-	    return a; 
+	  void bla() {
+	    a.a.abc.lol(); 
+	  }
+	  
+	  void lol() {
+	       
 	  }
 	}
-}
+} 

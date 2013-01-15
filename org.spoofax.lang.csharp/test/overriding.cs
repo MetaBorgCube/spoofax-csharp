@@ -4,6 +4,7 @@ namespace Overriding {
       return 0;
     }
   }
+  
   class B : A {
     int f() { 
       return 1;

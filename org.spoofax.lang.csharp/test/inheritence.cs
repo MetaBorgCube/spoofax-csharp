@@ -1,6 +1,10 @@
 namespace I {
 	class A {
 	  A a;
+	  
+	  A a() {
+	    return a;
+	  }
 	}
 	
 	class B : A {
@@ -10,8 +14,8 @@ namespace I {
 	} 
 	
 	class C : B {
-    A b() {
-      return a;
+    A c() {
+      return a.a();
     }
 	}
 }

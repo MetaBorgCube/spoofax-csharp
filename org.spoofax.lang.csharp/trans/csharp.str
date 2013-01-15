@@ -46,7 +46,9 @@ rules // Editor services
     	definition := <nbl-resolve> node
 
   editor-hover:
-    (target, position, ast, path, project-path) -> <type-of; print-type <+ !"Unknown type."> target
+    (target, position, ast, path, project-path) -> $[Type: [<print-type> type]]
+    where
+      type := <type-of> target
 
   editor-complete:
     (node, position, ast, path, project-path) -> proposals
