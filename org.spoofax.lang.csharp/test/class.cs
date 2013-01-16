@@ -4,12 +4,12 @@ namespace Simple {
 	  A ab;
 	  A abc;
 	  
-	  void bla() {
-	    a.a.abc.lol(); 
+	  A bla() {
+	    return a.a.abc.lol(); 
 	  }
 	  
-	  void lol() {
-	       
+	  A lol() {
+      return a;
 	  }
 	}
 } 

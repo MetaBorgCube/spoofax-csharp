@@ -24,7 +24,7 @@ rules // Type property
 	
   type-of = fail
   
-  calc-property(|elems): (Type(), x)  -> <type-of> x
+  calc-property(|elems): (Type(), x) -> <type-of> x
 	
 rules // Namespaces
   
@@ -39,7 +39,6 @@ rules // Namespaces
 	
 	
 	// UsingPart(x)
-  // TODO: Import
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
     vdebug(!"enter ");
@@ -47,6 +46,16 @@ rules // Namespaces
       Candidate(Namespace(), [], Current())
     ));
     vdebug(!"leave ")	
+    
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
+    ?UsingPart(x);
+    vdebug(!"enter ");
+    UsingPart(nbl-import(deps'|lang, elems, tasks, paths, deps, 
+      Namespace(), [
+        Import(lang, Class())
+      ])
+    );
+    vdebug(!"leave ")
     
 	
 	// TODO: UsingPart(u, x)
@@ -101,12 +110,13 @@ rules // Classes
     ?Class(x, y, _);
     vdebug(!"enter ");
     Class(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
-    Class(), [
-    	Import(lang, Field()), 
-      Import(lang, Imported(Field())), 
-      Import(lang, Function()), 
-      Import(lang, Imported(Function()))
-    ]), id);
+      Class(), [
+	    	Import(lang, Field()), 
+	      Import(lang, Imported(Field())), 
+	      Import(lang, Function()), 
+	      Import(lang, Imported(Function()))
+      ]
+    ), id);
     vdebug(!"leave ")
   
   // PartialClass(x, _)
@@ -156,12 +166,13 @@ rules // Classes
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
     PartialClass(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
-    Class(), [
-      Import(lang, Field()), 
-      Import(lang, Imported(Field())), 
-      Import(lang, Function()), 
-      Import(lang, Imported(Function()))
-    ]), id);
+      Class(), [
+	      Import(lang, Field()), 
+	      Import(lang, Imported(Field())), 
+	      Import(lang, Function()), 
+	      Import(lang, Imported(Function()))
+      ]
+    ), id);
     vdebug(!"leave ")
     	
 	// Type(c)
@@ -340,6 +351,7 @@ rules // Variable
   	]));
     vdebug(!"leave ")
   
+  
   // Assign(x, _)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Assign(x, _);
@@ -352,10 +364,50 @@ rules // Variable
 
 rules // Control flow
   
-  // TODO: For(t, x, init, cond, stmt, body) 
+  // For(t, x, init, cond, stmt, body) 
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =    
+    ?For(t, x, init, cond, stmt, body);
+    vdebug(!"enter ");
+    where(scope := <nbl-def-scope> Variable());
+    For(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
+      Variable(), <nbl-unique-qualifier>, [scope], []), id, nbl-def-scope(|scope), 
+      nbl-def-scope(|scope), nbl-def-scope(|scope)
+    );
+    vdebug(!"leave ")
+    
+  nbl-prop-site(cpaths, spaths|lang, elems, tasks, paths) =   
+    ?For(t, x, init, cond, stmt, body);
+    vdebug(!"enter ");
+    For(id, nbl-props(|lang, elems, tasks, [
+    	Prop(Type(), t)
+  	]), id, id, id, id);
+    vdebug(!"leave ")
   
   
-  // TODO: ForEach(t, x, e, body)
+  // ForEach(t, x, e, body)
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =    
+    ?ForEach(t, x, e, body);
+    vdebug(!"enter ");
+    where(scope := <nbl-def-scope> Variable());
+    ForEach(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
+      Variable(), <nbl-unique-qualifier>, [scope], []), id, nbl-def-scope(|scope)
+    );
+    vdebug(!"leave ")
+    
+  nbl-prop-site(cpaths, spaths|lang, elems, tasks, paths) =   
+    ?ForEach(t, x, e, body);
+    vdebug(!"enter ");
+    ForEach(id, nbl-props(|lang, elems, tasks, [
+      Prop(Type(), t)
+    ]), id, id);
+    vdebug(!"leave ")
   
   
-  // TODO: Block(stmt*)
+  // Block(stmt*)
+  nbl-scope-site(cpaths|lang, paths) =   
+    ?Block(stmt*);
+    vdebug(!"enter ");
+    Block(nbl-anonymous-scope(cpaths|lang, paths, [
+      Variable()
+    ]));
+    vdebug(!"leave ")
