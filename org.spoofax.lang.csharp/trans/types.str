@@ -32,13 +32,13 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-    BoolType() -> Type("Bool"{Def(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
+    BoolType() -> Type("Bool"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
   
   type-of:
-    IntType() -> Type("Int"{Def(URI(Language(<language>), [ID(Class(), "Int", ())]))})
+    IntType() -> Type("Int"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
     
   type-of:
-    StringType() -> Type("String"{Def(URI(Language(<language>), [ID(Class(), "String", ())]))})
+    StringType() -> Type("String"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
     
   type-of:
     VoidType() -> VoidType()
@@ -109,7 +109,7 @@ rules // Comparison
   is-assignable-to:
     (to-type, from-type) -> to-type
     where
-      <eq> (<type-of> from-type, <type-of> to-type)
+      <eq> <debug(!"COMPARE TYPES: ")> (<type-of> from-type, <type-of> to-type)
     
 rules // Utility
 	
