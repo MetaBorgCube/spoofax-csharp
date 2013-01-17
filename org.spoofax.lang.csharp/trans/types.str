@@ -109,7 +109,7 @@ rules // Comparison
   is-assignable-to:
     (to-type, from-type) -> to-type
     where
-      <eq> <debug(!"COMPARE TYPES: ")> (<type-of> from-type, <type-of> to-type)
+      <eq> (<type-of> from-type, <type-of> to-type)
     
 rules // Utility
 	
