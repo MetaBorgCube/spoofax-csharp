@@ -7,9 +7,11 @@ namespace Simple {
 	  A bla() {
 	    return a.a.abc.lol(); 
 	  }
-	  
-	  A lol() {
+	}
+	
+	partial class A {
+    A lol() {
       return a;
-	  }
+    }
 	}
 } 

@@ -38,6 +38,11 @@ rules // Editor services
     node -> (node, "Unresolved reference.")
     where
       nbl-is-unresolved
+      
+  constraint-error:
+    node -> (node, "Duplicate definition.")
+    where
+      nbl-is-duplicate-definition
 
   editor-resolve:
     (node, position, ast, path, project-path) -> definition
