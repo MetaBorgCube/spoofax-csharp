@@ -8,7 +8,6 @@ imports
   include/CSharp
   lib/editor-common.generated
   lib/index-library.generated
-  lib/index/core
   lib/nbl/-
   new-names
   check
@@ -24,9 +23,9 @@ rules // Analysis
       editor-init;
       (ast', entries, tasks, dependent) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
       index-transaction(
-        errors                := <collect-all(constraint-error, conc)> ast';
-        warnings              := <collect-all(constraint-warning, conc)> ast';
-        notes                 := <collect-all(constraint-note, conc)> ast'
+        errors   := <collect-all(constraint-error, conc)> ast';
+        warnings := <collect-all(constraint-warning, conc)> ast';
+        notes    := <collect-all(constraint-note, conc)> ast'
       );
       <map(debug(!"Entry: "))> entries;
       <map(debug(!"Tasks: "))> tasks;
@@ -62,8 +61,8 @@ rules // Editor services
 
   editor-complete:
     (node, position, ast, path, project-path) -> proposals
-      where
-       proposals := <nbl-propose-completions> ast
+    where
+     proposals := <nbl-propose-completions> ast
 
 rules // Debugging
   
@@ -78,42 +77,21 @@ rules // Debugging
   debug-generate-analyzed:
     (selected, position, ast, path, project-path) -> (filename, selected)
     with
-      editor-init;
       filename := <guarantee-extension(|"analyzed.aterm")> path
-      
-  // Prints the entries in the index of the current file.
-  debug-index-show-current-file:
-    (selected, position, ast, path, project-path) -> (filename, result)
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      filename := <guarantee-extension(|"index.currentfile.aterm")> path;
-      result   := <index-get-all-in-file> path
-      
-  // Prints the entries in the index of all files.
-  debug-index-show-all-files:
-    (selected, position, ast, path, project-path) -> (filename, result)
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      filename := <guarantee-extension(|"index.allfiles.aterm")> path;
-      result   := <map(\filename -> (filename, <index-get-all-in-file> filename)\)> <index-get-all-files>
+   
+rules // NBL debugging
+     
+  debug-show-current-partition = 
+  	nbl-debug-show-current-partition(|<language>)
+    
+  debug-show-all-partitions =
+    nbl-debug-show-all-partitions(|<language>)
 
-  // Cleans current file from the index.
-  debug-index-clear-current:
-    (selected, position, ast, path, project-path)  -> None()
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      <index-clear-file> $[[project-path]/[path]]
-      
-  // Cleans all data from the index.
-  debug-index-clear:
-    (selected, position, ast, path, project-path)  -> None()
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      index-clear
-      
-  // Cleans all data from the index and re-analyzes every file.
-  debug-index-reload:
-    (selected, position, ast, path, project-path)  -> None()
-    with
-      index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-      index-reload
+  debug-clear-current =
+    nbl-debug-clear-current(|<language>)
+    
+  debug-clear-all =
+    nbl-debug-clear-all(|<language>)  
+
+  debug-reload = 
+  	nbl-debug-reload(|<language>)

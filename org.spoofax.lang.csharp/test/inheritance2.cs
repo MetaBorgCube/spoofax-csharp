@@ -1,6 +1,4 @@
 namespace I2 {
-	class Int {}
-	
   partial class A {
 	  int inherited() {
 	    return 1;
