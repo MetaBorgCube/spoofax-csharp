@@ -7,7 +7,7 @@ builders
   provider : include/csharp.ctree                                                                                           
   provider : include/csharp-java.jar                                                                                        
                                                                                                                             
-  observer : editor-analyze
+  observer : editor-analyze (multifile)
                                                                                                                             
   builder  : "Show abstract syntax"                    = debug-generate-aterm (openeditor) (realtime) (meta) (source)
   builder  : "Show analyzed syntax"                    = debug-generate-analyzed (openeditor) (realtime) (meta)
@@ -16,4 +16,4 @@ builders
   builder  : "Show NBL entries for all patitions"      = debug-show-all-partitions (openeditor) (realtime) (meta)
   builder  : "Clear NBL entries for current partition" = debug-clear-current (meta)
   builder  : "Clear NBL all entries"                   = debug-clear-all (meta)
-  builder  : "Reload all NBL entries"                  = debug-reload (meta)      
+  builder  : "Reload all NBL entries"                  = debug-reload (meta)

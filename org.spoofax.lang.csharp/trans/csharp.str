@@ -19,7 +19,7 @@ rules // Analysis
 	// Main entry point for analyzes, called when a single file is opened in the editor.
   editor-analyze:
     (ast, path, project-path) -> (ast', errors, warnings, notes)
-    with
+    where
       editor-init;
       (ast', entries, tasks, dependent) := <desugar-all; nbl-analyze(|<language>, path, project-path)> ast;
       index-transaction(
@@ -30,6 +30,14 @@ rules // Analysis
       <map(debug(!"Entry: "))> entries;
       <map(debug(!"Tasks: "))> tasks;
       <map(debug(!"Dependency: "))> dependent
+
+  editor-analyze:
+    files -> None()
+    where
+      not(is-tuple)
+    with
+      nbl-analyze-multiple(parse-file; desugar-all|<language>, ".");
+      map(debug(!"Results: "))
 
 rules // Editor services
 
@@ -71,7 +79,8 @@ rules // Debugging
     (selected, position, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|"aterm")> path;
-      result   := <desugar-all> selected
+      result   := <desugar-all> selected;
+      <queue-analysis> $[[project-path]/[path]]
       
   // Prints the analyzed annotated abstract syntax ATerm of a selection.
   debug-generate-analyzed:
