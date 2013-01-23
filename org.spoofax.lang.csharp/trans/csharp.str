@@ -16,15 +16,6 @@ imports
 
 rules // Analysis
   
-  analyze-markers:
-    ast -> (errors, warnings, notes)
-    with
-      index-transaction(
-        errors   := <collect-all(constraint-error, conc)> ast;
-        warnings := <collect-all(constraint-warning, conc)> ast;
-        notes    := <collect-all(constraint-note, conc)> ast
-      )
-  
 	// Main entry point for analyzes, called when a single file is opened in the editor.
   editor-analyze:
     (ast, path, project-path) -> (ast', errors, warnings, notes)
@@ -41,12 +32,22 @@ rules // Analysis
     where
       not(is-tuple)
     with
-      nbl-analyze-multiple(parse-file; desugar-all|<language>, ".");
-      map(update-markers);
-      map(debug(!"Results: "))
+      nbl-analyze-multiple(parse-file; desugar-all|<language>, <project-path>);
+      filter(update-markers)
+
+  analyze-markers:
+    ast -> (errors, warnings, notes)
+    with
+      index-transaction(
+        errors   := <collect-all(constraint-error, conc)> ast;
+        warnings := <collect-all(constraint-warning, conc)> ast;
+        notes    := <collect-all(constraint-note, conc)> ast
+      )
 
   update-markers:
     Result(_, ast, ast', _, _) -> <id>
+    where
+      not(() := ast)
     with
       (errors, warnings, notes) := <analyze-markers> ast';
       <set-markers(|ast)> (ast', errors, warnings, notes)
