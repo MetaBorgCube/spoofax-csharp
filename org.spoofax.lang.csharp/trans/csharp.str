@@ -32,8 +32,7 @@ rules // Analysis
     where
       not(is-tuple)
     with
-      nbl-analyze-multiple(parse-file; desugar-all|<language>, <project-path>);
-      filter(update-markers)
+      queue-strategy(|"analyze-multiple", "Analyzing files")
 
   analyze-markers:
     ast -> (errors, warnings, notes)
@@ -52,6 +51,17 @@ rules // Analysis
       (errors, warnings, notes) := <analyze-markers> ast';
       <set-markers(|ast)> (ast', errors, warnings, notes)
 
+  analyze-multiple:
+    path* -> result*
+    with
+      jobs    := <mul> (<length> path*, 3);
+      <set-total-work-units> jobs;
+      before  := <times>;
+      result* := <nbl-analyze-multiple(parse-file; desugar-all, complete-work-unit|<language>, <project-path>)> path*;
+      filter(update-markers);
+      after   := <times>;
+      <debug(!"Analysis seconds: ")> <Fst> <times-to-seconds> <diff-times> (after, before)
+      
 rules // Editor services
 
   constraint-error:
