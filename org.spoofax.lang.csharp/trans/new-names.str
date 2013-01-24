@@ -411,3 +411,17 @@ rules // Control flow
       Variable()
     ]));
     vdebug(!"leave ")
+    
+rules // Scoping projections
+
+  nbl-scopes = ?(Program(), Namespace())
+  nbl-scopes = ?(Program(), Class())
+  
+  nbl-scopes = ?(Namespace(), Namespace())
+  nbl-scopes = ?(Namespace(), Class())
+  
+  nbl-scopes = ?(Class(), Field())
+  nbl-scopes = ?(Class(), Function())
+
+  nbl-scopes = ?(Function(), Variable())
+  
