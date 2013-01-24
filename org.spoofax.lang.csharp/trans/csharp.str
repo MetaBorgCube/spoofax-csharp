@@ -5,6 +5,7 @@ imports
   libstratego-lib
   libstratego-gpp
   libstratego-aterm
+  libstratego-parallel
   include/CSharp
   lib/editor-common.generated
   lib/index-library.generated
@@ -54,21 +55,18 @@ rules // Analysis
   analyze-multiple:
     path* -> result*
     with
-      <set-total-work-units> <mul> (<length> path*, 4);
+      nbl-analyze-multiple-work-units; set-total-work-units;
       fullPath* := <map(\p -> $[[<project-path>]/[p]]\)> path*;
       measure-time(
-        result* := <nbl-analyze-multiple(parse-file; desugar-all, complete-work-unit|<language>, <project-path>)> fullPath*;
-        filter(update-markers)
+        result* := <nbl-analyze-multiple(parse-file; desugar-all, parallel-unordered, complete-work-unit|<language>, <project-path>); 
+          filter(update-markers)> fullPath*
       ) => <debug(!"Analysis seconds: ")> 
       
   measure-time(s) =
     where(before := <times>);
     s;
     after := <times>;
-    !(after, before);
-    diff-times;
-    times-to-seconds;
-    Fst
+    !(after, before); diff-times; times-to-seconds; Fst
       
 rules // Editor services
 

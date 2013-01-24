@@ -3,9 +3,9 @@ module CSharp-Builders
 imports CSharp-Builders.generated   
 
 builders
-                                                                                                                            
-  provider : include/csharp.ctree                                                                                           
-  provider : include/csharp-java.jar                                                                                        
+  
+  provider : include/csharp-java.jar                                                                                                                          
+  provider : include/csharp.jar                                                                                        
                                                                                                                             
   observer : editor-analyze (multifile)
                                                                                                                             
