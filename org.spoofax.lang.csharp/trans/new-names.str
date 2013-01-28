@@ -18,13 +18,15 @@ signature
 	
 	constructors // Properties
 	  
-	  Type : Property
+	  Type           : Property
+	  ParameterTypes : Property
 	
 rules // Type property
 	
   type-of = fail
   
   calc-property(|elems): (Type(), x) -> <type-of> x
+  calc-property(|elems): (ParameterTypes(), x) -> <map(?Param(<id>, _))> x
 	
 rules // Namespaces
   
@@ -231,10 +233,12 @@ rules // Functions
     vdebug(!"leave ")
     
   nbl-prop-site(|lang, elems, tasks, paths) =
-    ?FunDef(t, x, _);
+    ?FunDef(t, x, p);
     vdebug(!"enter ");
+    where (result := <new-task(|tasks)> PropCalc(ParameterTypes(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
+    , Prop(ParameterTypes(), result)
   	]), id);
     vdebug(!"leave ")
     
@@ -250,10 +254,12 @@ rules // Functions
     vdebug(!"leave ")
     
   nbl-prop-site(|lang, elems, tasks, paths) =
-    ?FunDef(t, x, _, _);
+    ?FunDef(t, x, p, _);
     vdebug(!"enter ");
+    where (result := <new-task(|tasks)> PropCalc(ParameterTypes(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
+    , Prop(ParameterTypes(), result)
   	]), id, id);
     vdebug(!"leave ")
     
