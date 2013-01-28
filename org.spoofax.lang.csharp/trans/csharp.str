@@ -89,7 +89,8 @@ rules // Editor services
     (node, position, ast, path, project-path) -> definition
     where
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-    	definition := <nbl-resolve> node
+    	<nbl-has-reference> node;
+    	definition := <nbl-resolve-collect-one> node
 
   editor-hover:
     (target, position, ast, path, project-path) -> $[Type: [<print-type> type]]

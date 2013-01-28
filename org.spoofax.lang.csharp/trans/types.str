@@ -32,13 +32,13 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-    BoolType() -> Type("Bool"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
+    BoolType() -> <nbl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
   
   type-of:
-    IntType() -> Type("Int"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
+    IntType() -> <nbl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
     
   type-of:
-    StringType() -> Type("String"{<nbl-resolve> Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
+    StringType() -> <nbl-resolve> Type("String"{Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
     
   type-of:
     VoidType() -> VoidType()
@@ -86,16 +86,16 @@ rules // Type projections
     Return(e) -> <type-of> e
   
   type-of:
-    VarRef(f) -> <nbl-resolve; type-of> f
+    VarRef(f) -> <nbl-resolve-collect-one; type-of> f
   
   type-of:
-    FieldAccess(e, f) -> <nbl-resolve; type-of> f
+    FieldAccess(e, f) -> <nbl-resolve-collect-one; type-of> f
     
   type-of:
-    FunCall(e, m, _) -> <nbl-resolve; type-of> m
+    FunCall(e, m, _) -> <nbl-resolve-collect-one; type-of> m
     
   type-of:
-    FunCall(m, _) -> <nbl-resolve; type-of> m
+    FunCall(m, _) -> <nbl-resolve-collect-one; type-of> m
 
   type-of:
   	Add(_, _) -> <type-of> IntType()
@@ -115,7 +115,7 @@ rules // Type projections
     Def(uri) -> <nbl-get-property(|Type()); type-of> uri
     
   type-of:
-    Type(t@_{anno*}) -> <nbl-resolve; type-of> t
+    Type(t@_{anno*}) -> <nbl-resolve-collect-one; type-of> t
     where
       not(<collect-one(?Def(_))> anno*)
     
