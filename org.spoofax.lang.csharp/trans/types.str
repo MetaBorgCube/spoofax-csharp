@@ -42,7 +42,12 @@ rules // Type projections
     
   type-of:
     VoidType() -> VoidType()
-   
+    
+    
+  // Modifiers  
+  type-of:
+    ArrayType(t) -> ArrayType(<type-of> t)
+    
     
   // Definitions
   type-of:
@@ -71,6 +76,9 @@ rules // Type projections
     
   type-of:
     VarDef(t, _, _) -> t
+    
+  type-of:
+    Param(t, _) -> t
   
   
   // Expressions
@@ -88,6 +96,18 @@ rules // Type projections
     
   type-of:
     FunCall(m, _) -> <nbl-resolve; type-of> m
+
+  type-of:
+  	Add(_, _) -> <type-of> IntType()
+  	
+  type-of:
+    Sub(_, _) -> <type-of> IntType()
+    
+  type-of:
+    Mul(_, _) -> <type-of> IntType()
+    
+  type-of:
+    Div(_, _) -> <type-of> IntType()
 
 
   // NBL
@@ -110,7 +130,7 @@ rules // Comparison
     (to-type, from-type) -> to-type
     where
       <eq> (<type-of> from-type, <type-of> to-type)
-    
+
 rules // Utility
 	
   print-type = 

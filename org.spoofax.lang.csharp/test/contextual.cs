@@ -3,7 +3,7 @@
 namespace N {
   class C {
     C f;
-    void m() {}
+    void m(C c) {}
   }
   
   class D {
@@ -22,4 +22,4 @@ namespace N {
       //System.Console.WriteLine(x);
     }
   }
-}
+} 

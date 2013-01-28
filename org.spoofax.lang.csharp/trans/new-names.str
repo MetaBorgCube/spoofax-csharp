@@ -25,8 +25,15 @@ rules // Type property
 	
   type-of = fail
   
-  calc-property(|elems): (Type(), x) -> <type-of> x
-  calc-property(|elems): (ParameterTypes(), x) -> <map(?Param(<id>, _))> x
+  calc-property(|elems): 
+  	(Type(), x) -> <type-of> x
+  	where
+  		not(<is-list> x)
+  		
+  calc-property(|elems): 
+  	(Type(), x) -> <map(type-of)> x
+  	where
+  		<is-list> x
 	
 rules // Namespaces
   
@@ -223,7 +230,6 @@ rules // Fields
 rules // Functions
   
   // FunDef(t, x, _)
-  // TODO: store parameter types
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _);
     vdebug(!"enter ");
@@ -235,7 +241,7 @@ rules // Functions
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, p);
     vdebug(!"enter ");
-    where (result := <new-task(|tasks)> PropCalc(ParameterTypes(), p));
+    where (result := <new-task(|tasks)> PropCalc(Type(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
@@ -244,7 +250,6 @@ rules // Functions
     
   
   // FunDef(t, x, _, _)
-  // TODO: store parameter types
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _, _);
     vdebug(!"enter ");
@@ -256,7 +261,7 @@ rules // Functions
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, p, _);
     vdebug(!"enter ");
-    where (result := <new-task(|tasks)> PropCalc(ParameterTypes(), p));
+    where (result := <new-task(|tasks)> PropCalc(Type(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
@@ -265,14 +270,14 @@ rules // Functions
     
   
   // FunCall(exp, f, _)
-  // TODO: match argument types against parameter types
   nbl-use-site(|lang, elems, tasks, paths, deps) =
-    ?FunCall(e, x, _);
+    ?FunCall(e, x, a);
     vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
     where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FunCall_3", result1));
+    where (result3 := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Function(), [], result2)), 
+      Candidate(Function(), [Prop(ParameterTypes(), result3)], result2)), 
     id);
     vdebug(!"leave ")
     
@@ -282,12 +287,12 @@ rules // Functions
     	Def(uri) := <collect-one(?Def(_))> anno*
   
   // FunCall(x, _)
-  // TODO: match argument types against parameter types
   nbl-use-site(|lang, elems, tasks, paths, deps) =
-    ?FunCall(x, _);
+    ?FunCall(x, a);
     vdebug(!"enter ");
+    where (result := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Function(), [], Current())), 
+      Candidate(Function(), [Prop(ParameterTypes(), result)], Current())), 
     id);
     vdebug(!"leave ")
 
