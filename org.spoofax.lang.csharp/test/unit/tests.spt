@@ -193,12 +193,12 @@ test Duplicate class 1 fails [[
   }
 ]] 2 errors
 
-test Duplicate class 2 should fail [[
+test Duplicate class 2 fails [[
   namespace Tests {
     class B {}
     partial class B {}
   }
-]] 1 errors
+]] 2 errors
 
 test Duplicate partial class allowed [[
   namespace Tests {

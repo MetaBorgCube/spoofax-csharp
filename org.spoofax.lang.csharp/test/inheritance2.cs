@@ -29,6 +29,8 @@ namespace I2 {
 	  C c;
 	  
 	  string foo() {
+	    c.inherited(1);
+	    
 	    return c.inherited("x"); 
 	  }
 	}

@@ -19,12 +19,12 @@ rules // Name binding
   constraint-error:
     node{anno*} -> (node, "Duplicate definition.")
     where
-      duplicateURI* := <nbl-get-duplicate-definitions> node;
-      if Function() := <Hd; nbl-uri-namespace> duplicateURI* then
+      duplicate*    := <nbl-get-duplicate-definitions> node;
+      if Function() := <Hd; nbl-uri; nbl-uri-namespace> duplicate* then
         // For functions, only cause a duplicate definition error if there are multiple functions with the same parameter types.
         definition  := <collect-one(?Def(_))> anno*;
         paramTypes  := <nbl-get-property(|ParameterTypes()); nbl-resolve> definition;
-        paramTypes* := <map(nbl-get-property(|ParameterTypes())); nbl-resolve; collect-all(?paramTypes, conc)> duplicateURI*;
+        paramTypes* := <map(nbl-get-property(|ParameterTypes())); nbl-resolve; collect-all(?paramTypes, conc)> duplicate*;
         <gt> (<length> paramTypes*, 1)
       end
       

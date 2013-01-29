@@ -7,3 +7,19 @@ namespace Duplicate {
     
   }
 }
+
+namespace Duplicate2 {
+  partial class A {
+    
+  }
+  
+  class A {
+    
+  }
+}
+
+namespace NoDuplicate {
+  class A {
+    
+  }
+}
