@@ -70,21 +70,6 @@ rules // Analysis
       
 rules // Editor services
 
-  constraint-error:
-    node -> (node, "Unresolved reference.")
-    where
-      nbl-is-unresolved
-      
-  constraint-error:
-    node -> (node, "Duplicate definition.")
-    where
-      nbl-is-duplicate-definition
-      
-  constraint-error:
-    node -> (node, $[Ambiguous, could be from [<map(nbl-print-uri); separate-by(|", "); concat-strings> ambiguity*]])
-    where
-      ambiguity* := <nbl-get-ambiguities> node
-
   editor-resolve:
     (node, position, ast, path, project-path) -> definition
     where
