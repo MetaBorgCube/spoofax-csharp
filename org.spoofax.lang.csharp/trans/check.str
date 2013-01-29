@@ -29,9 +29,11 @@ rules // Name binding
       end
       
   constraint-error:
-    node -> (node, $[Ambiguous, could be from [<map(nbl-print-uri); separate-by(|", "); concat-strings> ambiguity*]])
+    node -> (node, $[Ambiguous, could be from [<map(nbl-print-uri); separate-by(|", "); concat-strings> ambiguity'*]])
     where
-      ambiguity* := <nbl-get-ambiguities> node
+      ambiguity*  := <nbl-get-ambiguities> node;
+      ambiguity'* := <filter(where(nbl-uri-namespace; ?Namespace()))> ambiguity*;
+      <gt> (<length> ambiguity'*, 1)
 
 rules // Types
   
