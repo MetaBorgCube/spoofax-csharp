@@ -18,7 +18,7 @@ namespace N {
         print(x);
     }
     
-    void print(int x) {
+    void print(int[] x) {
       //System.Console.WriteLine(x);
     }
   }

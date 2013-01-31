@@ -46,8 +46,10 @@ rules // Type projections
     
   // Modifiers  
   type-of:
-    ArrayType(t) -> ArrayType(<type-of> t)
-    
+    ArrayType(t) -> Type(ArrayType(type))
+    where
+      Type(type) := <type-of> t
+      
     
   // Definitions
   type-of:

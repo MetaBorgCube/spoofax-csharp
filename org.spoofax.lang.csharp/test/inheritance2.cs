@@ -3,6 +3,10 @@ namespace I2 {
 	  int inherited() {
 	    return 1;
 	  }
+	  
+    int inherited(int x) { 
+      return x + 1;
+    }
 	} 
 	
 	partial class B : A {

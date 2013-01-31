@@ -49,13 +49,13 @@ test Resolve property access fails [[
       A a;
       
       int b() {
-        return a.p.x;
+        return a.p.[[x]];
       }
     }
   }
 ]] 1 error 
 
-test Resolve function call [[
+test Resolve function call 1 [[
   namespace Tests {
 	  partial class P {
 	    string Geta() { return a; }
@@ -71,17 +71,52 @@ test Resolve function call [[
   }
 ]]
 
-test Resolve function call fails [[
+test Resolve function call 2 [[
+  namespace Tests {
+    partial class P {
+      string Geta(P p, int i, string s) { return a; }
+    }
+    
+    class B {
+      P p;
+      
+      string f() {
+        return p.Geta(p, 1, "hello");
+      }
+    }
+  }
+]]
+
+test Resolve function call fails 1 [[
   namespace Tests {
     class B {
       P p;
       
       string f() {
-        return p.Geta();
+        return p.[[Geta]]();
       }
     }
   }
 ]] 1 error
+
+test Resolve function call fails 2 [[
+  namespace Tests {
+    partial class P {
+      string Geta(P p, int i, string s) { return a; }
+    }
+    
+    class B {
+      P p;
+      
+      string f() {
+        return p.[[Geta]]();
+        return p.[[Geta]](p, 1);
+        return p.[[Geta]](p, 1, 2);
+        return p.[[Geta]](p, 1, "hello", 4);
+      }
+    }
+  }
+]] 4 errors
 
 test Resolve type [[
   namespace Tests {
@@ -94,7 +129,7 @@ test Resolve type [[
 test Resolve type fails 1 [[
   namespace Tests {
     class B {
-      Q q;
+      [[Q]] q;
     }
   }
 ]] 1 error
@@ -102,7 +137,7 @@ test Resolve type fails 1 [[
 test Resolve type fails 2 [[
   namespace NOTTests {
     class B {
-      P p;
+      [[P]] p;
     }
   }
 ]] 1 error
@@ -131,7 +166,7 @@ test Unexpected return type 1 [[
       A a;
       
       int getA() {
-        return a;
+        [[return a]];
       }
     }
   }
@@ -148,7 +183,7 @@ test Unexpected return type 2 [[
       A a;
       
       int getA() {
-        return a.p.getA();
+        [[return a.p.getA()]];
       }
     }
   }
@@ -160,9 +195,9 @@ test Unexpected return types [[
       A a;
       
       int getA() {
-        return a;
-        return a.p;
-        return a.p.a;
+        [[return a]];
+        [[return a.p]];
+        [[return a.p.a]];
       }
     }
   }
@@ -179,7 +214,7 @@ test No return in void method [[
 test No return in non-void method fails [[
   namespace Tests {
     class B {
-      int getA() {
+      [[int]] getA() {
         
       }
     }
@@ -188,15 +223,15 @@ test No return in non-void method fails [[
 
 test Duplicate class 1 fails [[
   namespace Tests {
-    class B {}
-    class B {}
+    [[class B {}]]
+    [[class B {}]]
   }
 ]] 2 errors
 
 test Duplicate class 2 fails [[
   namespace Tests {
-    class B {}
-    partial class B {}
+    [[class B {}]]
+    [[partial class B {}]]
   }
 ]] 2 errors
 
@@ -209,15 +244,15 @@ test Duplicate partial class allowed [[
 
 test Duplicate property fails [[
   class B {
-    B b;
-    B b;
+    [[B b]];
+    [[B b]];
   }
 ]] 2 errors
 
 test Duplicate method fails [[
   class B {
-    void f() {}
-    void f() {}
+    [[void f() {}]]
+    [[void f() {}]]
   }
 ]] 2 errors
 
