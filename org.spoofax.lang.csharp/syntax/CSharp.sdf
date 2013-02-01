@@ -48,7 +48,8 @@ exports
     "return" Exp ";"                                    -> Stm {"Return", prefer}
     Type ID ";"                                         -> Stm {"VarDef"}
     Type ID "=" Exp ";"                                 -> Stm {"VarDef"}
-    ID "=" Exp ";"                                      -> Stm {"Assign"}
+    "var" ID "=" Exp ";"                                -> Stm {"InferredVarDef", prefer}
+    VarRef "=" Exp ";"                                  -> Stm {"Assign"}
     "if" "(" Exp ")" Block                              -> Stm {"If"}
     "if" "(" Exp ")" Block "else" Block                 -> Stm {"IfElse"}
     "for" "(" Type ID "=" Exp ";" Exp ";" Stm ")" Block -> Stm {"For"}
@@ -61,7 +62,8 @@ exports
     "false"     -> Exp {"False", prefer}
     INT         -> Exp {"IntLit"}
     STRING      -> Exp {"StrLit"}
-    ID          -> Exp {"VarRef"}
+    ID          -> VarRef {"VarRef"}
+    VarRef      -> Exp
     FunCall     -> Exp
     FieldAccess -> Exp
     "this" -> Exp {"This", prefer}

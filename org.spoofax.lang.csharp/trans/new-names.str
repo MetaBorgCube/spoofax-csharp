@@ -433,6 +433,25 @@ rules // Variable
   	]));
     vdebug(!"leave ")
     
+    
+  // InferredVarDef(x, e)
+  nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+    ?InferredVarDef(x, e);
+    vdebug(!"enter ");
+    InferredVarDef(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
+      Variable(), <nbl-unique-qualifier>, [Subsequent()], []
+    ), id);
+    vdebug(!"leave ")
+    
+  nbl-prop-site(|lang, elems, tasks, paths) =
+    ?InferredVarDef(x, e);
+    vdebug(!"enter ");
+    where (result := <new-task(|tasks)> PropCalc(Type(), e));
+    InferredVarDef(nbl-props(|lang, elems, tasks, [
+      Prop(Type(), result)
+    ]), id);
+    vdebug(!"leave ")
+    
   
   // VarRef(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
@@ -442,17 +461,6 @@ rules // Variable
     	Candidate(Variable(), [], Current()), 
     	Candidate(Field(), [], Current())
   	]));
-    vdebug(!"leave ")
-  
-  
-  // Assign(x, _)
-  nbl-use-site(|lang, elems, tasks, paths, deps) =
-    ?Assign(x, _);
-    vdebug(!"enter ");
-    Assign(nbl-use(|lang, elems, tasks, paths, deps, [
-    	Candidate(Variable(), [], Current()), 
-    	Candidate(Field(), [], Current())
-  	]), id);
     vdebug(!"leave ")
 
 rules // Control flow

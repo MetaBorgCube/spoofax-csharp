@@ -36,6 +36,7 @@
    Return                   -- KW["return"] _1 KW[";"],
    VarDef                   -- _1 _2 KW[";"],
    VarDef                   -- _1 _2 KW["="] _3 KW[";"],
+   InferredVarDef           -- KW["var"] _1 KW["="] _2 KW[";"],
    Assign                   -- _1 KW["="] _2 KW[";"],
    If                       -- KW["if"] KW["("] _1 KW[")"] _2,
    IfElse                   -- KW["if"] KW["("] _1 KW[")"] _2 KW["else"] _3,

@@ -78,6 +78,9 @@ rules // Type projections
     VarDef(t, _, _) -> t
     
   type-of:
+    InferredVarDef(_, e) -> <type-of> e
+    
+  type-of:
     Param(t, _) -> t
   
   
@@ -125,6 +128,9 @@ rules // Type projections
     
   type-of:
     URI(_, _) -> <nbl-get-property(|Type()); type-of>
+   
+  type-of:
+    Result(_) -> <nbl-resolve-results>
     
   type-of:
     Type(t@_{anno*}) -> <nbl-resolve-collect-one; type-of> t

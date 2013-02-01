@@ -8,6 +8,7 @@ namespace ImplicitDef {
 	class B : A {
 	  void test() {
 	    super.test();
+	    this.test();
 	  }
 	}
 }
