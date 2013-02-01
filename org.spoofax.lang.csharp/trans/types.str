@@ -96,6 +96,12 @@ rules // Type projections
     
   type-of:
     FunCall(m, _) -> <nbl-resolve-collect-one; type-of> m
+    
+  type-of:
+    This() -> <nbl-resolve-collect-one; type-of> 
+    
+  type-of:
+    Super() -> <nbl-resolve-collect-one; type-of> 
 
   type-of:
   	Add(_, _) -> <type-of> IntType()
@@ -112,7 +118,13 @@ rules // Type projections
 
   // NBL
   type-of:
+  	[_|_] -> <map(type-of)>
+  	
+  type-of:
     Def(uri) -> <nbl-get-property(|Type()); type-of> uri
+    
+  type-of:
+    URI(_, _) -> <nbl-get-property(|Type()); type-of>
     
   type-of:
     Type(t@_{anno*}) -> <nbl-resolve-collect-one; type-of> t

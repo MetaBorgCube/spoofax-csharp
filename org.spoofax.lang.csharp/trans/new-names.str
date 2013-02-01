@@ -80,7 +80,7 @@ rules // Classes
 		  Class(), <nbl-unique-qualifier>, [Current()], [Field(), Function()]), 
 	  id);
 		vdebug(!"leave ")
-	
+
 	nbl-prop-site(|lang, elems, tasks, paths) =
 		?Class(x, _);
 		vdebug(!"enter ");
@@ -89,6 +89,14 @@ rules // Classes
 		]), id);
 		vdebug(!"leave ")
 		
+  nbl-implicit-def-site(|lang, elems, tasks, paths) =
+    ?Class(x, _);
+    vdebug(!"enter ");
+    Class(nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+    ]), id);
+    vdebug(!"leave ")
+    
 		
 	// Class(x, y, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
@@ -127,6 +135,17 @@ rules // Classes
       ]
     ), id);
     vdebug(!"leave ")
+    
+  nbl-implicit-def-site(|lang, elems, tasks, paths) =
+    ?Class(x, y, _);
+    vdebug(!"enter ");
+    Class(nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+    ]), nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
+    ]), id);
+    vdebug(!"leave ")
+
   
   // PartialClass(x, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
@@ -143,6 +162,14 @@ rules // Classes
     PartialClass(nbl-props(|lang, elems, tasks, [
     	Prop(Type(), Type(x))
   	]), id);
+    vdebug(!"leave ")
+    
+  nbl-implicit-def-site(|lang, elems, tasks, paths) =
+    ?PartialClass(x, _);
+    vdebug(!"enter ");
+    Class(nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+    ]), id);
     vdebug(!"leave ")
     
     
@@ -183,6 +210,17 @@ rules // Classes
       ]
     ), id);
     vdebug(!"leave ")
+    
+  nbl-implicit-def-site(|lang, elems, tasks, paths) =
+    ?PartialClass(x, y, _);
+    vdebug(!"enter ");
+    Class(nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+    ]), nbl-implicit-def(|lang, elems, tasks, paths, [
+      Candidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
+    ]), id);
+    vdebug(!"leave ")
+
     	
 	// Type(c)
 	nbl-use-site(|lang, elems, tasks, paths, deps) =
@@ -193,8 +231,50 @@ rules // Classes
 	  ));
 		vdebug(!"leave ")
 		
+		
+  // This()
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?This();
+    vdebug(!"enter ");
+    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "this", []));
+    where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
+    where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_This_0", result2));
+    nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Class(), result3, [], Current())
+    );
+    vdebug(!"leave ")
+
+  match-term:
+  	// The name is required here instead of the URI, because we are looking up a name that is produced by a type lookup.
+    ("nbl-use-site_match_This_0", types) -> <nbl-uri-name> uri
+    where
+    	// A resolve task returns a list of URI's (result1), so when the type is calculated (result2) a list of types is
+    	// returned as well. So the first type in the list is taken.
+    	<fetch-elem(?Type(_{anno*}))> types;
+      Def(uri) := <collect-one(?Def(_))> anno*
+      
+      
+  // Super()
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?Super();
+    vdebug(!"enter ");
+    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "super", []));
+    where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
+    where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_Super_0", result2));
+    nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Class(), result3, [], Current())
+    );
+    vdebug(!"leave ")
+
+  match-term:
+    ("nbl-use-site_match_Super_0", types) -> <nbl-uri-name> uri
+    where
+      <fetch-elem(?Type(_{anno*}))> types;
+      Def(uri) := <collect-one(?Def(_))> anno*
+		
 rules // Fields
 	
+	// FieldDef(t, x)
 	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
 		?FieldDef(t, x);
 		vdebug(!"enter ");
@@ -210,8 +290,9 @@ rules // Fields
       Prop(Type(), t)
     ]));
     vdebug(!"leave ")
+
     
-  // FieldAccess(exp, f)
+  // FieldAccess(e, f)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FieldAccess(e, f);
     vdebug(!"enter ");
@@ -269,7 +350,7 @@ rules // Functions
     vdebug(!"leave ")
     
   
-  // FunCall(exp, f, _)
+  // FunCall(e, f, a)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FunCall(e, x, a);
     vdebug(!"enter ");
@@ -286,7 +367,8 @@ rules // Functions
     where
     	Def(uri) := <collect-one(?Def(_))> anno*
   
-  // FunCall(x, _)
+  
+  // FunCall(x, a)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FunCall(x, a);
     vdebug(!"enter ");

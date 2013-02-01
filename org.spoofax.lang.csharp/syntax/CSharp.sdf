@@ -65,6 +65,7 @@ exports
     FunCall     -> Exp
     FieldAccess -> Exp
     "this" -> Exp {"This", prefer}
+    "super" -> Exp {"Super", prefer}
     
     Exp "+" Exp  -> Exp {"Add", prefer}
     Exp "-" Exp  -> Exp {"Sub", prefer}

@@ -47,6 +47,7 @@
    StrLit                   -- _1,
    VarRef                   -- _1,
    This                     -- KW["this"],
+   Super                    -- KW["super"],
    Add                      -- _1 KW["+"] _2,
    Sub                      -- _1 KW["-"] _2,
    Mul                      -- _1 KW["*"] _2,
