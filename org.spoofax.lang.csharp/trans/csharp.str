@@ -34,6 +34,12 @@ rules // Analysis
       not(is-tuple)
     with
       queue-strategy(|"analyze-multiple", "Analyzing files")
+      
+  editor-save:
+  	(_, _, _, path, project-path) -> None()
+  	with
+  		index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+  		index-commit
 
   analyze-markers:
     ast -> (errors, warnings, notes)
@@ -60,7 +66,8 @@ rules // Analysis
       measure-time(
         result* := <nbl-analyze-multiple(parse-file; desugar-all, parallel-unordered, complete-work-unit|<language>, <project-path>); 
           filter(update-markers)> fullPath*
-      ) => <debug(!"Analysis seconds: ")> 
+      ) => <debug(!"Analysis seconds: ")>;
+      index-commit
       
   measure-time(s) =
     where(before := <times>);

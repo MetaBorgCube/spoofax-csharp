@@ -17,3 +17,5 @@ builders
   builder  : "Clear NBL entries for current partition" = debug-clear-current (meta)
   builder  : "Clear NBL all entries"                   = debug-clear-all (meta)
   builder  : "Reload all NBL entries"                  = debug-reload (meta)
+  
+  on save  : editor-save
