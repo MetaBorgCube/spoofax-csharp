@@ -1,5 +1,4 @@
-using A.B; //[Segment(A), Segment(B)]
-using A;
+using A.B;
 
 namespace A {
   namespace B {

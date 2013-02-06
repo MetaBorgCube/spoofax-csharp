@@ -3,9 +3,9 @@ namespace Simple {
 	  A a;
 	  A ab;
 	  A abc;
-	  
+	   
 	  A bla() {
-	    return a.a.abc.lol(); 
+	    return a.ab.abc.lol(); 
 	  }
 	}
 	
@@ -14,4 +14,4 @@ namespace Simple {
       return a;
     }
 	}
-}  
+}

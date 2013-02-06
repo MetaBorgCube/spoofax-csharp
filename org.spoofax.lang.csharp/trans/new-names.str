@@ -34,6 +34,9 @@ rules // Type property
   	(Type(), x) -> <map(type-of)> x
   	where
   		<is-list> x
+  		
+  match-term: 
+    ("Hd", list) -> <Hd> list
 	
 rules // Namespaces
   
@@ -47,6 +50,18 @@ rules // Namespaces
     vdebug(!"leave ")
 	
 	
+	// Using(x)
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
+    ?Using(x);
+    vdebug(!"enter ");
+    Using(nbl-import(deps'|lang, elems, tasks, paths, deps, 
+      Namespace(), [
+        Import(lang, Class())
+      ])
+    );
+    vdebug(!"leave ")
+	
+	
 	// UsingPart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
@@ -56,19 +71,16 @@ rules // Namespaces
     ));
     vdebug(!"leave ")	
     
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
-    ?UsingPart(x);
+
+	// UsingPart(u, x)
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?UsingPart(u, x);
     vdebug(!"enter ");
-    UsingPart(nbl-import(deps'|lang, elems, tasks, paths, deps, 
-      Namespace(), [
-        Import(lang, Class())
-      ])
-    );
+    where (result := <new-task(|tasks)> Match("Hd", <nbl-name; get-annos; collect-one(?Use(<id>))> u));
+    UsingPart(id, nbl-use(|lang, elems, tasks, paths, deps,
+      Candidate(Namespace(), [], result)
+    ));
     vdebug(!"leave ")
-    
-	
-	// TODO: UsingPart(u, x)
-	
 	
 rules // Classes
 	
@@ -512,6 +524,14 @@ rules // Control flow
       Variable()
     ]));
     vdebug(!"leave ")
+
+rules // Name projections
+  
+  nbl-name:
+    UsingPart(q, x) -> x
+    
+  nbl-name:
+    UsingPart(x) -> x
     
 rules // Scoping projections
 
