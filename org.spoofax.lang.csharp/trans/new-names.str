@@ -35,6 +35,8 @@ rules // Type property
   	where
   		<is-list> x
   		
+rules // Generic matches
+	
   match-term: 
     ("Hd", list) -> <Hd> list
 	
@@ -67,7 +69,7 @@ rules // Namespaces
     ?UsingPart(x);
     vdebug(!"enter ");
     UsingPart(nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Namespace(), [], Current())
+      UseCandidate(Namespace(), [], Current(), All())
     ));
     vdebug(!"leave ")	
     
@@ -78,7 +80,7 @@ rules // Namespaces
     vdebug(!"enter ");
     where (result := <new-task(|tasks)> Match("Hd", <nbl-name; get-annos; collect-one(?Use(<id>))> u));
     UsingPart(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Namespace(), [], result)
+      UseCandidate(Namespace(), [], result, One())
     ));
     vdebug(!"leave ")
 	
@@ -105,7 +107,7 @@ rules // Classes
     ?Class(x, _);
     vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+      IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), id);
     vdebug(!"leave ")
     
@@ -131,7 +133,7 @@ rules // Classes
     ?Class(x, y, _);
     vdebug(!"enter ");
     Class(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Class(), [], Current())), 
+      UseCandidate(Class(), [], Current(), All())), 
     id);
     vdebug(!"leave ")
     
@@ -152,9 +154,9 @@ rules // Classes
     ?Class(x, y, _);
     vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+      IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
+      IDefCandidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
     ]), id);
     vdebug(!"leave ")
 
@@ -180,7 +182,7 @@ rules // Classes
     ?PartialClass(x, _);
     vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+      IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), id);
     vdebug(!"leave ")
     
@@ -206,7 +208,7 @@ rules // Classes
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
     PartialClass(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Class(), [], Current())), 
+      UseCandidate(Class(), [], Current(), All())), 
     id);
     vdebug(!"leave ")
   
@@ -227,9 +229,9 @@ rules // Classes
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
+      IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), nbl-implicit-def(|lang, elems, tasks, paths, [
-      Candidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
+      IDefCandidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
     ]), id);
     vdebug(!"leave ")
 
@@ -239,7 +241,7 @@ rules // Classes
 		?Type(c);
 		vdebug(!"enter ");
 		Type(nbl-use(|lang, elems, tasks, paths, deps,
-		  Candidate(Class(), [], Current())
+		  UseCandidate(Class(), [], Current(), All())
 	  ));
 		vdebug(!"leave ")
 		
@@ -248,11 +250,11 @@ rules // Classes
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?This();
     vdebug(!"enter ");
-    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "this", []));
+    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "this", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_This_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Class(), result3, [], Current())
+      UseCandidate(Class(), result3, [], Current(), One())
     );
     vdebug(!"leave ")
 
@@ -270,11 +272,11 @@ rules // Classes
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Super();
     vdebug(!"enter ");
-    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "super", []));
+    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "super", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_Super_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Class(), result3, [], Current())
+      UseCandidate(Class(), result3, [], Current(), One())
     );
     vdebug(!"leave ")
 
@@ -311,7 +313,7 @@ rules // Fields
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
     where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FieldAccess_2", result1));
     FieldAccess(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Field(), [], result2)
+      UseCandidate(Field(), [], result2, One())
     ));
     vdebug(!"leave ")
     
@@ -370,7 +372,7 @@ rules // Functions
     where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FunCall_3", result1));
     where (result3 := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(id, nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Function(), [Prop(ParameterTypes(), result3)], result2)), 
+      UseCandidate(Function(), [Prop(ParameterTypes(), result3)], result2, One())), 
     id);
     vdebug(!"leave ")
     
@@ -386,7 +388,7 @@ rules // Functions
     vdebug(!"enter ");
     where (result := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(nbl-use(|lang, elems, tasks, paths, deps,
-      Candidate(Function(), [Prop(ParameterTypes(), result)], Current())), 
+      UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())), 
     id);
     vdebug(!"leave ")
 
@@ -470,8 +472,8 @@ rules // Variable
     ?VarRef(x);
     vdebug(!"enter ");
     VarRef(nbl-use(|lang, elems, tasks, paths, deps, [
-    	Candidate(Variable(), [], Current()), 
-    	Candidate(Field(), [], Current())
+    	UseCandidate(Variable(), [], Current(), All()), 
+    	UseCandidate(Field(), [], Current(), All())
   	]));
     vdebug(!"leave ")
 
