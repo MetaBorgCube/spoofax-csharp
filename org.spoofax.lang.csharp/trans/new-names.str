@@ -53,21 +53,16 @@ rules // Namespaces
 	
 	
 	// Using(x)
-  nbl-import-site(|lang, elems, tasks, paths, deps) =
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
     ?Using(x);
     vdebug(!"enter ");
-    Using(nbl-import(|lang, elems, tasks, paths, 
+    Using(nbl-import(deps'|lang, elems, tasks, paths, deps, 
       Namespace(), [
         Import(lang, Class())
       ])
     );
     vdebug(!"leave ")
-    
-  nbl-import-dependency-site(deps'|lang, elems, tasks, paths, deps) =
-    ?Using(x);
-    vdebug(!"enter ");
-    Using(nbl-import-dependency(deps'|lang, elems, tasks, paths, deps));
-    vdebug(!"leave ")
+	
 	
 	// UsingPart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
@@ -142,10 +137,10 @@ rules // Classes
     id);
     vdebug(!"leave ")
     
-  nbl-import-site(|lang, elems, tasks, paths, deps) =
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(id, nbl-import(|lang, elems, tasks, paths, 
+    Class(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
       Class(), [
 	    	Import(lang, Field()), 
 	      Import(lang, Imported(Field())), 
@@ -153,12 +148,6 @@ rules // Classes
 	      Import(lang, Imported(Function()))
       ]
     ), id);
-    vdebug(!"leave ")
-    
-  nbl-import-dependency-site(deps'|lang, elems, tasks, paths, deps) =
-    ?Class(x, y, _);
-    vdebug(!"enter ");
-    Class(id, nbl-import-dependency(deps'|lang, elems, tasks, paths, deps), id);
     vdebug(!"leave ")
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
@@ -223,10 +212,10 @@ rules // Classes
     id);
     vdebug(!"leave ")
   
-  nbl-import-site(|lang, elems, tasks, paths, deps) =
+  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(id, nbl-import(|lang, elems, tasks, paths, 
+    PartialClass(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
       Class(), [
 	      Import(lang, Field()), 
 	      Import(lang, Imported(Field())), 
@@ -234,12 +223,6 @@ rules // Classes
 	      Import(lang, Imported(Function()))
       ]
     ), id);
-    vdebug(!"leave ")
-    
-  nbl-import-dependency-site(deps'|lang, elems, tasks, paths, deps) =
-    ?PartialClass(x, y, _);
-    vdebug(!"enter ");
-    PartialClass(id, nbl-import-dependency(deps'|lang, elems, tasks, paths, deps), id);
     vdebug(!"leave ")
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
