@@ -67,6 +67,7 @@ rules // Namespaces
     Using(nbl-import-dependency);
     vdebug(!"leave ")
 
+
 	// UsingPart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
@@ -245,15 +246,30 @@ rules // Classes
     vdebug(!"enter ");
     PartialClass(id, nbl-import-dependency, id);
     vdebug(!"leave ")
-    	
-	// Type(c)
-	nbl-use-site(|lang, elems, tasks, paths, deps) =
-		?Type(c);
-		vdebug(!"enter ");
-		Type(nbl-use(|lang, elems, tasks, paths, deps,
-		  UseCandidate(Class(), [], Current(), All())
-	  ));
-		vdebug(!"leave ")
+
+
+  // TypePart(x)
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?TypePart(x);
+    vdebug(!"enter ");
+    TypePart(nbl-use(|lang, elems, tasks, paths, deps, [
+      UseCandidate(Namespace(), [], Current(), One())
+    , UseCandidate(Class(), [], Current(), One())
+    ]));
+    vdebug(!"leave ") 
+    
+
+  // TypePart(q, x)
+  nbl-use-site(|lang, elems, tasks, paths, deps) =
+    ?TypePart(q, x);
+    vdebug(!"enter ");
+    // TODO: Can't just take the head, need to get the result that actually succeeds..
+    where (result := <new-task(|tasks)> Match("Hd", <nbl-name; get-annos; collect-one(?Use(<id>))> q));
+    TypePart(id, nbl-use(|lang, elems, tasks, paths, deps, [
+      UseCandidate(Namespace(), [], result, One())
+    , UseCandidate(Class(), [], result, One())
+    ]));
+    vdebug(!"leave ")
 		
 		
   // This()
@@ -550,6 +566,18 @@ rules // Name projections
     
   nbl-name-apply(s):
     UsingPart(x) -> UsingPart(<s> x)
+    
+  nbl-name:
+    TypePart(q, x) -> x
+
+  nbl-name-apply(s):
+    TypePart(q, x) -> TypePart(q, <s> x)
+    
+  nbl-name:
+    TypePart(x) -> x
+    
+  nbl-name-apply(s):
+    TypePart(x) -> TypePart(<s> x)
     
 rules // Scoping projections
 

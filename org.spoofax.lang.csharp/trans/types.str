@@ -82,7 +82,18 @@ rules // Type projections
     
   type-of:
     Param(t, _) -> t
-  
+    
+ 
+  // Type expressions
+  type-of:
+    TypeExp(t) -> <type-of> t
+    
+  type-of:
+    TypePart(t) -> <nbl-resolve-collect-one; type-of> t
+
+  type-of:
+    TypePart(_, t) -> <nbl-resolve-collect-one; type-of> t    
+
   
   // Expressions
   type-of:

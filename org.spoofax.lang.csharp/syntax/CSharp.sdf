@@ -32,13 +32,17 @@ exports
     MethodReturnType ID "(" {Param ","}* ")" ";"					-> InterfaceBodyDecl {"FunDef"}
     
     %% Types
-    ID           -> Type {"Type"}
-    "void"       -> MethodReturnType {"VoidType", prefer}
+    TypePart        -> Type {"TypeExp"}
+    ID              -> TypePart {"TypePart"}
+    TypePart "." ID -> TypePart {"TypePart"}
+    
+    Type "[" "]" -> Type {"ArrayType"}
     "bool"       -> Type {ast("Type(\"Bool\")"), prefer}
     "int"        -> Type {ast("Type(\"Int\")"), prefer}
     "string"     -> Type {ast("Type(\"String\")"), prefer}
+    
+    "void"       -> MethodReturnType {"VoidType", prefer}
     Type         -> MethodReturnType
-    Type "[" "]" -> Type {"ArrayType"}
     
     %% Statements & Expressions
     ID "(" {Exp ","}* ")"         -> FunCall {"FunCall"}
