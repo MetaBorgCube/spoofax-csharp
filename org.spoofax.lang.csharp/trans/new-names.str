@@ -24,260 +24,199 @@ signature
 	
 rules // Type property
 	
-  type-of = fail
-  
-  calc-property(|elems): 
+  calc-property: 
   	(Type(), x) -> <type-of> x
-  	where
-  		not(<is-list> x)
-  		
-  calc-property(|elems): 
-  	(Type(), x) -> <map(type-of)> x
-  	where
-  		<is-list> x
 	
 rules // Namespaces
   
   // Namespace(x, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Namespace(x, _);
-    vdebug(!"enter ");
     Namespace(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Namespace(), <nbl-nonunique-qualifier>, [Current()], [Namespace(), Class()]), 
-    id);
-    vdebug(!"leave ")
+    id)
 	
 	
 	// Using(x)
   nbl-import-site(|lang, elems, tasks, paths) =
     ?Using(x);
-    vdebug(!"enter ");
     Using(nbl-import(|lang, elems, tasks, paths, [
       Import(lang, Class())
-    ]));
-    vdebug(!"leave ")
+    ]))
 	
   nbl-import-dependency-site = 
     ?Using(x);
-    vdebug(!"enter ");
-    Using(nbl-import-dependency);
-    vdebug(!"leave ")
+    Using(nbl-import-dependency)
 
 
 	// UsingPart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
-    vdebug(!"enter ");
     UsingPart(nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Namespace(), [], Current(), All())
-    ));
-    vdebug(!"leave ")	
+    ))	
     
 
 	// UsingPart(u, x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(u, x);
-    vdebug(!"enter ");
     where (target-uri* := <nbl-collect-all-use; map(nbl-uri)> u);
     UsingPart(id, nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Namespace(), [], target-uri*, One())
-    ));
-    vdebug(!"leave ")
+    ))
 	
 rules // Classes
 	
 	// Class(x, _)
 	nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
 		?Class(x, _);
-		vdebug(!"enter ");
 		Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
 		  Class(), <nbl-unique-qualifier>, [Current()], [Field(), Function()]), 
-	  id);
-		vdebug(!"leave ")
+	  id)
 
 	nbl-prop-site(|lang, elems, tasks, paths) =
 		?Class(x, _);
-		vdebug(!"enter ");
 		Class(nbl-props(|lang, elems, tasks, [
 			Prop(Type(), Type(x))
-		]), id);
-		vdebug(!"leave ")
+		]), id)
 		
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
     ?Class(x, _);
-    vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
     
 		
 	// Class(x, y, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Class(x, y, _);
-    vdebug(!"enter ");
     Class(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Class(), <nbl-unique-qualifier>, [Current()], [Field(), Function()]), 
-    id, id);
-    vdebug(!"leave ")
+    id, id)
   
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
-    vdebug(!"enter ");
     Class(nbl-props(|lang, elems, tasks, [
     	Prop(Type(), Type(x))
-  	]), id, id);
-    vdebug(!"leave ")
+  	]), id, id)
     
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Class(x, y, _);
-    vdebug(!"enter ");
     Class(id, nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Class(), [], Current(), All())), 
-    id);
-    vdebug(!"leave ")
+    id)
     
   nbl-import-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
-    vdebug(!"enter ");
     Class(id, nbl-import(|lang, elems, tasks, paths, [
     	Import(lang, Field()), 
       Import(lang, Imported(Field())), 
       Import(lang, Function()), 
       Import(lang, Imported(Function()))
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
     
   nbl-import-dependency-site = 
     ?Class(x, y, _);
-    vdebug(!"enter ");
-    Class(id, nbl-import-dependency, id);
-    vdebug(!"leave ")
+    Class(id, nbl-import-dependency, id)
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
-    vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
 
   
   // PartialClass(x, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, _);
-    vdebug(!"enter ");
     PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Class(), <nbl-nonunique-qualifier>, [Current()], [Field(), Function()]),
-    id);
-    vdebug(!"leave ")
+    id)
   
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, _);
-    vdebug(!"enter ");
     PartialClass(nbl-props(|lang, elems, tasks, [
     	Prop(Type(), Type(x))
-  	]), id);
-    vdebug(!"leave ")
+  	]), id)
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, _);
-    vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
     
     
   // PartialClass(x, y, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
     PartialClass(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Class(), <nbl-nonunique-qualifier>, [Current()], [Field(), Function()]), 
-    id, id);
-    vdebug(!"leave ")
+    id, id)
   
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
     PartialClass(nbl-props(|lang, elems, tasks, [
     	Prop(Type(), Type(x))]), 
-  	id, id);
-    vdebug(!"leave ")
+  	id, id)
     	
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
     PartialClass(id, nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Class(), [], Current(), All())), 
-    id);
-    vdebug(!"leave ")
+    id)
   
   nbl-import-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
     PartialClass(id, nbl-import(|lang, elems, tasks, paths, [
       Import(lang, Field()), 
       Import(lang, Imported(Field())), 
       Import(lang, Function()), 
       Import(lang, Imported(Function()))
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
     Class(nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "this", <nbl-unique-qualifier>, [Prop(Type(), Type(x))])
     ]), nbl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "super", <nbl-unique-qualifier>, [Prop(Type(), Type(y))])
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
 
   nbl-import-dependency-site = 
     ?PartialClass(x, y, _);
-    vdebug(!"enter ");
-    PartialClass(id, nbl-import-dependency, id);
-    vdebug(!"leave ")
+    PartialClass(id, nbl-import-dependency, id)
 
 
   // TypePart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?TypePart(x);
-    vdebug(!"enter ");
     TypePart(nbl-use(|lang, elems, tasks, paths, deps, [
       UseCandidate(Namespace(), [], Current(), All())
     , UseCandidate(Class(), [], Current(), All())
-    ]));
-    vdebug(!"leave ") 
+    ])) 
     
 
   // TypePart(q, x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?TypePart(q, x);
-    vdebug(!"enter ");
     where (target-uri* := <nbl-collect-all-use; map(nbl-uri)> q);
     TypePart(id, nbl-use(|lang, elems, tasks, paths, deps, [
       UseCandidate(Namespace(), [], target-uri*, One())
     , UseCandidate(Class(), [], target-uri*, One())
-    ]));
-    vdebug(!"leave ")
+    ]))
 		
 		
   // This()
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?This();
-    vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> Resolve(<lookup-uri(|lang, Field())> paths, Field(), "this", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_This_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Class(), result3, [], Current(), One())
-    );
-    vdebug(!"leave ")
+    )
 
   match-term:
   	// The name is required here instead of the URI, because we are looking up a name that is produced by a type lookup.
@@ -292,14 +231,12 @@ rules // Classes
   // Super()
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Super();
-    vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> Resolve(<lookup-uri(|lang, Field())> paths, Field(), "super", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_Super_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Class(), result3, [], Current(), One())
-    );
-    vdebug(!"leave ")
+    )
 
   match-term:
     ("nbl-use-site_match_Super_0", types) -> <nbl-uri-name> uri
@@ -320,23 +257,19 @@ rules // Fields
 		
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?FieldDef(t, x);
-    vdebug(!"enter ");
     FieldDef(id, nbl-props(|lang, elems, tasks, [
       Prop(Type(), t)
-    ]));
-    vdebug(!"leave ")
+    ]))
 
     
   // FieldAccess(e, f)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FieldAccess(e, f);
-    vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
     where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FieldAccess_2", result1));
     FieldAccess(id, nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Field(), [], result2, One())
-    ));
-    vdebug(!"leave ")
+    ))
     
   match-term: 
     ("nbl-use-site_match_FieldAccess_2", Type(_{anno*})) -> uri
@@ -348,54 +281,44 @@ rules // Functions
   // FunDef(t, x, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _);
-    vdebug(!"enter ");
     FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Function(), <nbl-unique-qualifier>, [Current()], []), 
-    id);
-    vdebug(!"leave ")
+    id)
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, p);
-    vdebug(!"enter ");
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
-  	]), id);
-    vdebug(!"leave ")
+  	]), id)
     
   
   // FunDef(t, x, _, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _, _);
-    vdebug(!"enter ");
     FunDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Function(), <nbl-unique-qualifier>, [Current()], [Variable()]), 
-    id, id);
-    vdebug(!"leave ")
+    id, id)
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?FunDef(t, x, p, _);
-    vdebug(!"enter ");
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
     FunDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
-  	]), id, id);
-    vdebug(!"leave ")
+  	]), id, id)
     
   
   // FunCall(e, f, a)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FunCall(e, x, a);
-    vdebug(!"enter ");
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
     where (result2 := <new-task(|tasks, [<nbl-result-number> result1])> Match("nbl-use-site_match_FunCall_3", result1));
     where (result3 := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(id, nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Function(), [Prop(ParameterTypes(), result3)], result2, One())), 
-    id);
-    vdebug(!"leave ")
+    id)
     
   match-term: 
   	("nbl-use-site_match_FunCall_3", Type(_{anno*})) -> uri
@@ -406,147 +329,117 @@ rules // Functions
   // FunCall(x, a)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?FunCall(x, a);
-    vdebug(!"enter ");
     where (result := <new-task(|tasks)> PropCalc(Type(), a));
     FunCall(nbl-use(|lang, elems, tasks, paths, deps,
       UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())), 
-    id);
-    vdebug(!"leave ")
+    id)
 
   
   // Param(t, x)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Param(t, x);
-    vdebug(!"enter ");
     Param(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [Current()], []
-    ));
-    vdebug(!"leave ")
+    ))
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?Param(t, x);
-    vdebug(!"enter ");
     Param(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
-  	]));
-    vdebug(!"leave ")
+  	]))
   
 rules // Variable
   
   // VarDef(t, x, _)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x, _);
-    vdebug(!"enter ");
     VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [Subsequent()], []), 
-    id);
-    vdebug(!"leave ")
+    id)
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?VarDef(t, x, _);
-    vdebug(!"enter ");
     VarDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
-  	]), id);
-    vdebug(!"leave ")
+  	]), id)
     
   
   // VarDef(t, x)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x);
-    vdebug(!"enter ");
     VarDef(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [Subsequent()], []
-    ));
-    vdebug(!"leave ")
+    ))
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?VarDef(t, x);
-    vdebug(!"enter ");
     VarDef(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
-  	]));
-    vdebug(!"leave ")
+  	]))
     
     
   // InferredVarDef(x, e)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?InferredVarDef(x, e);
-    vdebug(!"enter ");
     InferredVarDef(nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [Subsequent()], []
-    ), id);
-    vdebug(!"leave ")
+    ), id)
     
   nbl-prop-site(|lang, elems, tasks, paths) =
     ?InferredVarDef(x, e);
-    vdebug(!"enter ");
     where (result := <new-task(|tasks)> PropCalc(Type(), e));
     InferredVarDef(nbl-props(|lang, elems, tasks, [
       Prop(Type(), result)
-    ]), id);
-    vdebug(!"leave ")
+    ]), id)
     
   
   // VarRef(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?VarRef(x);
-    vdebug(!"enter ");
     VarRef(nbl-use(|lang, elems, tasks, paths, deps, [
     	UseCandidate(Variable(), [], Current(), All()), 
     	UseCandidate(Field(), [], Current(), All())
-  	]));
-    vdebug(!"leave ")
+  	]))
 
 rules // Control flow
   
   // For(t, x, init, cond, stmt, body) 
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =    
     ?For(t, x, init, cond, stmt, body);
-    vdebug(!"enter ");
     where(scope := <nbl-def-scope> Variable());
     For(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [scope], []), id, nbl-def-scope(|scope), 
       nbl-def-scope(|scope), nbl-def-scope(|scope)
-    );
-    vdebug(!"leave ")
+    )
     
   nbl-prop-site(cpaths, spaths|lang, elems, tasks, paths) =   
     ?For(t, x, init, cond, stmt, body);
-    vdebug(!"enter ");
     For(id, nbl-props(|lang, elems, tasks, [
     	Prop(Type(), t)
-  	]), id, id, id, id);
-    vdebug(!"leave ")
+  	]), id, id, id, id)
   
   
   // ForEach(t, x, e, body)
   nbl-def-site(cpaths, spaths|lang, elems, tasks, paths) =    
     ?ForEach(t, x, e, body);
-    vdebug(!"enter ");
     where(scope := <nbl-def-scope> Variable());
     ForEach(id, nbl-def(cpaths, spaths|lang, elems, tasks, paths, 
       Variable(), <nbl-unique-qualifier>, [scope], []), id, nbl-def-scope(|scope)
-    );
-    vdebug(!"leave ")
+    )
     
   nbl-prop-site(cpaths, spaths|lang, elems, tasks, paths) =   
     ?ForEach(t, x, e, body);
-    vdebug(!"enter ");
     ForEach(id, nbl-props(|lang, elems, tasks, [
       Prop(Type(), t)
-    ]), id, id);
-    vdebug(!"leave ")
+    ]), id, id)
   
   
   // Block(stmt*)
   nbl-scope-site(cpaths|lang, paths) =   
     ?Block(stmt*);
-    vdebug(!"enter ");
     Block(nbl-anonymous-scope(cpaths|lang, paths, [
       Variable()
-    ]));
-    vdebug(!"leave ")
+    ]))
 
 rules // Name projections
   

@@ -141,6 +141,9 @@ rules // Type projections
   	[_|_] -> <map(type-of)>
   	
   type-of:
+    [] -> []
+  	
+  type-of:
     Def(uri) -> <nbl-get-property(|Type()); type-of> uri
     
   type-of:
