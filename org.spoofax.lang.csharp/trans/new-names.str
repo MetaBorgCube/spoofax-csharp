@@ -53,14 +53,12 @@ rules // Namespaces
 	
 	
 	// Using(x)
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
+  nbl-import-site(|lang, elems, tasks, paths) =
     ?Using(x);
     vdebug(!"enter ");
-    Using(nbl-import(deps'|lang, elems, tasks, paths, deps, 
-      Namespace(), [
-        Import(lang, Class())
-      ])
-    );
+    Using(nbl-import(|lang, elems, tasks, paths, [
+      Import(lang, Class())
+    ]));
     vdebug(!"leave ")
 	
 	
@@ -137,17 +135,15 @@ rules // Classes
     id);
     vdebug(!"leave ")
     
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
+  nbl-import-site(|lang, elems, tasks, paths) =
     ?Class(x, y, _);
     vdebug(!"enter ");
-    Class(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
-      Class(), [
-	    	Import(lang, Field()), 
-	      Import(lang, Imported(Field())), 
-	      Import(lang, Function()), 
-	      Import(lang, Imported(Function()))
-      ]
-    ), id);
+    Class(id, nbl-import(|lang, elems, tasks, paths, [
+    	Import(lang, Field()), 
+      Import(lang, Imported(Field())), 
+      Import(lang, Function()), 
+      Import(lang, Imported(Function()))
+    ]), id);
     vdebug(!"leave ")
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
@@ -212,17 +208,15 @@ rules // Classes
     id);
     vdebug(!"leave ")
   
-  nbl-import-site(deps'|lang, elems, tasks, paths, deps) =
+  nbl-import-site(|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _);
     vdebug(!"enter ");
-    PartialClass(id, nbl-import(deps'|lang, elems, tasks, paths, deps, 
-      Class(), [
-	      Import(lang, Field()), 
-	      Import(lang, Imported(Field())), 
-	      Import(lang, Function()), 
-	      Import(lang, Imported(Function()))
-      ]
-    ), id);
+    PartialClass(id, nbl-import(|lang, elems, tasks, paths, [
+      Import(lang, Field()), 
+      Import(lang, Imported(Field())), 
+      Import(lang, Function()), 
+      Import(lang, Imported(Function()))
+    ]), id);
     vdebug(!"leave ")
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
