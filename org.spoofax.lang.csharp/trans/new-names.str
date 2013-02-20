@@ -4,6 +4,7 @@ imports
 	
 	include/CSharp
 	nbl/-
+	types
 	
 signature 
 
@@ -34,11 +35,6 @@ rules // Type property
   	(Type(), x) -> <map(type-of)> x
   	where
   		<is-list> x
-  		
-rules // Generic matches
-	
-  match-term: 
-    ("Hd", list) -> <Hd> list
 	
 rules // Namespaces
   
@@ -82,9 +78,9 @@ rules // Namespaces
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(u, x);
     vdebug(!"enter ");
-    where (result := <new-task(|tasks)> Match("Hd", <nbl-name; get-annos; collect-one(?Use(<id>))> u));
+    where (target-uri* := <nbl-collect-all-use; map(nbl-uri)> u);
     UsingPart(id, nbl-use(|lang, elems, tasks, paths, deps,
-      UseCandidate(Namespace(), [], result, One())
+      UseCandidate(Namespace(), [], target-uri*, One())
     ));
     vdebug(!"leave ")
 	
@@ -253,8 +249,8 @@ rules // Classes
     ?TypePart(x);
     vdebug(!"enter ");
     TypePart(nbl-use(|lang, elems, tasks, paths, deps, [
-      UseCandidate(Namespace(), [], Current(), One())
-    , UseCandidate(Class(), [], Current(), One())
+      UseCandidate(Namespace(), [], Current(), All())
+    , UseCandidate(Class(), [], Current(), All())
     ]));
     vdebug(!"leave ") 
     
@@ -263,11 +259,10 @@ rules // Classes
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?TypePart(q, x);
     vdebug(!"enter ");
-    // TODO: Can't just take the head, need to get the result that actually succeeds..
-    where (result := <new-task(|tasks)> Match("Hd", <nbl-name; get-annos; collect-one(?Use(<id>))> q));
+    where (target-uri* := <nbl-collect-all-use; map(nbl-uri)> q);
     TypePart(id, nbl-use(|lang, elems, tasks, paths, deps, [
-      UseCandidate(Namespace(), [], result, One())
-    , UseCandidate(Class(), [], result, One())
+      UseCandidate(Namespace(), [], target-uri*, One())
+    , UseCandidate(Class(), [], target-uri*, One())
     ]));
     vdebug(!"leave ")
 		
@@ -276,7 +271,7 @@ rules // Classes
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?This();
     vdebug(!"enter ");
-    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "this", [], All()));
+    where (result1 := <new-task(|tasks)> Resolve(<lookup-uri(|lang, Field())> paths, Field(), "this", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_This_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,
@@ -298,7 +293,7 @@ rules // Classes
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?Super();
     vdebug(!"enter ");
-    where (result1 := <new-task(|tasks)> Resolve(<lookup <+ <nbl-base-uri> lang> (Field(), paths), Field(), "super", [], All()));
+    where (result1 := <new-task(|tasks)> Resolve(<lookup-uri(|lang, Field())> paths, Field(), "super", [], All()));
     where (result2 := <new-task(|tasks)> PropCalc(Type(), result1));
     where (result3 := <new-task(|tasks)> Match("nbl-use-site_match_Super_0", result2));
     nbl-use(|lang, elems, tasks, paths, deps,

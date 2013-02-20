@@ -37,9 +37,9 @@ exports
     TypePart "." ID -> TypePart {"TypePart"}
     
     Type "[" "]" -> Type {"ArrayType"}
-    "bool"       -> Type {ast("Type(\"Bool\")"), prefer}
-    "int"        -> Type {ast("Type(\"Int\")"), prefer}
-    "string"     -> Type {ast("Type(\"String\")"), prefer}
+    "bool"       -> Type {ast("TypeExp(TypePart(\"Bool\"))"), prefer}
+    "int"        -> Type {ast("TypeExp(TypePart(\"Int\"))"), prefer}
+    "string"     -> Type {ast("TypeExp(TypePart(\"String\"))"), prefer}
     
     "void"       -> MethodReturnType {"VoidType", prefer}
     Type         -> MethodReturnType

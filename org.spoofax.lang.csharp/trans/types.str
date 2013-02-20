@@ -9,7 +9,13 @@ imports
 
 signature 
 
+  sorts
+    
+    Type
+
   constructors
+
+    Type : ID -> Type
 
 	  BoolType   : Type
 	  IntType    : Type
@@ -63,25 +69,25 @@ rules // Type projections
     PartialClass(x, _, _) -> x
   
   type-of:
-    FieldDef(t, _) -> t
+    FieldDef(t, _) -> <type-of> t
   
   type-of:
-    FunDef(t, _, _) -> t
+    FunDef(t, _, _) -> <type-of> t
   
   type-of:
-    FunDef(t, _, _, _) -> t
+    FunDef(t, _, _, _) -> <type-of> t
   
   type-of:
-    VarDef(t, _) -> t
+    VarDef(t, _) -> <type-of> t
     
   type-of:
-    VarDef(t, _, _) -> t
+    VarDef(t, _, _) -> <type-of> t
     
   type-of:
     InferredVarDef(_, e) -> <type-of> e
     
   type-of:
-    Param(t, _) -> t
+    Param(t, _) -> <type-of> t
     
  
   // Type expressions
