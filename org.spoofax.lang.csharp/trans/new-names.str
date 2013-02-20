@@ -61,7 +61,12 @@ rules // Namespaces
     ]));
     vdebug(!"leave ")
 	
-	
+  nbl-import-dependency-site = 
+    ?Using(x);
+    vdebug(!"enter ");
+    Using(nbl-import-dependency);
+    vdebug(!"leave ")
+
 	// UsingPart(x)
   nbl-use-site(|lang, elems, tasks, paths, deps) =
     ?UsingPart(x);
@@ -144,6 +149,12 @@ rules // Classes
       Import(lang, Function()), 
       Import(lang, Imported(Function()))
     ]), id);
+    vdebug(!"leave ")
+    
+  nbl-import-dependency-site = 
+    ?Class(x, y, _);
+    vdebug(!"enter ");
+    Class(id, nbl-import-dependency, id);
     vdebug(!"leave ")
     
   nbl-implicit-def-site(|lang, elems, tasks, paths) =
@@ -229,6 +240,11 @@ rules // Classes
     ]), id);
     vdebug(!"leave ")
 
+  nbl-import-dependency-site = 
+    ?PartialClass(x, y, _);
+    vdebug(!"enter ");
+    PartialClass(id, nbl-import-dependency, id);
+    vdebug(!"leave ")
     	
 	// Type(c)
 	nbl-use-site(|lang, elems, tasks, paths, deps) =
@@ -525,9 +541,15 @@ rules // Name projections
   
   nbl-name:
     UsingPart(q, x) -> x
+
+  nbl-name-apply(s):
+    UsingPart(q, x) -> UsingPart(q, <s> x)
     
   nbl-name:
     UsingPart(x) -> x
+    
+  nbl-name-apply(s):
+    UsingPart(x) -> UsingPart(<s> x)
     
 rules // Scoping projections
 
