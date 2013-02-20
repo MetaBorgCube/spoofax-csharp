@@ -170,15 +170,15 @@ rules // Utility
 	
   print-type = 
     switch id
+      case ?"String" : !"string"
+      case ?"Int" : !"int"
       case ?VoidType() : !"void"
       case ?IntType() : !"int"
       case ?StringType() : !"string"
-      case ?Type("String") : !"string"
-      case ?Type("Int") : !"int"
-      case ?Type(t) : <strip-annos> t
+      case ?Type(t) : <print-type> t
       case ?[type|[]] : <print-type> type
       case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
-      case is-string : id
+      case is-string : strip-annos
       case ?name#(_) : !$[[name]]
       otherwise : id
     end

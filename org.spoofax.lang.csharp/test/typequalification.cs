@@ -14,7 +14,8 @@ namespace TypeQualification {
 	
 	class B {
 		First.A a;
-		A aa;
+		Second.A aa;
+		A aaa;
 		
 		int test() {
 		  return a.a;
@@ -23,5 +24,9 @@ namespace TypeQualification {
 		string test2() {
 		  return aa.a;
 		}
+		
+    string test3() {
+      return aaa.a;
+    }
 	}
 }

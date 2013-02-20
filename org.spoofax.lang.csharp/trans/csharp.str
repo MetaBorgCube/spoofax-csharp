@@ -100,7 +100,7 @@ rules // Editor services
   editor-hover:
     (target, position, ast, path, project-path) -> $[Type: [<print-type> type]]
     where
-      type := <type-of> target
+      type := <type-of; print-type> target
 
   editor-complete:
     (node, position, ast, path, project-path) -> proposals
