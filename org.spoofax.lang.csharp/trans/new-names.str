@@ -3,7 +3,8 @@ module new-names
 imports 
 	
 	include/CSharp
-	nbl/-
+	lib/task/core
+	lib/nbl/-
 	types
 	
 signature 

@@ -51,23 +51,31 @@
         <target name="copy-lib-files" if="isWin" depends="os-detection">
           <!-- Copy NBL libraries, Ant is stupid and cannot link on Windows :( -->
           <copy todir="${basedir}/lib/nbl" >  
-            <fileset dir="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/nbl/" includes="**"/>  
+            <fileset dir="${basedir}/../../runtime-libraries/nbl/" includes="**"/>  
           </copy>
           <copy todir="${basedir}/lib/index" >  
-            <fileset dir="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/index/" includes="**"/>  
+            <fileset dir="${basedir}/../../runtime-libraries/index/" includes="**"/>  
+          </copy>
+          <copy todir="${basedir}/lib/task" >  
+            <fileset dir="${basedir}/../../runtime-libraries/task/" includes="**"/>  
           </copy>
         </target>
         
         <target name="link-lib-files" unless="isWin" depends="os-detection">
           <!-- Link to NBL libraries. -->
           <symlink 
-            resource="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/nbl/" 
+            resource="${basedir}/../../runtime-libraries/nbl/" 
             link="${basedir}/lib/nbl" 
             overwrite="true" 
           />
           <symlink 
-            resource="${basedir}/../../nbl-library/org.strategoxt.imp.names.library/index/" 
+            resource="${basedir}/../../runtime-libraries/index/" 
             link="${basedir}/lib/index" 
+            overwrite="true" 
+          />
+          <symlink 
+            resource="${basedir}/../../runtime-libraries/task/" 
+            link="${basedir}/lib/task" 
             overwrite="true" 
           />
         </target>

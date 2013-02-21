@@ -4,6 +4,7 @@ imports
 	
   include/CSharp
   lib/editor-common.generated
+  lib/task/core
   lib/nbl/-
   new-names
 
