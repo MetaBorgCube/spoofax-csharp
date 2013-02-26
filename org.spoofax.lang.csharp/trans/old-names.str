@@ -22,7 +22,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Namespace(x, _)
-    ; id
     ; Namespace(
         nabl-def(
           cpaths
@@ -39,19 +38,19 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
-    ?Namespace(x, _)
-    ; Namespace(
-        nabl-props(|lang, elems, tasks, [])
-      , id
-      )
+  nabl-scope-site(cpaths|lang, paths) =
+    ?UsingPart(x)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?UsingPart(u, x)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Class(x, _)
-    ; id
     ; Class(
         nabl-def(
           cpaths
@@ -82,7 +81,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Class(x, y, _)
-    ; id
     ; Class(
         nabl-def(
           cpaths
@@ -115,7 +113,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Interface(x, _)
-    ; id
     ; Interface(
         nabl-def(
           cpaths
@@ -146,7 +143,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Interface(x, y, _)
-    ; id
     ; Interface(
         nabl-def(
           cpaths
@@ -179,7 +175,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, _)
-    ; id
     ; PartialClass(
         nabl-def(
           cpaths
@@ -210,7 +205,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?PartialClass(x, y, _)
-    ; id
     ; PartialClass(
         nabl-def(
           cpaths
@@ -240,13 +234,16 @@ rules
       , id
       , id
       )
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?Type(c)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FieldDef(t, x)
-    ; id
     ; FieldDef(
         id
       , nabl-def(
@@ -275,12 +272,15 @@ rules
         )
       )
 
+  nabl-scope-site(cpaths|lang, paths) =
+    ?FieldAccess(exp, f)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
+
 
 rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _)
-    ; id
     ; FunDef(
         id
       , nabl-def(
@@ -313,7 +313,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?FunDef(t, x, _, _)
-    ; id
     ; FunDef(
         id
       , nabl-def(
@@ -346,9 +345,16 @@ rules
       , id
       )
 
+  nabl-scope-site(cpaths|lang, paths) =
+    ?FunCall(exp, f, _)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?FunCall(x, _)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
+
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Param(t, x)
-    ; id
     ; Param(
         id
       , nabl-def(
@@ -382,7 +388,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x, _)
-    ; id
     ; VarDef(
         id
       , nabl-def(
@@ -394,7 +399,7 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , Subsequent()
+        , []
         , []
         )
       , id
@@ -415,7 +420,6 @@ rules
 
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?VarDef(t, x)
-    ; id
     ; VarDef(
         id
       , nabl-def(
@@ -427,7 +431,7 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , Subsequent()
+        , []
         , []
         )
       )
@@ -443,6 +447,14 @@ rules
         , [Prop(Type(), t)]
         )
       )
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?VarRef(x)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?Assign(x, _)
+    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
@@ -461,7 +473,7 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , [scope]
+        , []
         , []
         )
       , id
@@ -500,7 +512,7 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , [scope]
+        , []
         , []
         )
       , id
@@ -519,4 +531,13 @@ rules
         )
       , id
       , id
+      )
+
+  nabl-scope-site(cpaths|lang, paths) =
+    ?Block(stmt*)
+    ; nabl-anonymous-scope(
+        cpaths
+      | lang
+      , paths
+      , [Variable()]
       )
