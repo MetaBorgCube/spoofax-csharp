@@ -33,6 +33,20 @@
 			stratego.jar.helper,
 			refresh,
 			sdf2imp.eclipse.load"/>
+        <target name="spoofaximp.default.nostr" depends="
+      check-classpath,
+      init,
+      sdf2table,
+      meta-sdf2table,
+      ppgen,
+      pppack,
+      sdf2imp.eclipse,
+      sdf2imp.standalone,
+      sdf2parenthesize,
+      stratego.aster,
+      java.jar,
+      refresh,
+      sdf2imp.eclipse.load"/>
     
         <!-- Initialization -->
         <available file="${src-gen}/csharp/strategies/Main.java" property="java.jar.enabled"/>
@@ -195,6 +209,7 @@
             <copy file="${eclipse.spoofaximp.jars}/make_permissive.jar" todir="utils" failonerror="false"/>
             <copy file="${eclipse.spoofaximp.jars}/sdf2imp.jar" todir="utils" failonerror="false"/>
             <copy file="${eclipse.spoofaximp.jars}/aster.jar" todir="utils" failonerror="false"/>
+            <copy file="${eclipse.spoofaximp.jars}/StrategoMix.def" todir="utils" failonerror="false"/>
             <copy file="${eclipse.spoofaximp.strategojar}" todir="utils" failonerror="false"/>
         </target>
     
@@ -419,6 +434,13 @@
     
         <!-- Stratego to Java interpreter -->
         <target name="stratego.ctree" depends="rtg2sig">
+            <fail message="Main stratego file '${strmodule}.str' not found.">
+                <condition>
+                    <not>
+                        <isset property="build.stratego.enabled"/>
+                    </not>
+                </condition>
+            </fail>
             <dependset>
                 <srcfileset dir="${basedir}">
                     <include name="**/*.str"/>
@@ -437,6 +459,13 @@
     
         <!-- Stratego to Java compiler -->
         <target name="stratego.jar" depends="rtg2sig,utils-files">
+            <fail message="Main stratego file '${strmodule}.str' not found.">
+                <condition>
+                    <not>
+                        <isset property="build.stratego.enabled"/>
+                    </not>
+                </condition>
+            </fail>
             <dependset>
                 <srcfileset dir="${basedir}">
                     <include name="**/*.str"/>
