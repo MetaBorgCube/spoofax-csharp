@@ -39,13 +39,13 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-    BoolType() -> <nbl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
+    BoolType() -> <nabl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
   
   type-of:
-    IntType() -> <nbl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
+    IntType() -> <nabl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
     
   type-of:
-    StringType() -> <nbl-resolve> Type("String"{Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
+    StringType() -> <nabl-resolve> Type("String"{Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
     
   type-of:
     VoidType() -> VoidType()
@@ -96,10 +96,10 @@ rules // Type projections
     TypeExp(t) -> <type-of> t
     
   type-of:
-    TypePart(t) -> <nbl-resolve-collect-one; type-of> t
+    TypePart(t) -> <nabl-resolve-collect-one; type-of> t
 
   type-of:
-    TypePart(_, t) -> <nbl-resolve-collect-one; type-of> t    
+    TypePart(_, t) -> <nabl-resolve-collect-one; type-of> t    
 
   
   // Expressions
@@ -107,22 +107,22 @@ rules // Type projections
     Return(e) -> <type-of> e
   
   type-of:
-    VarRef(f) -> <nbl-resolve-collect-one; type-of> f
+    VarRef(f) -> <nabl-resolve-collect-one; type-of> f
   
   type-of:
-    FieldAccess(e, f) -> <nbl-resolve-collect-one; type-of> f
+    FieldAccess(e, f) -> <nabl-resolve-collect-one; type-of> f
     
   type-of:
-    FunCall(e, m, _) -> <nbl-resolve-collect-one; type-of> m
+    FunCall(e, m, _) -> <nabl-resolve-collect-one; type-of> m
     
   type-of:
-    FunCall(m, _) -> <nbl-resolve-collect-one; type-of> m
+    FunCall(m, _) -> <nabl-resolve-collect-one; type-of> m
     
   type-of:
-    This() -> <nbl-resolve-collect-one; type-of> 
+    This() -> <nabl-resolve-collect-one; type-of> 
     
   type-of:
-    Super() -> <nbl-resolve-collect-one; type-of> 
+    Super() -> <nabl-resolve-collect-one; type-of> 
 
   type-of:
   	Add(_, _) -> <type-of> IntType()
@@ -145,16 +145,16 @@ rules // Type projections
     [] -> []
   	
   type-of:
-    Def(uri) -> <nbl-get-property(|Type()); type-of> uri
+    Def(uri) -> <nabl-get-property(|Type()); type-of> uri
     
   type-of:
-    URI(_, _) -> <nbl-get-property(|Type()); type-of>
+    URI(_, _) -> <nabl-get-property(|Type()); type-of>
    
   type-of:
-    Result(_) -> <nbl-resolve-results>
+    Result(_) -> <nabl-resolve-results>
     
   type-of:
-    Type(t@_{anno*}) -> <nbl-resolve-collect-one; type-of> t
+    Type(t@_{anno*}) -> <nabl-resolve-collect-one; type-of> t
     where
       not(<collect-one(?Def(_))> anno*)
     

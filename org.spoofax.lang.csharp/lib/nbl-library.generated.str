@@ -1,4 +1,4 @@
-module lib/nbl-library.generated
+module lib/nabl-library.generated
 
 imports
   libstratego-lib
@@ -120,7 +120,7 @@ rules // Type dependant lookup
     where
       uri := <index-uri> element;
       <SRTS-EXT-eq-ignore-annos(|name)> <index-uri-name> uri;
-      <nbl-type-eq(|type)> <nbl-get-type> uri
+      <nabl-type-eq(|type)> <nabl-get-type> uri
       
   /**
    * Compares given element (with an URI) to given prefix using substring comparison and given type using equality.
@@ -132,13 +132,13 @@ rules // Type dependant lookup
     where
       uri := <index-uri> element;
       <is-substring(!prefix)> <index-uri-name> uri;
-      <nbl-type-eq(|type)> <nbl-get-type> uri
+      <nabl-type-eq(|type)> <nabl-get-type> uri
   
   /** @internal */
-  nbl-get-type:
+  nabl-get-type:
     uri -> <index-get-data(|Type())> Def(uri)
   
   // TODO: Allow user defined type equality.
   /** @internal */  
-  nbl-type-eq(|type) = 
+  nabl-type-eq(|type) = 
     <eq> (<id>, type)
