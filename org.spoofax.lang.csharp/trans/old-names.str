@@ -38,14 +38,6 @@ rules
       , id
       )
 
-  nabl-scope-site(cpaths|lang, paths) =
-    ?UsingPart(x)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?UsingPart(u, x)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
-
 
 rules
 
@@ -234,10 +226,6 @@ rules
       , id
       , id
       )
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?Type(c)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
@@ -271,10 +259,6 @@ rules
         , [Prop(Type(), t)]
         )
       )
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?FieldAccess(exp, f)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
@@ -345,14 +329,6 @@ rules
       , id
       )
 
-  nabl-scope-site(cpaths|lang, paths) =
-    ?FunCall(exp, f, _)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?FunCall(x, _)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
-
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
     ?Param(t, x)
     ; Param(
@@ -447,14 +423,6 @@ rules
         , [Prop(Type(), t)]
         )
       )
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?VarRef(x)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
-
-  nabl-scope-site(cpaths|lang, paths) =
-    ?Assign(x, _)
-    ; nabl-anonymous-scope(cpaths|lang, paths, [])
 
 
 rules
