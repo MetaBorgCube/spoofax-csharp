@@ -6,6 +6,7 @@ imports
 	lib/task/core
 	lib/nbl/-
 	types
+	old-names
 	
 signature 
 
@@ -29,14 +30,6 @@ rules // Type property
   	(Type(), x) -> <type-of> x
 	
 rules // Namespaces
-  
-  // Namespace(x, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Namespace(x, _);
-    Namespace(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Namespace(), <nabl-nonunique-qualifier>, [Current()], [Namespace(), Class()]), 
-    id)
-	
 	
 	// Using(x)
   nabl-import-site(|lang, elems, tasks, paths, states) =
@@ -69,18 +62,6 @@ rules // Namespaces
 rules // Classes
 	
 	// Class(x, _)
-	nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-		?Class(x, _);
-		Class(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-		  Class(), <nabl-unique-qualifier>, [Current()], [Field(), Function()]), 
-	  id)
-
-	nabl-prop-site(|lang, elems, tasks, paths, states) =
-		?Class(x, _);
-		Class(nabl-props(|lang, elems, tasks, [
-			Prop(Type(), Type(x))
-		]), id)
-		
   nabl-implicit-def-site(|lang, elems, tasks, paths, states) =
     ?Class(x, _);
     Class(nabl-implicit-def(|lang, elems, tasks, paths, [
@@ -89,18 +70,6 @@ rules // Classes
     
 		
 	// Class(x, y, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Class(x, y, _);
-    Class(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), <nabl-unique-qualifier>, [Current()], [Field(), Function()]), 
-    id, id)
-  
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?Class(x, y, _);
-    Class(nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), Type(x))
-  	]), id, id)
-    
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?Class(x, y, _);
     Class(id, nabl-use(|lang, elems, tasks, paths, deps,
@@ -129,19 +98,6 @@ rules // Classes
     ]), id)
 
   
-  // PartialClass(x, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, _);
-    PartialClass(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), <nabl-nonunique-qualifier>, [Current()], [Field(), Function()]),
-    id)
-  
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, _);
-    PartialClass(nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), Type(x))
-  	]), id)
-    
   nabl-implicit-def-site(|lang, elems, tasks, paths, states) =
     ?PartialClass(x, _);
     Class(nabl-implicit-def(|lang, elems, tasks, paths, [
@@ -149,19 +105,6 @@ rules // Classes
     ]), id)
     
     
-  // PartialClass(x, y, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, y, _);
-    PartialClass(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Class(), <nabl-nonunique-qualifier>, [Current()], [Field(), Function()]), 
-    id, id)
-  
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, y, _);
-    PartialClass(nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), Type(x))]), 
-  	id, id)
-    	
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?PartialClass(x, y, _);
     PartialClass(id, nabl-use(|lang, elems, tasks, paths, deps,
@@ -246,20 +189,6 @@ rules // Classes
       Def(uri) := <collect-one(?Def(_))> anno*
 		
 rules // Fields
-	
-	// FieldDef(t, x)
-	nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-		?FieldDef(t, x);
-		FieldDef(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-		  Field(), <nabl-unique-qualifier>, [Current()], []
-	  ));
-		
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?FieldDef(t, x);
-    FieldDef(id, nabl-props(|lang, elems, tasks, [
-      Prop(Type(), t)
-    ]))
-
     
   // FieldAccess(e, f)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
@@ -277,13 +206,6 @@ rules // Fields
       
 rules // Functions
   
-  // FunDef(t, x, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?FunDef(t, x, _);
-    FunDef(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Function(), <nabl-unique-qualifier>, [Current()], []), 
-    id)
-    
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, p);
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
@@ -291,15 +213,7 @@ rules // Functions
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
   	]), id)
-    
-  
-  // FunDef(t, x, _, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?FunDef(t, x, _, _);
-    FunDef(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Function(), <nabl-unique-qualifier>, [Current()], [Variable()]), 
-    id, id)
-    
+
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, p, _);
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
@@ -333,64 +247,14 @@ rules // Functions
       UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())), 
     id)
 
-  
-  // Param(t, x)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Param(t, x);
-    Param(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [Current()], []
-    ))
-    
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?Param(t, x);
-    Param(id, nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), t)
-  	]))
-  
 rules // Variable
-  
-  // VarDef(t, x, _)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?VarDef(t, x, _);
-    VarDef(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [Subsequent()], []), 
-    id)
-    
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?VarDef(t, x, _);
-    VarDef(id, nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), t)
-  	]), id)
-    
-  
-  // VarDef(t, x)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?VarDef(t, x);
-    VarDef(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [Subsequent()], []
-    ))
-    
-  nabl-prop-site(|lang, elems, tasks, paths, states) =
-    ?VarDef(t, x);
-    VarDef(id, nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), t)
-  	]))
-    
-    
-  // InferredVarDef(x, e)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?InferredVarDef(x, e);
-    InferredVarDef(nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [Subsequent()], []
-    ), id)
-    
+
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?InferredVarDef(x, e);
     where (result := <new-task(|tasks)> PropCalc(Type(), e));
     InferredVarDef(nabl-props(|lang, elems, tasks, [
       Prop(Type(), result)
     ]), id)
-    
   
   // VarRef(x)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
@@ -399,46 +263,6 @@ rules // Variable
     	UseCandidate(Variable(), [], Current(), All()), 
     	UseCandidate(Field(), [], Current(), All())
   	]))
-
-rules // Control flow
-  
-  // For(t, x, init, cond, stmt, body) 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =    
-    ?For(t, x, init, cond, stmt, body);
-    where(scope := <nabl-def-scope> Variable());
-    For(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [scope], []), id, nabl-def-scope(|scope), 
-      nabl-def-scope(|scope), nabl-def-scope(|scope)
-    )
-    
-  nabl-prop-site(cpaths, spaths|lang, elems, tasks, paths, states) =   
-    ?For(t, x, init, cond, stmt, body);
-    For(id, nabl-props(|lang, elems, tasks, [
-    	Prop(Type(), t)
-  	]), id, id, id, id)
-  
-  
-  // ForEach(t, x, e, body)
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =    
-    ?ForEach(t, x, e, body);
-    where(scope := <nabl-def-scope> Variable());
-    ForEach(id, nabl-def(cpaths, spaths|lang, elems, tasks, paths, 
-      Variable(), <nabl-unique-qualifier>, [scope], []), id, nabl-def-scope(|scope)
-    )
-    
-  nabl-prop-site(cpaths, spaths|lang, elems, tasks, paths, states) =   
-    ?ForEach(t, x, e, body);
-    ForEach(id, nabl-props(|lang, elems, tasks, [
-      Prop(Type(), t)
-    ]), id, id)
-  
-  
-  // Block(stmt*)
-  nabl-scope-site(cpaths|lang, paths, states) =   
-    ?Block(stmt*);
-    Block(nabl-anonymous-scope(cpaths|lang, paths, [
-      Variable()
-    ]))
 
 rules // Name projections
   

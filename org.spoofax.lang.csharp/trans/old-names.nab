@@ -101,6 +101,10 @@ binding rules // Variables
   VarDef(t, x) :
     defines Variable x of type t in subsequent scope 
 
+	InferredVarDef(x, e):
+		defines Variable x of type t in subsequent scope
+		where e has type t
+		
   VarRef(x) :
     refers to Variable x otherwise
     refers to Field x
