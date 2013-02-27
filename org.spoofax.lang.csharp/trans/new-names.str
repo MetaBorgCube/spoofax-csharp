@@ -271,15 +271,6 @@ rules // Variable
     	UseCandidate(Field(), [], Current(), All())
   	]))
 
-rules // Control flow
-    
-  // Block(stmt*)
-  nabl-scope-site(cpaths|lang, paths, states) =   
-    ?Block(stmt*);
-    nabl-anonymous-scope(cpaths|lang, paths, [
-      Variable()
-    ])
-
 rules // Name projections
   
   nabl-name:
