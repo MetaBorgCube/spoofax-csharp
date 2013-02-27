@@ -30,8 +30,8 @@ rules // Type property
   	(Type(), x) -> <type-of> x
 	
 rules // Namespaces
-	
-	// Using(x)
+  
+  // Using(x)
   nabl-import-site(|lang, elems, tasks, paths, states) =
     ?Using(x);
     Using(nabl-import(|lang, elems, tasks, paths, [
@@ -61,7 +61,7 @@ rules // Namespaces
 	
 rules // Classes
 	
-	// Class(x, _)
+	// Class(x, _)		
   nabl-implicit-def-site(|lang, elems, tasks, paths, states) =
     ?Class(x, _);
     Class(nabl-implicit-def(|lang, elems, tasks, paths, [
@@ -69,7 +69,7 @@ rules // Classes
     ]), id)
     
 		
-	// Class(x, y, _)
+	// Class(x, y, _)  
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?Class(x, y, _);
     Class(id, nabl-use(|lang, elems, tasks, paths, deps,
@@ -98,6 +98,7 @@ rules // Classes
     ]), id)
 
   
+  // PartialClass(x, _)
   nabl-implicit-def-site(|lang, elems, tasks, paths, states) =
     ?PartialClass(x, _);
     Class(nabl-implicit-def(|lang, elems, tasks, paths, [
@@ -105,6 +106,7 @@ rules // Classes
     ]), id)
     
     
+  // PartialClass(x, y, _)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?PartialClass(x, y, _);
     PartialClass(id, nabl-use(|lang, elems, tasks, paths, deps,
@@ -189,8 +191,8 @@ rules // Classes
       Def(uri) := <collect-one(?Def(_))> anno*
 		
 rules // Fields
-    
-  // FieldAccess(e, f)
+	
+	// FieldAccess(e, f)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?FieldAccess(e, f);
     where (result1 := <new-task(|tasks)> PropCalc(Type(), e));
@@ -206,6 +208,7 @@ rules // Fields
       
 rules // Functions
   
+  // FunDef(t, x, _)
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, p);
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
@@ -213,7 +216,9 @@ rules // Functions
     	Prop(Type(), t)
     , Prop(ParameterTypes(), result)
   	]), id)
-
+    
+  
+  // FunDef(t, x, _, _)
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, p, _);
     where (result := <new-task(|tasks)> PropCalc(Type(), p));
@@ -248,13 +253,15 @@ rules // Functions
     id)
 
 rules // Variable
-
+    
+  // InferredVarDef(x, e)
   nabl-prop-site(|lang, elems, tasks, paths, states) =
     ?InferredVarDef(x, e);
     where (result := <new-task(|tasks)> PropCalc(Type(), e));
     InferredVarDef(nabl-props(|lang, elems, tasks, [
       Prop(Type(), result)
     ]), id)
+    
   
   // VarRef(x)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
@@ -263,6 +270,15 @@ rules // Variable
     	UseCandidate(Variable(), [], Current(), All()), 
     	UseCandidate(Field(), [], Current(), All())
   	]))
+
+rules // Control flow
+    
+  // Block(stmt*)
+  nabl-scope-site(cpaths|lang, paths, states) =   
+    ?Block(stmt*);
+    nabl-anonymous-scope(cpaths|lang, paths, [
+      Variable()
+    ])
 
 rules // Name projections
   

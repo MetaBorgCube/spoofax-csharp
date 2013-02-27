@@ -20,7 +20,7 @@ signature
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Namespace(x, _)
     ; Namespace(
         nabl-def(
@@ -41,7 +41,7 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Class(x, _)
     ; Class(
         nabl-def(
@@ -59,7 +59,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?Class(x, _)
     ; Class(
         nabl-props(
@@ -71,7 +71,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Class(x, y, _)
     ; Class(
         nabl-def(
@@ -90,7 +90,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?Class(x, y, _)
     ; Class(
         nabl-props(
@@ -103,7 +103,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Interface(x, _)
     ; Interface(
         nabl-def(
@@ -121,7 +121,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?Interface(x, _)
     ; Interface(
         nabl-props(
@@ -133,7 +133,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Interface(x, y, _)
     ; Interface(
         nabl-def(
@@ -152,7 +152,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?Interface(x, y, _)
     ; Interface(
         nabl-props(
@@ -165,7 +165,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?PartialClass(x, _)
     ; PartialClass(
         nabl-def(
@@ -183,7 +183,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?PartialClass(x, _)
     ; PartialClass(
         nabl-props(
@@ -195,7 +195,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?PartialClass(x, y, _)
     ; PartialClass(
         nabl-def(
@@ -214,7 +214,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?PartialClass(x, y, _)
     ; PartialClass(
         nabl-props(
@@ -230,7 +230,7 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?FieldDef(t, x)
     ; FieldDef(
         id
@@ -248,7 +248,7 @@ rules
         )
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?FieldDef(t, x)
     ; FieldDef(
         id
@@ -263,7 +263,7 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, _)
     ; FunDef(
         id
@@ -282,7 +282,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?FunDef(t, x, _)
     ; FunDef(
         id
@@ -295,7 +295,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?FunDef(t, x, _, _)
     ; FunDef(
         id
@@ -315,7 +315,7 @@ rules
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?FunDef(t, x, _, _)
     ; FunDef(
         id
@@ -329,7 +329,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Param(t, x)
     ; Param(
         id
@@ -347,7 +347,7 @@ rules
         )
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?Param(t, x)
     ; Param(
         id
@@ -362,7 +362,7 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?VarDef(t, x, _)
     ; VarDef(
         id
@@ -375,13 +375,13 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , []
+        , [Subsequent()]
         , []
         )
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?VarDef(t, x, _)
     ; VarDef(
         id
@@ -394,7 +394,7 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?VarDef(t, x)
     ; VarDef(
         id
@@ -407,12 +407,12 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , []
+        , [Subsequent()]
         , []
         )
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?VarDef(t, x)
     ; VarDef(
         id
@@ -427,9 +427,9 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?For(t, x, init, cond, stmt, body)
-    ; where(scope := <nabl-def-scope> [Variable()])
+    ; where(scope := <nabl-def-scope> Variable())
     ; For(
         id
       , nabl-def(
@@ -441,7 +441,7 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , []
+        , [scope]
         , []
         )
       , id
@@ -450,7 +450,7 @@ rules
       , nabl-def-scope(|scope)
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?For(t, x, init, cond, stmt, body)
     ; For(
         id
@@ -466,9 +466,9 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths) =
+  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?ForEach(t, x, e, body)
-    ; where(scope := <nabl-def-scope> [Variable()])
+    ; where(scope := <nabl-def-scope> Variable())
     ; ForEach(
         id
       , nabl-def(
@@ -480,14 +480,14 @@ rules
         , paths
         , Variable()
         , <nabl-unique-qualifier>
-        , []
+        , [scope]
         , []
         )
       , id
       , nabl-def-scope(|scope)
       )
 
-  nabl-prop-site(|lang, elems, tasks) =
+  nabl-prop-site(|lang, elems, tasks, states) =
     ?ForEach(t, x, e, body)
     ; ForEach(
         id
@@ -501,7 +501,7 @@ rules
       , id
       )
 
-  nabl-scope-site(cpaths|lang, paths) =
+  nabl-scope-site(cpaths|lang, paths, states) =
     ?Block(stmt*)
     ; nabl-anonymous-scope(
         cpaths

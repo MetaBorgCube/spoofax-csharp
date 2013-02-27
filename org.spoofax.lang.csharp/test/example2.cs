@@ -32,8 +32,12 @@ namespace Blogger {
 			int i;
 			i = i;
 			for (int i = i; i <10 ; i = i + 1;) {
-				int i;
+				
 				i = i + 1;
+			}
+			
+			foreach (int i in i) {
+				i = i;
 			}
 			return i;
 		}
