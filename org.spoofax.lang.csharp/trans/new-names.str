@@ -38,19 +38,6 @@ rules // Namespaces
       Import(lang, Class())
     ]))
 	
-  nabl-import-dependency-site = 
-    ?Using(x);
-    Using(nabl-import-dependency)
-
-
-	// UsingPart(x)
-  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
-    ?UsingPart(x);
-    UsingPart(nabl-use(|lang, elems, tasks, paths, deps,
-      UseCandidate(Namespace(), [], Current(), All())
-    ))	
-    
-
 	// UsingPart(u, x)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =
     ?UsingPart(u, x);
@@ -69,13 +56,7 @@ rules // Classes
     ]), id)
     
 		
-	// Class(x, y, _)  
-  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
-    ?Class(x, y, _);
-    Class(id, nabl-use(|lang, elems, tasks, paths, deps,
-      UseCandidate(Class(), [], Current(), All())), 
-    id)
-    
+	// Class(x, y, _)      
   nabl-import-site(|lang, elems, tasks, paths, states) =
     ?Class(x, y, _);
     Class(id, nabl-import(|lang, elems, tasks, paths, [
@@ -84,11 +65,7 @@ rules // Classes
       Import(lang, Function()), 
       Import(lang, Imported(Function()))
     ]), id)
-    
-  nabl-import-dependency-site = 
-    ?Class(x, y, _);
-    Class(id, nabl-import-dependency, id)
-    
+        
   nabl-implicit-def-site(|lang, elems, tasks, paths, states) =
     ?Class(x, y, _);
     Class(nabl-implicit-def(|lang, elems, tasks, paths, [
@@ -107,12 +84,6 @@ rules // Classes
     
     
   // PartialClass(x, y, _)
-  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
-    ?PartialClass(x, y, _);
-    PartialClass(id, nabl-use(|lang, elems, tasks, paths, deps,
-      UseCandidate(Class(), [], Current(), All())), 
-    id)
-  
   nabl-import-site(|lang, elems, tasks, paths, states) =
     ?PartialClass(x, y, _);
     PartialClass(id, nabl-import(|lang, elems, tasks, paths, [
@@ -129,11 +100,6 @@ rules // Classes
     ]), nabl-implicit-def(|lang, elems, tasks, paths, [
       IDefCandidate(Field(), "super", <nabl-unique-qualifier>, [Prop(Type(), Type(y))])
     ]), id)
-
-  nabl-import-dependency-site = 
-    ?PartialClass(x, y, _);
-    PartialClass(id, nabl-import-dependency, id)
-
 
   // TypePart(x)
   nabl-use-site(|lang, elems, tasks, paths, deps, states) =

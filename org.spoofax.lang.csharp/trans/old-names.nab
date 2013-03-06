@@ -1,5 +1,14 @@
 module old-names
   
+  version 0.1
+  status under development
+  
+  author Gabriel Konat, TU Delft
+  author Guido Wachsmuth (g.h.wachsmuth@tudelft.nl), TU Delft
+  
+  test suite tests/simple
+  test suite tests/complex
+  
 imports
 
 	nbl/-
@@ -35,10 +44,29 @@ binding rules // Namespaces
   
 binding rules // Classes
 
+	description --
+	
+		A class `x`, seriously, scopes its fields and functions.
+	
+	--
+	
+	example [[
+		class x {
+			
+		}
+	]]
+	
   Class(x, _) :
     defines unique Class x of type Type(x)
     scopes Field, Function
-    
+  
+  description --
+	
+		In the same way, classes with parents scope their fields and functions.
+		Additionally, they import fields and functions from their ancestors.
+	
+	--
+	 
   Class(x, y, _) :
     defines unique Class x of type Type(x)
     scopes Field, Function
@@ -67,13 +95,32 @@ binding rules // Classes
   	
 binding rules // Fields
 
+  
   FieldDef(t, x) :
     defines Field x of type t 
     
+  todo Gabriel Konat: --
+  
+  	Add where clause.
+	
+	--
+	
+	discuss --
+	
+		Documentation features are pretty cool, aren't they?
+
+	--
+	
+	fixme Gabriel Konat, Guido Wachsmuth: --
+	
+		Field accesses are never resolved.
+	
+	--
+	
   FieldAccess(exp, f) :
-    refers to Field f in Class e
-    where exp has type Type(e)
-    
+    refers to Field f in Class exp
+    //where exp has type Type(e)
+
 binding rules // Functions
 
   FunDef(t, x, _) :
@@ -83,12 +130,14 @@ binding rules // Functions
     defines Function x of type t 
     scopes Variable, Field
     
-  FunCall(exp, f, _) :
-    refers to Function f in Class e
+  FunCall(exp, f, args) :
+    refers to Function f of type (arg-types, _) in Class e
     where exp has type Type(e)
+    where args has type arg-types
     
-  FunCall(x, _) : 
-    refers to Function x
+  FunCall(x, args) : 
+    refers to Function x of type (arg-types, _)
+    where args has type arg-types
     
   Param(t, x) :
     defines Variable x of type t 
@@ -108,11 +157,7 @@ binding rules // Variables
   VarRef(x) :
     refers to Variable x otherwise
     refers to Field x
-
-  Assign(x, _):
-    refers to Variable x otherwise
-    refers to Field x
-    
+  
 binding rules // Control flow
 
   For(t, x, init, cond, stmt, body) :

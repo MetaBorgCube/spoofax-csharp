@@ -38,6 +38,25 @@ rules
       , id
       )
 
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?UsingPart(x)
+    ; UsingPart(
+        nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Namespace()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      )
+
 
 rules
 
@@ -103,6 +122,27 @@ rules
       , id
       )
 
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?Class(x, y, _)
+    ; Class(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Class()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
   nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
     ?Interface(x, _)
     ; Interface(
@@ -162,6 +202,27 @@ rules
         , [Prop(Type(), Type(x))]
         )
       , id
+      , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?Interface(x, y, _)
+    ; Interface(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Class()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
       , id
       )
 
@@ -225,6 +286,46 @@ rules
         )
       , id
       , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?PartialClass(x, y, _)
+    ; PartialClass(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Class()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?Type(c)
+    ; Type(
+        nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Class()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
       )
 
 
@@ -257,6 +358,31 @@ rules
         , elems
         , tasks
         , [Prop(Type(), t)]
+        )
+      )
+
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?FieldAccess(exp, f)
+    ; FieldAccess(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Field()
+            , []
+            , Current()
+            , Context(
+                exp
+              , Class()
+              , []
+              , All()
+              )
+            )
+          ]
         )
       )
 
@@ -421,6 +547,31 @@ rules
         , elems
         , tasks
         , [Prop(Type(), t)]
+        )
+      )
+
+  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+    ?VarRef(x)
+    ; VarRef(
+        nabl-use(
+        | lang
+        , elems
+        , tasks
+        , paths
+        , deps
+        , [ UseCandidate(
+              Variable()
+            , []
+            , Current()
+            , All()
+            )
+          , UseCandidate(
+              Field()
+            , []
+            , Current()
+            , All()
+            )
+          ]
         )
       )
 
