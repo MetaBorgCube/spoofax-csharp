@@ -1,3 +1,4 @@
+using Web;
 
 namespace Web {
   partial class URL {
@@ -5,8 +6,9 @@ namespace Web {
 	    return location; 
 	  }
   }
+}
 
-
+namespace Blogger {
 	class User { 
 		string name; 
 		URL homepage;
@@ -16,37 +18,34 @@ namespace Web {
 		User poster;
 		string body; 
 		
-		// URL Homepage() {
-		//   return this.poster.homepage;
-		// }
+		URL Homepage() {
+		  return this.poster.homepage;
+		}
 		
 		string HomepageString() {
 		  URL url = Homepage();
-			return 1;
+			return url.GetLocation();
 		}
 		
 		int Location() {
 			//i = i;
 			int i;
-			i = i; 
+			i = i;
 			for (int i = i; i <10 ; i = i + 1;) {
-				
-				i = k + 1;
-			}
-			
-			foreach (int i in i) {
-				i = i;
+				int i;
+				i = i + 1;
 			}
 			return i;
-		} 
+		}
 
-		int factorial(int num) { 
+		int factorial(int num) {
 		  if(num <= 1) {
 		    int fac = 1;
 		    return fac;
 		  }
 		  
+	    int fac = num * factorial(num - 1);
 	    return fac;
 		} 
-	}  
+	}
 }

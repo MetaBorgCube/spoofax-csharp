@@ -101,7 +101,7 @@ binding rules // Fields
 	--
   FieldAccess(exp, f) :
     refers to Field f in Class exp
-    //where exp has type Type(e)
+    where exp has type Type(e)
 
 binding rules // Functions
 
