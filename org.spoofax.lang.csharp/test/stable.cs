@@ -18,7 +18,15 @@ namespace StableURIs {
         int j = i;
       }
       
-      int k = i;
+      for(int i=i; i<j; i=i+1;) {
+        int i=i;
+        int j=j;
+      }
+      
+      int[] k;
+      foreach(int i in k) {
+        int i = i;
+      } 
     }
   }
   

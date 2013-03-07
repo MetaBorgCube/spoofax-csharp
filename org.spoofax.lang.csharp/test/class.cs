@@ -1,16 +1,16 @@
 namespace Simple {
-	partial class A {
-	  A a;
-	  A ab;
-	  A abc;
+	partial class FancyA {
+	  FancyA a;
+	  FancyA ab;
+	  FancyA abc;
 	   
-	  A bla() {
+	  FancyA bla() {
 	    return a.ab.abc.lol(); 
 	  }
 	}
 	
-	partial class A {
-    A lol() {
+	partial class FancyA {
+    FancyA lol() {
       return a;
     }
 	}

@@ -1,20 +1,20 @@
 namespace I {
-	class A {
-	  A a;
+	class FancyA {
+	  FancyA a;
 	  
-	  A a() {
+	  FancyA a() {
 	    return a;
 	  }
 	}
 	
-	class B : A {
-    A b() {
+	class FancyB : FancyA {
+    FancyA b() {
       return a;
     }
 	} 
 	
-	class C : B {
-    A c() {
+	class C : FancyB {
+    FancyA c() {
       return a.a();
     }
 	}

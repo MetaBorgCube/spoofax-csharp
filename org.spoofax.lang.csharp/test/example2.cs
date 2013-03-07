@@ -32,7 +32,7 @@ namespace Blogger {
 			int i;
 			i = i;
 			for (int i = i; i <10 ; i = i + 1;) {
-				int i;
+				//int i;
 				i = i + 1;
 			}
 			return i;

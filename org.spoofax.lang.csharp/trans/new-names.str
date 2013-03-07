@@ -75,7 +75,7 @@ rules // Classes
 		  Class(), Unique(), Current(), [Field(), Function()]), 
 	  id)
 
-	nabl-prop-site(|context, paths, states) =
+	nabl-prop-site(|context, states) =
 		?Class(x, _);
 		Class(nabl-props(|context, [
 			Prop(Type(), Type(x))
@@ -95,7 +95,7 @@ rules // Classes
       Class(), Unique(), Current(), [Field(), Function()]), 
     id, id)
   
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?Class(x, y, _);
     Class(nabl-props(|context, [
     	Prop(Type(), Type(x))
@@ -136,7 +136,7 @@ rules // Classes
       Class(), NonUnique(), Current(), [Field(), Function()]),
     id)
   
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?PartialClass(x, _);
     PartialClass(nabl-props(|context, [
     	Prop(Type(), Type(x))
@@ -156,7 +156,7 @@ rules // Classes
       Class(), NonUnique(), Current(), [Field(), Function()]), 
     id, id)
   
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?PartialClass(x, y, _);
     PartialClass(nabl-props(|context, [
     	Prop(Type(), Type(x))]), 
@@ -254,7 +254,7 @@ rules // Fields
 		  Field(), Unique(), Current(), []
 	  ))
 		
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?FieldDef(t, x);
     FieldDef(id, nabl-props(|context, [
       Prop(Type(), t)
@@ -284,7 +284,7 @@ rules // Functions
       Function(), Unique(), Current(), []), 
     id)
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?FunDef(t, x, p);
     where (result := <new-task(|<task-in-context> context)> PropCalc(Type(), p));
     FunDef(id, nabl-props(|context, [
@@ -300,7 +300,7 @@ rules // Functions
       Function(), Unique(), Current(), [Variable()]), 
     id, id)
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?FunDef(t, x, p, _);
     where (result := <new-task(|<task-in-context> context)> PropCalc(Type(), p));
     FunDef(id, nabl-props(|context, [
@@ -341,7 +341,7 @@ rules // Functions
       Variable(), Unique(), Current(), []
     ))
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?Param(t, x);
     Param(id, nabl-props(|context, [
     	Prop(Type(), t)
@@ -356,7 +356,7 @@ rules // Variable
       Variable(), Unique(), [Subsequent()], []), 
     id)
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?VarDef(t, x, _);
     VarDef(id, nabl-props(|context, [
     	Prop(Type(), t)
@@ -370,7 +370,7 @@ rules // Variable
       Variable(), Unique(), [Subsequent()], []
     ))
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?VarDef(t, x);
     VarDef(id, nabl-props(|context, [
     	Prop(Type(), t)
@@ -384,7 +384,7 @@ rules // Variable
       Variable(), Unique(), [Subsequent()], []
     ), id)
     
-  nabl-prop-site(|context, paths, states) =
+  nabl-prop-site(|context, states) =
     ?InferredVarDef(x, e);
     where (result := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
     InferredVarDef(nabl-props(|context, [
@@ -411,7 +411,7 @@ rules // Control flow
       nabl-def-scope(|scope), nabl-def-scope(|scope)
     )
     
-  nabl-prop-site(cpaths, spaths|context, paths, states) =   
+  nabl-prop-site(cpaths, spaths|context, states) =   
     ?For(t, x, init, cond, stmt, body);
     For(id, nabl-props(|context, [
     	Prop(Type(), t)
@@ -426,7 +426,7 @@ rules // Control flow
       Variable(), Unique(), [scope], []), id, nabl-def-scope(|scope)
     )
     
-  nabl-prop-site(cpaths, spaths|context, paths, states) =   
+  nabl-prop-site(cpaths, spaths|context, states) =   
     ?ForEach(t, x, e, body);
     ForEach(id, nabl-props(|context, [
       Prop(Type(), t)
