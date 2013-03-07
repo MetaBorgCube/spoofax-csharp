@@ -436,9 +436,9 @@ rules // Control flow
   // Block(stmt*)
   nabl-anonymous-scope-site(cpaths|context, paths, states) =   
     ?Block(stmt*);
-    Block(nabl-anonymous-scope(cpaths|context, paths, [
+    nabl-anonymous-scope(cpaths|context, paths, [
       Variable()
-    ]))
+    ])
 
 rules // Name projections
   
