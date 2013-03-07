@@ -6,11 +6,12 @@ namespace StableURIs {
    
       int i;
       int j;
-         
+       
       if (true) {
       
         int i = i;
         int j = i;
+        int k = j;
       
       } else {
       
@@ -19,7 +20,7 @@ namespace StableURIs {
       }
       
       for(int i=i; i<j; i=i+1;) {
-        int i=i;
+        int i=i+i;
         int j=j;
       }
       

@@ -391,7 +391,6 @@ rules // Variable
       Prop(Type(), result)
     ]), id)
     
-  
   // VarRef(x)
   nabl-use-site(|context, paths, deps, states) =
     ?VarRef(x);
