@@ -214,14 +214,14 @@ rules // Classes
     ?This();
     where (result1 := <new-task(|<task-in-context> context)> Resolve(<lookup-uri(|<lang-in-context> context, Field())> paths, Field(), "this", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
-    where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_This_0", result2));
+    where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_This_0", [], result2));
     nabl-use(|context, paths, deps,
       UseCandidate(Class(), result3, [], Current(), One())
     )
 
   match-term:
   	// The name is required here instead of the URI, because we are looking up a name that is produced by a type lookup.
-    ("nabl-use-site_match_This_0", types) -> <nabl-uri-name> uri
+    ("nabl-use-site_match_This_0", [], types) -> <nabl-uri-name> uri
     where
     	// A resolve task returns a list of URI's (result1), so when the type is calculated (result2) a list of types is
     	// returned as well. So the first type in the list is taken.
@@ -234,13 +234,13 @@ rules // Classes
     ?Super();
     where (result1 := <new-task(|<task-in-context> context)> Resolve(<lookup-uri(|<lang-in-context> context, Field())> paths, Field(), "super", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
-    where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_Super_0", result2));
+    where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_Super_0", [], result2));
     nabl-use(|context, paths, deps,
       UseCandidate(Class(), result3, [], Current(), One())
     )
 
   match-term:
-    ("nabl-use-site_match_Super_0", types) -> <nabl-uri-name> uri
+    ("nabl-use-site_match_Super_0", [], types) -> <nabl-uri-name> uri
     where
       <fetch-elem(?Type(_{anno*}))> types;
       Def(uri) := <collect-one(?Def(_))> anno*
@@ -265,13 +265,13 @@ rules // Fields
   nabl-use-site(|context, paths, deps, states) =
     ?FieldAccess(e, f);
     where (result1 := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
-    where (result2 := <new-task(|<task-in-context> context, [<nabl-result-number> result1])> Match("nabl-use-site_match_FieldAccess_2", result1));
+    where (result2 := <new-task(|<task-in-context> context, [<nabl-result-number> result1])> Match("nabl-use-site_match_FieldAccess_2", [], result1));
     FieldAccess(id, nabl-use(|context, paths, deps,
       UseCandidate(Field(), [], result2, One())
     ))
     
   match-term: 
-    ("nabl-use-site_match_FieldAccess_2", Type(_{anno*})) -> uri
+    ("nabl-use-site_match_FieldAccess_2", [], Type(_{anno*})) -> uri
     where
       Def(uri) := <collect-one(?Def(_))> anno*
       
@@ -313,14 +313,14 @@ rules // Functions
   nabl-use-site(|context, paths, deps, states) =
     ?FunCall(e, x, a);
     where (result1 := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
-    where (result2 := <new-task(|<task-in-context> context, [<nabl-result-number> result1])> Match("nabl-use-site_match_FunCall_3", result1));
+    where (result2 := <new-task(|<task-in-context> context, [<nabl-result-number> result1])> Match("nabl-use-site_match_FunCall_3", [], result1));
     where (result3 := <new-task(|<task-in-context> context)> PropCalc(Type(), a));
     FunCall(id, nabl-use(|context, paths, deps,
       UseCandidate(Function(), [Prop(ParameterTypes(), result3)], result2, One())), 
     id)
     
   match-term: 
-  	("nabl-use-site_match_FunCall_3", Type(_{anno*})) -> uri
+  	("nabl-use-site_match_FunCall_3", [], Type(_{anno*})) -> uri
     where
     	Def(uri) := <collect-one(?Def(_))> anno*
   
@@ -404,7 +404,7 @@ rules // Control flow
   // For(t, x, init, cond, stmt, body) 
   nabl-def-site(cpaths, spaths|context, paths, states) =    
     ?For(t, x, init, cond, stmt, body);
-    where(scope := <nabl-def-scope(|context)> Variable());
+    where(scope := <nabl-construct-def-scope(|context)> Variable());
     For(id, nabl-def(cpaths, spaths|context, paths, 
       Variable(), Unique(), [scope], []), id, nabl-def-scope(|scope), 
       nabl-def-scope(|scope), nabl-def-scope(|scope)
@@ -420,7 +420,7 @@ rules // Control flow
   // ForEach(t, x, e, body)
   nabl-def-site(cpaths, spaths|context, paths, states) =    
     ?ForEach(t, x, e, body);
-    where(scope := <nabl-def-scope(|context)> Variable());
+    where(scope := <nabl-construct-def-scope(|context)> Variable());
     ForEach(id, nabl-def(cpaths, spaths|context, paths, 
       Variable(), Unique(), [scope], []), id, nabl-def-scope(|scope)
     )
