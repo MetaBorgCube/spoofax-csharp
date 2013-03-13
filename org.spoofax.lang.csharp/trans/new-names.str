@@ -54,7 +54,7 @@ rules // Namespaces
   nabl-use-site(|context, paths, deps, states) =
     ?UsingPart(x);
     UsingPart(nabl-use(|context, paths, deps,
-      UseCandidate(Namespace(), [], Current(), All())
+      [UseCandidate(Namespace(), [], Current(), All())]
     ))	
     
 
@@ -63,7 +63,7 @@ rules // Namespaces
     ?UsingPart(u, x);
     where (target-uri* := <nabl-collect-all-use; map(nabl-uri)> u);
     UsingPart(id, nabl-use(|context, paths, deps,
-      UseCandidate(Namespace(), [], target-uri*, One())
+      [UseCandidate(Namespace(), [], target-uri*, One())]
     ))
 	
 rules // Classes
@@ -104,7 +104,7 @@ rules // Classes
   nabl-use-site(|context, paths, deps, states) =
     ?Class(x, y, _);
     Class(id, nabl-use(|context, paths, deps,
-      UseCandidate(Class(), [], Current(), All())), 
+      [UseCandidate(Class(), [], Current(), All())]), 
     id)
     
   nabl-import-site(|context, paths, states) =
@@ -165,7 +165,7 @@ rules // Classes
   nabl-use-site(|context, paths, deps, states) =
     ?PartialClass(x, y, _);
     PartialClass(id, nabl-use(|context, paths, deps,
-      UseCandidate(Class(), [], Current(), All())), 
+      [UseCandidate(Class(), [], Current(), All())]), 
     id)
   
   nabl-import-site(|context, paths, states) =
@@ -212,11 +212,11 @@ rules // Classes
   // This()
   nabl-use-site(|context, paths, deps, states) =
     ?This();
-    where (result1 := <new-task(|<task-in-context> context)> Resolve(<lookup-uri(|<lang-in-context> context, Field())> paths, Field(), "this", [], All()));
+    where (result1 := <new-task(|<task-in-context> context)> Resolve([<lookup-uri(|<lang-in-context> context, Field())> paths], Field(), "this", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
     where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_This_0", [], result2));
     nabl-use(|context, paths, deps,
-      UseCandidate(Class(), result3, [], Current(), One())
+      [UseCandidate(Class(), result3, [], Current(), One())]
     )
 
   nabl-match:
@@ -232,11 +232,11 @@ rules // Classes
   // Super()
   nabl-use-site(|context, paths, deps, states) =
     ?Super();
-    where (result1 := <new-task(|<task-in-context> context)> Resolve(<lookup-uri(|<lang-in-context> context, Field())> paths, Field(), "super", [], All()));
+    where (result1 := <new-task(|<task-in-context> context)> Resolve([<lookup-uri(|<lang-in-context> context, Field())> paths], Field(), "super", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
     where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_Super_0", [], result2));
     nabl-use(|context, paths, deps,
-      UseCandidate(Class(), result3, [], Current(), One())
+      [UseCandidate(Class(), result3, [], Current(), One())]
     )
 
   nabl-match:
@@ -267,7 +267,7 @@ rules // Fields
     where (result1 := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
     where (result2 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_FieldAccess_2", [], result1));
     FieldAccess(id, nabl-use(|context, paths, deps,
-      UseCandidate(Field(), [], result2, One())
+      [UseCandidate(Field(), [], [result2], One())]
     ))
     
   nabl-match: 
@@ -316,7 +316,7 @@ rules // Functions
     where (result2 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_FunCall_3", [], result1));
     where (result3 := <new-task(|<task-in-context> context)> PropCalc(Type(), a));
     FunCall(id, nabl-use(|context, paths, deps,
-      UseCandidate(Function(), [Prop(ParameterTypes(), result3)], result2, One())), 
+      [UseCandidate(Function(), [Prop(ParameterTypes(), result3)], [result2], One())]), 
     id)
     
   nabl-match: 
@@ -330,7 +330,7 @@ rules // Functions
     ?FunCall(x, a);
     where (result := <new-task(|<task-in-context> context)> PropCalc(Type(), a));
     FunCall(nabl-use(|context, paths, deps,
-      UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())), 
+      [UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())]), 
     id)
 
   
