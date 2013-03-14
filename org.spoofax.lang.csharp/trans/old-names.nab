@@ -6,9 +6,6 @@ module old-names
   author Gabriel Konat, TU Delft
   author Guido Wachsmuth (g.h.wachsmuth@tudelft.nl), TU Delft
   
-  test suite tests/simple
-  test suite tests/complex
-  
 imports
 
 	nbl/-
@@ -26,6 +23,10 @@ namespaces
   Field
   
   Variable
+
+properties 
+
+  parameter-types of Function: List(Type)
   
 binding rules // Namespaces 
 
@@ -41,26 +42,11 @@ binding rules // Namespaces
     where u refers to Namespace y
   
 binding rules // Classes
-
-	description --
-		A class `x`, seriously, scopes its fields and functions.
-	--
-	
-	example [[
-		class x {
-			
-		}
-	]]
 	
   Class(x, _) :
     defines unique Class x of type Type(x)
     scopes Field, Function
-  
-  description --
-		In the same way, classes with parents scope their fields and functions.
-		Additionally, they import fields and functions from their ancestors.
-	--
-	 
+   
   Class(x, y, _) :
     defines unique Class x of type Type(x)
     scopes Field, Function
@@ -84,41 +70,43 @@ binding rules // Classes
     scopes Field, Function
     imports Field, imported Field, Function, imported Function from Class y
     
-  Type(c) :
-  	refers to Class c
+  TypePart(c) :
+  	refers to Namespace c
+  	otherwise refers to Class c
   	
 binding rules // Fields
 
   FieldDef(t, x) :
     defines Field x of type t 
     
-  todo Gabriel Konat -- Add where clause. --
-	discuss --
-		Documentation features are pretty cool, aren't they?
-	--
-	fixme Gabriel Konat, Guido Wachsmuth --
-		Field accesses are never resolved.
-	--
   FieldAccess(exp, f) :
-    refers to Field f in Class exp
-    where exp has type Type(e)
+    refers to Field f in Class t
+    where exp has type Type(t)
 
 binding rules // Functions
 
-  FunDef(t, x, _) :
-    defines Function x of type t
-
-  FunDef(t, x, _, _) :
-    defines Function x of type t 
-    scopes Variable, Field
+  FunDef(t, x, p*) :
+    defines Function x 
+      of type t
+      of parameter-types pt*
+    where
+      p* has type pt*
+      
+  FunDef(t, x, p*, _) :
+    defines Function x 
+      of type t 
+      of parameter-types pt*
+    where
+      p* has type pt*
+    scopes Variable
     
   FunCall(exp, f, args) :
-    refers to Function f of type (arg-types, _) in Class e
+    refers to Function f of parameter-types arg-types in Class e
     where exp has type Type(e)
     where args has type arg-types
     
   FunCall(x, args) : 
-    refers to Function x of type (arg-types, _)
+    refers to Function x of parameter-types arg-types
     where args has type arg-types
     
   Param(t, x) :

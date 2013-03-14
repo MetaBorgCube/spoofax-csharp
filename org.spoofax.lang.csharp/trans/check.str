@@ -7,6 +7,7 @@ imports
   lib/editor-common.generated
   lib/nbl/-
   new-names
+  old-names
   types
 
 rules // Name binding
@@ -20,11 +21,11 @@ rules // Name binding
     node{anno*} -> (node, "Duplicate definition.")
     where
       duplicate*    := <nabl-get-duplicate-definitions> node;
-      if Function() := <Hd; nabl-uri; nabl-uri-namespace> duplicate* then
+      if NablNsFunction() := <Hd; nabl-uri; nabl-uri-namespace> duplicate* then
         // For functions, only cause a duplicate definition error if there are multiple functions with the same parameter types.
         definition  := <collect-one(?Def(_))> anno*;
-        paramTypes  := <nabl-get-property(|ParameterTypes()); nabl-resolve> definition;
-        paramTypes* := <map(nabl-get-property(|ParameterTypes())); nabl-resolve; collect-all(?paramTypes, conc)> duplicate*;
+        paramTypes  := <nabl-get-property(|NablProp_parameter-types()); nabl-resolve> definition;
+        paramTypes* := <map(nabl-get-property(|NablProp_parameter-types())); nabl-resolve; collect-all(?paramTypes, conc)> duplicate*;
         <gt> (<length> paramTypes*, 1)
       end
       
@@ -32,7 +33,7 @@ rules // Name binding
     node -> (node, $[Ambiguous, could be from [<map(nabl-print-uri); separate-by(|", "); concat-strings> ambiguity'*]])
     where
       ambiguity*  := <nabl-get-ambiguities> node;
-      ambiguity'* := <filter(where(nabl-uri-namespace; ?Namespace()))> ambiguity*;
+      ambiguity'* := <filter(where(nabl-uri-namespace; ?NablNsNamespace()))> ambiguity*;
       <gt> (<length> ambiguity'*, 1)
 
 rules // Types

@@ -1,6 +1,8 @@
 module old-names
 
 imports
+  lib/nbl/-
+  lib/task/-
   nbl/-
   include/CSharp
   desugar
@@ -9,233 +11,356 @@ imports
 
 signature
   constructors
-    Namespace : Namespace
-    Class     : Namespace
-    Function  : Namespace
-    Field     : Namespace
-    Variable  : Namespace
+    NablNsNamespace : Namespace
+    NablNsClass     : Namespace
+    NablNsFunction  : Namespace
+    NablNsField     : Namespace
+    NablNsVariable  : Namespace
+
+
+signature
+  constructors
+    NablProp_parameter-types : Property
 
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?Namespace(x, _)
     ; Namespace(
         nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Namespace()
+        , uris
+        , NablNsNamespace()
         , NonUnique()
         , Current()
-        , [Namespace(), Class()]
+        , [NablNsNamespace(), NablNsClass()]
         )
       , id
       )
 
+  nabl-get-name :
+    Namespace(x, _) -> x
 
-rules
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Class(x, _)
-    ; Class(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , <nabl-unique-qualifier>
-        , Current()
-        , [Field(), Function()]
-        )
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?Class(x, _)
-    ; Class(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Class(x, y, _)
-    ; Class(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , <nabl-unique-qualifier>
-        , Current()
-        , [Field(), Function()]
-        )
-      , id
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?Class(x, y, _)
-    ; Class(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Interface(x, _)
-    ; Interface(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , <nabl-unique-qualifier>
-        , Current()
-        , [Function()]
-        )
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?Interface(x, _)
-    ; Interface(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Interface(x, y, _)
-    ; Interface(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , <nabl-unique-qualifier>
-        , Current()
-        , [Function()]
-        )
-      , id
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?Interface(x, y, _)
-    ; Interface(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, _)
-    ; PartialClass(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , NonUnique()
-        , Current()
-        , [Field(), Function()]
-        )
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?PartialClass(x, _)
-    ; PartialClass(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?PartialClass(x, y, _)
-    ; PartialClass(
-        nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Class()
-        , NonUnique()
-        , Current()
-        , [Field(), Function()]
-        )
-      , id
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?PartialClass(x, y, _)
-    ; PartialClass(
-        nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), Type(x))]
-        )
-      , id
-      , id
-      )
-
-  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
-    ?Type(c)
-    ; Type(
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?UsingPart(x)
+    ; UsingPart(
         nabl-use(
         | lang
         , elems
         , tasks
-        , paths
-        , deps
+        , uris
         , [ UseCandidate(
-              Class()
+              NablNsNamespace()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      )
+
+  nabl-get-name :
+    UsingPart(u, x) -> x
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?UsingPart(u, x)
+    ; UsingPart(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , []
+        )
+      )
+
+
+rules
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?Class(x, _)
+    ; Class(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , Unique()
+        , Current()
+        , [NablNsField(), NablNsFunction()]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    Class(x, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?Class(x, _)
+    ; Class(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?Class(x, y, _)
+    ; Class(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , Unique()
+        , Current()
+        , [NablNsField(), NablNsFunction()]
+        )
+      , id
+      , id
+      )
+
+  nabl-get-name :
+    Class(x, y, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?Class(x, y, _)
+    ; Class(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?Class(x, y, _)
+    ; Class(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsClass()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?Interface(x, _)
+    ; Interface(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , Unique()
+        , Current()
+        , [NablNsFunction()]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    Interface(x, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?Interface(x, _)
+    ; Interface(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?Interface(x, y, _)
+    ; Interface(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , Unique()
+        , Current()
+        , [NablNsFunction()]
+        )
+      , id
+      , id
+      )
+
+  nabl-get-name :
+    Interface(x, y, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?Interface(x, y, _)
+    ; Interface(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?Interface(x, y, _)
+    ; Interface(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsClass()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?PartialClass(x, _)
+    ; PartialClass(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , NonUnique()
+        , Current()
+        , [NablNsField(), NablNsFunction()]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    PartialClass(x, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?PartialClass(x, _)
+    ; PartialClass(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?PartialClass(x, y, _)
+    ; PartialClass(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsClass()
+        , NonUnique()
+        , Current()
+        , [NablNsField(), NablNsFunction()]
+        )
+      , id
+      , id
+      )
+
+  nabl-get-name :
+    PartialClass(x, y, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?PartialClass(x, y, _)
+    ; PartialClass(
+        nabl-props(
+        | elems
+        , [Prop(Type(), Type(x))]
+        )
+      , id
+      , id
+      )
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?PartialClass(x, y, _)
+    ; PartialClass(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsClass()
+            , []
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    TypePart(c) -> c
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?TypePart(c)
+    ; TypePart(
+        nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsNamespace()
+            , []
+            , Current()
+            , All()
+            )
+          , UseCandidate(
+              NablNsClass()
             , []
             , Current()
             , All()
@@ -247,32 +372,224 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?FieldDef(t, x)
     ; FieldDef(
         id
       , nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Field()
-        , <nabl-unique-qualifier>
+        , uris
+        , NablNsField()
+        , Unique()
         , Current()
         , []
         )
       )
 
-  nabl-prop-site(|lang, elems, tasks, states) =
+  nabl-get-name :
+    FieldDef(t, x) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
     ?FieldDef(t, x)
     ; FieldDef(
         id
       , nabl-props(
+        | elems
+        , [Prop(Type(), t)]
+        )
+      )
+
+  nabl-get-name :
+    FieldAccess(exp, f) -> f
+
+  nabl-match :
+    ("match2", Type(t), []) -> t
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?FieldAccess(exp, f)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), exp))
+    ; where(r1 := <new-task(|tasks)> Match("match2", [], r0))
+    ; FieldAccess(
+        id
+      , nabl-use(
         | lang
         , elems
         , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsField()
+            , []
+            , [r1]
+            , One()
+            )
+          ]
+        )
+      )
+
+
+rules
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?FunDef(t, x, p*)
+    ; FunDef(
+        id
+      , nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsFunction()
+        , Unique()
+        , Current()
+        , []
+        )
+      , id
+      )
+
+  nabl-get-name :
+    FunDef(t, x, p*) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?FunDef(t, x, p*)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), p*))
+    ; FunDef(
+        id
+      , nabl-props(
+        | elems
+        , [ Prop(Type(), t)
+          , Prop(NablProp_parameter-types(), r0)
+          ]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?FunDef(t, x, p*, _)
+    ; FunDef(
+        id
+      , nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsFunction()
+        , Unique()
+        , Current()
+        , [NablNsVariable()]
+        )
+      , id
+      , id
+      )
+
+  nabl-get-name :
+    FunDef(t, x, p*, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?FunDef(t, x, p*, _)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), p*))
+    ; FunDef(
+        id
+      , nabl-props(
+        | elems
+        , [ Prop(Type(), t)
+          , Prop(NablProp_parameter-types(), r0)
+          ]
+        )
+      , id
+      , id
+      )
+
+  nabl-get-name :
+    FunCall(exp, f, args) -> f
+
+  nabl-match :
+    ("match3", Type(e), []) -> e
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?FunCall(exp, f, args)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), exp))
+    ; where(r1 := <new-task(|tasks)> Match("match3", [], r0))
+    ; where(r2 := <new-task(|tasks)> PropCalc(Type(), args))
+    ; FunCall(
+        id
+      , nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsFunction()
+            , [Prop(NablProp_parameter-types(), r2)]
+            , [r1]
+            , One()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    FunCall(x, args) -> x
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
+    ?FunCall(x, args)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), args))
+    ; FunCall(
+        nabl-use(
+        | lang
+        , elems
+        , tasks
+        , uris
+        , [ UseCandidate(
+              NablNsFunction()
+            , [Prop(NablProp_parameter-types(), r0)]
+            , Current()
+            , All()
+            )
+          ]
+        )
+      , id
+      )
+
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?Param(t, x)
+    ; Param(
+        id
+      , nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsVariable()
+        , Unique()
+        , Current()
+        , []
+        )
+      )
+
+  nabl-get-name :
+    Param(t, x) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?Param(t, x)
+    ; Param(
+        id
+      , nabl-props(
+        | elems
         , [Prop(Type(), t)]
         )
       )
@@ -280,184 +597,124 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?FunDef(t, x, _)
-    ; FunDef(
-        id
-      , nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Function()
-        , <nabl-unique-qualifier>
-        , Current()
-        , []
-        )
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?FunDef(t, x, _)
-    ; FunDef(
-        id
-      , nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), t)]
-        )
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?FunDef(t, x, _, _)
-    ; FunDef(
-        id
-      , nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Function()
-        , <nabl-unique-qualifier>
-        , Current()
-        , [Variable(), Field()]
-        )
-      , id
-      , id
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?FunDef(t, x, _, _)
-    ; FunDef(
-        id
-      , nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), t)]
-        )
-      , id
-      , id
-      )
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
-    ?Param(t, x)
-    ; Param(
-        id
-      , nabl-def(
-          cpaths
-        , spaths
-        | lang
-        , elems
-        , tasks
-        , paths
-        , Variable()
-        , <nabl-unique-qualifier>
-        , Current()
-        , []
-        )
-      )
-
-  nabl-prop-site(|lang, elems, tasks, states) =
-    ?Param(t, x)
-    ; Param(
-        id
-      , nabl-props(
-        | lang
-        , elems
-        , tasks
-        , [Prop(Type(), t)]
-        )
-      )
-
-
-rules
-
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?VarDef(t, x, _)
     ; VarDef(
         id
       , nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Variable()
-        , <nabl-unique-qualifier>
+        , uris
+        , NablNsVariable()
+        , Unique()
         , [Subsequent()]
         , []
         )
       , id
       )
 
-  nabl-prop-site(|lang, elems, tasks, states) =
+  nabl-get-name :
+    VarDef(t, x, _) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
     ?VarDef(t, x, _)
     ; VarDef(
         id
       , nabl-props(
-        | lang
-        , elems
-        , tasks
+        | elems
         , [Prop(Type(), t)]
         )
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?VarDef(t, x)
     ; VarDef(
         id
       , nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Variable()
-        , <nabl-unique-qualifier>
+        , uris
+        , NablNsVariable()
+        , Unique()
         , [Subsequent()]
         , []
         )
       )
 
-  nabl-prop-site(|lang, elems, tasks, states) =
+  nabl-get-name :
+    VarDef(t, x) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
     ?VarDef(t, x)
     ; VarDef(
         id
       , nabl-props(
-        | lang
-        , elems
-        , tasks
+        | elems
         , [Prop(Type(), t)]
         )
       )
 
-  nabl-use-site(|lang, elems, tasks, paths, deps, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
+    ?InferredVarDef(x, e)
+    ; InferredVarDef(
+        nabl-def(
+          child-uris
+        , sibl-uris
+        | lang
+        , partition
+        , uniques
+        , elems
+        , uris
+        , NablNsVariable()
+        , Unique()
+        , [Subsequent()]
+        , []
+        )
+      , id
+      )
+
+  nabl-get-name :
+    InferredVarDef(x, e) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
+    ?InferredVarDef(x, e)
+    ; where(r0 := <new-task(|tasks)> PropCalc(Type(), e))
+    ; InferredVarDef(
+        nabl-props(
+        | elems
+        , [Prop(Type(), r0)]
+        )
+      , id
+      )
+
+  nabl-get-name :
+    VarRef(x) -> x
+
+  nabl-use-site(|lang, elems, tasks, uris, states) =
     ?VarRef(x)
     ; VarRef(
         nabl-use(
         | lang
         , elems
         , tasks
-        , paths
-        , deps
+        , uris
         , [ UseCandidate(
-              Variable()
+              NablNsVariable()
             , []
             , Current()
             , All()
             )
           , UseCandidate(
-              Field()
+              NablNsField()
             , []
             , Current()
             , All()
@@ -469,20 +726,21 @@ rules
 
 rules
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?For(t, x, init, cond, stmt, body)
-    ; where(scope := <nabl-def-scope> Variable())
+    ; where(scope := <nabl-construct-def-scope(|lang, partition, uniques)> NablNsVariable())
     ; For(
         id
       , nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Variable()
-        , <nabl-unique-qualifier>
+        , uris
+        , NablNsVariable()
+        , Unique()
         , [scope]
         , []
         )
@@ -492,14 +750,15 @@ rules
       , nabl-def-scope(|scope)
       )
 
-  nabl-prop-site(|lang, elems, tasks, states) =
+  nabl-get-name :
+    For(t, x, init, cond, stmt, body) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
     ?For(t, x, init, cond, stmt, body)
     ; For(
         id
       , nabl-props(
-        | lang
-        , elems
-        , tasks
+        | elems
         , [Prop(Type(), t)]
         )
       , id
@@ -508,20 +767,21 @@ rules
       , id
       )
 
-  nabl-def-site(cpaths, spaths|lang, elems, tasks, paths, states) =
+  nabl-def-site(child-uris, sibl-uris|lang, partition, uniques, elems, uris, states) =
     ?ForEach(t, x, e, body)
-    ; where(scope := <nabl-def-scope> Variable())
+    ; where(scope := <nabl-construct-def-scope(|lang, partition, uniques)> NablNsVariable())
     ; ForEach(
         id
       , nabl-def(
-          cpaths
-        , spaths
+          child-uris
+        , sibl-uris
         | lang
+        , partition
+        , uniques
         , elems
-        , tasks
-        , paths
-        , Variable()
-        , <nabl-unique-qualifier>
+        , uris
+        , NablNsVariable()
+        , Unique()
         , [scope]
         , []
         )
@@ -529,25 +789,28 @@ rules
       , nabl-def-scope(|scope)
       )
 
-  nabl-prop-site(|lang, elems, tasks, states) =
+  nabl-get-name :
+    ForEach(t, x, e, body) -> x
+
+  nabl-prop-site(|elems, tasks, states) =
     ?ForEach(t, x, e, body)
     ; ForEach(
         id
       , nabl-props(
-        | lang
-        , elems
-        , tasks
+        | elems
         , [Prop(Type(), t)]
         )
       , id
       , id
       )
 
-  nabl-anonymous-scope-site(cpaths|lang, paths, states) =
+  nabl-anonymous-scope-site(child-uris|lang, partition, uniques, uris, states) =
     ?Block(stmt*)
     ; nabl-anonymous-scope(
-        cpaths
+        child-uris
       | lang
-      , paths
-      , [Variable()]
+      , partition
+      , uniques
+      , uris
+      , [NablNsVariable()]
       )

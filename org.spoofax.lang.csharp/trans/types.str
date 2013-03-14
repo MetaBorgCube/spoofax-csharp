@@ -7,7 +7,8 @@ imports
   lib/task/core
   lib/nbl/-
   new-names
-
+  old-names
+  
 signature 
 
   sorts
@@ -39,13 +40,13 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-    BoolType() -> <nabl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(Class(), "Bool", ())]))})
+    BoolType() -> <nabl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(NablNsClass(), "Bool", ())]))})
   
   type-of:
-    IntType() -> <nabl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(Class(), "Int", ())]))})
+    IntType() -> <nabl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(NablNsClass(), "Int", ())]))})
     
   type-of:
-    StringType() -> <nabl-resolve> Type("String"{Use(URI(Language(<language>), [ID(Class(), "String", ())]))})
+    StringType() -> <nabl-resolve> Type("String"{Use(URI(Language(<language>), [ID(NablNsClass(), "String", ())]))})
     
   type-of:
     VoidType() -> VoidType()
