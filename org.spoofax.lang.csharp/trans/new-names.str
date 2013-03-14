@@ -44,25 +44,20 @@ rules // Namespaces
     Using(nabl-import(|context, paths, [
       Import(<lang-in-context> context, Class())
     ]))
-	
-  nabl-import-dependency-site = 
-    ?Using(x);
-    Using(nabl-import-dependency)
-
 
 	// UsingPart(x)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?UsingPart(x);
-    UsingPart(nabl-use(|context, paths, deps,
+    UsingPart(nabl-use(|context, paths,
       [UseCandidate(Namespace(), [], Current(), All())]
     ))	
     
 
 	// UsingPart(u, x)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?UsingPart(u, x);
     where (target-uri* := <nabl-collect-all-use; map(nabl-uri)> u);
-    UsingPart(id, nabl-use(|context, paths, deps,
+    UsingPart(id, nabl-use(|context, paths,
       [UseCandidate(Namespace(), [], target-uri*, One())]
     ))
 	
@@ -101,9 +96,9 @@ rules // Classes
     	Prop(Type(), Type(x))
   	]), id, id)
     
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?Class(x, y, _);
-    Class(id, nabl-use(|context, paths, deps,
+    Class(id, nabl-use(|context, paths,
       [UseCandidate(Class(), [], Current(), All())]), 
     id)
     
@@ -115,10 +110,6 @@ rules // Classes
       Import(<lang-in-context> context, Function()), 
       Import(<lang-in-context> context, Imported(Function()))
     ]), id)
-    
-  nabl-import-dependency-site = 
-    ?Class(x, y, _);
-    Class(id, nabl-import-dependency, id)
     
   nabl-implicit-def-site(|context, paths, states) =
     ?Class(x, y, _);
@@ -162,9 +153,9 @@ rules // Classes
     	Prop(Type(), Type(x))]), 
   	id, id)
     	
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?PartialClass(x, y, _);
-    PartialClass(id, nabl-use(|context, paths, deps,
+    PartialClass(id, nabl-use(|context, paths,
       [UseCandidate(Class(), [], Current(), All())]), 
     id)
   
@@ -185,37 +176,33 @@ rules // Classes
       IDefCandidate(Field(), "super", Unique(), [Prop(Type(), Type(y))])
     ]), id)
 
-  nabl-import-dependency-site = 
-    ?PartialClass(x, y, _);
-    PartialClass(id, nabl-import-dependency, id)
-
 
   // TypePart(x)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?TypePart(x);
-    TypePart(nabl-use(|context, paths, deps, [
+    TypePart(nabl-use(|context, paths, [
       UseCandidate(Namespace(), [], Current(), All())
     , UseCandidate(Class(), [], Current(), All())
     ])) 
     
 
   // TypePart(q, x)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?TypePart(q, x);
     where (target-uri* := <nabl-collect-all-use; map(nabl-uri)> q);
-    TypePart(id, nabl-use(|context, paths, deps, [
+    TypePart(id, nabl-use(|context, paths, [
       UseCandidate(Namespace(), [], target-uri*, One())
     , UseCandidate(Class(), [], target-uri*, One())
     ]))
 		
 		
   // This()
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?This();
     where (result1 := <new-task(|<task-in-context> context)> Resolve([<lookup-uri(|<lang-in-context> context, Field())> paths], Field(), "this", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
     where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_This_0", [], result2));
-    nabl-use(|context, paths, deps,
+    nabl-use(|context, paths,
       [UseCandidate(Class(), result3, [], Current(), One())]
     )
 
@@ -224,12 +211,12 @@ rules // Classes
   nabl-match: ("nabl-use-site_match_This_0", types, []) -> <fetch-elem(?Type(<id>))> types
   
   // Super()
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?Super();
     where (result1 := <new-task(|<task-in-context> context)> Resolve([<lookup-uri(|<lang-in-context> context, Field())> paths], Field(), "super", [], All()));
     where (result2 := <new-task(|<task-in-context> context)> PropCalc(Type(), result1));
     where (result3 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_This_0", [], result2));
-    nabl-use(|context, paths, deps,
+    nabl-use(|context, paths,
       [UseCandidate(Class(), result3, [], Current(), One())]
     )
 	
@@ -250,11 +237,11 @@ rules // Fields
 
     
   // FieldAccess(e, f)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?FieldAccess(e, f);
     where (result1 := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
     where (result2 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_FieldAccess_2", [], result1));
-    FieldAccess(id, nabl-use(|context, paths, deps,
+    FieldAccess(id, nabl-use(|context, paths,
       [UseCandidate(Field(), [], [result2], One())]
     ))
     
@@ -295,22 +282,22 @@ rules // Functions
     
   
   // FunCall(e, f, a)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?FunCall(e, x, a);
     where (result1 := <new-task(|<task-in-context> context)> PropCalc(Type(), e));
     where (result2 := <new-task(|<task-in-context> context)> Match("nabl-use-site_match_FunCall_3", [], result1));
     where (result3 := <new-task(|<task-in-context> context)> PropCalc(Type(), a));
-    FunCall(id, nabl-use(|context, paths, deps,
+    FunCall(id, nabl-use(|context, paths,
       [UseCandidate(Function(), [Prop(ParameterTypes(), result3)], [result2], One())]), 
     id)
     
   nabl-match: ("nabl-use-site_match_FunCall_3", Type(t), []) -> t
   
   // FunCall(x, a)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?FunCall(x, a);
     where (result := <new-task(|<task-in-context> context)> PropCalc(Type(), a));
-    FunCall(nabl-use(|context, paths, deps,
+    FunCall(nabl-use(|context, paths,
       [UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())]), 
     id)
 
@@ -373,9 +360,9 @@ rules // Variable
     ]), id)
     
   // VarRef(x)
-  nabl-use-site(|context, paths, deps, states) =
+  nabl-use-site(|context, paths, states) =
     ?VarRef(x);
-    VarRef(nabl-use(|context, paths, deps, [
+    VarRef(nabl-use(|context, paths, [
     	UseCandidate(Variable(), [], Current(), All()), 
     	UseCandidate(Field(), [], Current(), All())
   	]))
