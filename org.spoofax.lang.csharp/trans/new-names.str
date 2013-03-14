@@ -223,8 +223,8 @@ rules // Classes
 rules // Fields
 	
 	// FieldDef(t, x)
-	nabl-def-site(cpaths, spaths|lang, partition, unique*, elem*, uri*, paths, states) =
-		?FieldDef(t, x);
+	nabl-def-site(cpaths, spaths|lang, partition, unique*, elem*, uri*, states) =
+  	?FieldDef(t, x);
 		FieldDef(id, nabl-def(cpaths, spaths|lang, partition, unique*, elem*, uri*, 
 		  Field(), Unique(), Current(), []
 	  ))
@@ -386,10 +386,10 @@ rules // Control flow
   
   
   // ForEach(t, x, e, body)
-  nabl-def-site(cpaths, spaths|lang, partition, unique*, elem*, paths, states) =    
+  nabl-def-site(cpaths, spaths|lang, partition, unique*, elem*, uri*, states) =    
     ?ForEach(t, x, e, body);
     where(scope := <nabl-construct-def-scope(|lang, partition, unique*)> Variable());
-    ForEach(id, nabl-def(cpaths, spaths|lang, partition, unique*, elem*, paths, 
+    ForEach(id, nabl-def(cpaths, spaths|lang, partition, unique*, elem*, uri*, 
       Variable(), Unique(), [scope], []), id, nabl-def-scope(|scope)
     )
     
