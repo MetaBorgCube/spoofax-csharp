@@ -9,6 +9,7 @@ imports
   include/CSharp
   lib/editor-common.generated
   lib/index-library.generated
+  lib/analysis/-
   lib/nbl/-
   lib/index/partition
   new-names
@@ -73,7 +74,7 @@ rules // Analysis
     with
       nabl-analyze-multiple-work-units; set-total-work-units;
       measure-time(
-        result* := <nabl-analyze-multiple(parse-file; desugar-all, parallel-unordered, complete-work-unit|<language>, <project-path>); 
+        result* := <nabl-analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>); 
           filter(update-markers)> path*
       , vdebug(!"Analysis seconds: ")
       );
@@ -125,17 +126,23 @@ rules // Debugging
    
 rules // NBL debugging
      
-  debug-show-current-partition = 
-  	nabl-debug-show-current-partition(|<language>)
-    
+  debug-show-results =   
+		analysis-debug-show-results(|<language>)
+
+  debug-show-collected =     
+  	analysis-debug-show-collected(|<language>)
+
+  debug-show-tasks =     
+  	analysis-debug-show-tasks(|<language>)
+
   debug-show-all-partitions =
-    nabl-debug-show-all-partitions(|<language>)
+    analysis-debug-show-all-partitions(|<language>)
 
   debug-clear-current =
-    nabl-debug-clear-current(|<language>)
+    analysis-debug-clear-current(|<language>)
     
   debug-clear-all =
-    nabl-debug-clear-all(|<language>)  
+    analysis-debug-clear-all(|<language>)  
 
   debug-reload = 
-  	nabl-debug-reload(|<language>)
+  	analysis-debug-reload(|<language>)
