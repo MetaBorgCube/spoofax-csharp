@@ -1,14 +1,16 @@
-class Int {}
+using Test;
 
 class B {
 	A a;
-	int b;
+	C c;
 	
 	A tests() {
 		return a.a;
 	}
-	
-	void hello() {
-		return a;
-	}
+}
+
+class Cs {}
+
+namespace Test {
+
 }

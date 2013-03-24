@@ -1,3 +1,6 @@
 class A {
-	A a;
+	void test() {}
+	void test2() {
+		test();
+	}
 }
