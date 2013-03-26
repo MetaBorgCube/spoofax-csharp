@@ -62,6 +62,9 @@
 		<copy todir="${basedir}/lib/task">
 			<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" includes="**" />
 		</copy>
+		<copy todir="${basedir}/lib/types">
+			<fileset dir="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" includes="**" />
+		</copy>
 	</target>
 
 	<target name="link-lib-files" unless="isWin" depends="os-detection">
@@ -70,5 +73,6 @@
 		<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/nbl/" link="${basedir}/lib/nbl" overwrite="true" />
 		<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/index/" link="${basedir}/lib/index" overwrite="true" />
 		<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/task/" link="${basedir}/lib/task" overwrite="true" />
+		<symlink resource="${basedir}/../../runtime-libraries/org.spoofax.meta.runtime.libraries/types/" link="${basedir}/lib/types" overwrite="true" />
 	</target>
 </project>
