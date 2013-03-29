@@ -9,6 +9,7 @@ imports
   include/CSharp
   lib/editor-common.generated
   lib/index-library.generated
+  lib/analysis/-
   lib/nbl/-
   lib/index/partition
   new-names
@@ -54,12 +55,13 @@ rules // Analysis
       )
 
   update-markers:
-    Result(_, ast, ast', _, _, _, _) -> <id>
+    Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, _, _, _) -> 
+    Result(partition, initial-ast, analyzed-ast, old-entry*, new-entry*, old-task*, new-task*, errors, warnings, notes)
     where
-      not(() := ast)
+      not(() := initial-ast)
     with
-      (errors, warnings, notes) := <analyze-markers> ast';
-      <set-markers(|ast)> (ast', errors, warnings, notes)
+      (errors, warnings, notes) := <analyze-markers> analyzed-ast;
+      <set-markers(|initial-ast)> (analyzed-ast, errors, warnings, notes)
 
   queue-analyze-multiple:
     path* -> None()
@@ -69,19 +71,16 @@ rules // Analysis
       end
 
   analyze-multiple:
-    path* -> result*
+    path* -> (task*, result'*)
     with
       nabl-analyze-multiple-work-units; set-total-work-units;
       measure-time(
-        result* := <nabl-analyze-multiple(parse-file; desugar-all, parallel-unordered, complete-work-unit|<language>, <project-path>); 
-          filter(update-markers)> path*
+        (task*, result*) := <nabl-analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
+        result'*         := <filter(update-markers)> result*
       , vdebug(!"Analysis seconds: ")
       );
-      where(index-commit);
-      mapconcat(nabl-result-dependent);
-      map(index-partition-file);
-      make-set;
-      queue-analyze-multiple
+      where(index-commit)
+      // TODO: update markers for partitions that have had a task executed.
       
   measure-time(s, log) =
     where(before := <times>);
@@ -125,17 +124,23 @@ rules // Debugging
    
 rules // NBL debugging
      
-  debug-show-current-partition = 
-  	nabl-debug-show-current-partition(|<language>)
-    
+  debug-show-results =   
+		analysis-debug-show-results(|<language>)
+
+  debug-show-collected =     
+  	analysis-debug-show-collected(|<language>)
+
+  debug-show-tasks =     
+  	analysis-debug-show-tasks(|<language>)
+
   debug-show-all-partitions =
-    nabl-debug-show-all-partitions(|<language>)
+    analysis-debug-show-all-partitions(|<language>)
 
   debug-clear-current =
-    nabl-debug-clear-current(|<language>)
+    analysis-debug-clear-current(|<language>)
     
   debug-clear-all =
-    nabl-debug-clear-all(|<language>)  
+    analysis-debug-clear-all(|<language>)  
 
   debug-reload = 
-  	nabl-debug-reload(|<language>)
+  	analysis-debug-reload(|<language>)

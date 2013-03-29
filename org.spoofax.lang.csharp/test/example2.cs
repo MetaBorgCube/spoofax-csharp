@@ -19,7 +19,7 @@ namespace Blogger {
 		string body; 
 		
 		URL Homepage() {
-		  return this.poster.homepage;
+		  return poster.homepage;
 		}
 		
 		string HomepageString() {

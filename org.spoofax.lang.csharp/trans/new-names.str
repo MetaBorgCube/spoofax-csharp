@@ -200,7 +200,8 @@ rules // Classes
   // This()
   nabl-use-site(|lang, elem*, task*, uri*, states) =
     ?This();
-    where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "this", [], All()));
+    //where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "this", [], All()));
+    where (result1 := <nabl-use-candidate(|lang, elem*, task*, uri*, "this")> UseCandidate(NablNsField(), [], Current(), All()));
     where (result2 := <new-task(|task*)> PropCalc(Type(), result1));
     where (result3 := <new-task(|task*)> Match("nabl-use-site_match_This_0", [], result2));
     nabl-use(|lang, elem*, task*, uri*,
@@ -214,7 +215,8 @@ rules // Classes
   // Super()
   nabl-use-site(|lang, elem*, task*, uri*, states) =
     ?Super();
-    where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "super", [], All()));
+    //where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "super", [], All()));
+    where (result1 := <nabl-use-candidate(|lang, elem*, task*, uri*, "super")> UseCandidate(NablNsField(), [], Current(), All()));
     where (result2 := <new-task(|task*)> PropCalc(Type(), result1));
     where (result3 := <new-task(|task*)> Match("nabl-use-site_match_This_0", [], result2));
     nabl-use(|lang, elem*, task*, uri*,
