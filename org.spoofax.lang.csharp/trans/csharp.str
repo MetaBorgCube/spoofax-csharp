@@ -78,8 +78,8 @@ rules // Analysis
         (task*, result*) := <nabl-analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
         result'*         := <filter(update-markers)> result*
       , vdebug(!"Analysis seconds: ")
-      );
-      where(index-commit)
+      )
+      //where(index-commit)
       // TODO: update markers for partitions that have had a task executed.
       
   measure-time(s, log) =

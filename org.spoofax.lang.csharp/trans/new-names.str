@@ -40,25 +40,25 @@ rules // Namespaces
 	
 	
 	// Using(x)
-  nabl-import-site(|lang, elem*, task*, uri*, states) =
+  nabl-import-site(|lang, partition, elem*, uri*, states) =
     ?Using(x);
-    Using(nabl-import(|lang, elem*, task*, uri*, [
+    Using(nabl-import(|lang, partition, elem*, uri*, [
       Import(lang, NablNsClass())
     ]))
 
 	// UsingPart(x)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?UsingPart(x);
-  //   UsingPart(nabl-use(|lang, elem*, task*, uri*,
+  //   UsingPart(nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Namespace(), [], Current(), All())]
   //   ))	
     
 
 	// UsingPart(u, x)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?UsingPart(u, x);
   //   where (target-uri* := <nabl-collect-all-use; map(nabl-uri)> u);
-  //   UsingPart(id, nabl-use(|lang, elem*, task*, uri*,
+  //   UsingPart(id, nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Namespace(), [], target-uri*, One())]
   //   ))
 	
@@ -71,7 +71,7 @@ rules // Classes
 	// 	  Class(), Unique(), Current(), [Field(), Function()]), 
 	//   id)
 
-	// nabl-prop-site(|elem*, task*, states) =
+	// nabl-prop-site(|elem*, states) =
 	// 	?Class(x, _);
 	// 	Class(nabl-props(|elem*, [
 	// 		Prop(Type(), Type(x))
@@ -91,21 +91,21 @@ rules // Classes
   //     Class(), Unique(), Current(), [Field(), Function()]), 
   //   id, id)
   
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?Class(x, y, _);
   //   Class(nabl-props(|elem*, [
   //   	Prop(Type(), Type(x))
   // 	]), id, id)
     
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?Class(x, y, _);
-  //   Class(id, nabl-use(|lang, elem*, task*, uri*,
+  //   Class(id, nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Class(), [], Current(), All())]), 
   //   id)
     
-  nabl-import-site(|lang, elem*, task*, uri*, states) =
+  nabl-import-site(|lang, partition, elem*, uri*, states) =
     ?Class(x, y, _);
-    Class(id, nabl-import(|lang, elem*, task*, uri*, [
+    Class(id, nabl-import(|lang, partition, elem*, uri*, [
     	Import(lang, NablNsField()), 
       Import(lang, Imported(NablNsField())), 
       Import(lang, NablNsFunction()), 
@@ -128,7 +128,7 @@ rules // Classes
   //     Class(), NonUnique(), Current(), [Field(), Function()]),
   //   id)
   
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?PartialClass(x, _);
   //   PartialClass(nabl-props(|elem*, [
   //   	Prop(Type(), Type(x))
@@ -148,21 +148,21 @@ rules // Classes
   //     Class(), NonUnique(), Current(), [Field(), Function()]), 
   //   id, id)
   
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?PartialClass(x, y, _);
   //   PartialClass(nabl-props(|elem*, [
   //   	Prop(Type(), Type(x))]), 
   // 	id, id)
     	
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?PartialClass(x, y, _);
-  //   PartialClass(id, nabl-use(|lang, elem*, task*, uri*,
+  //   PartialClass(id, nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Class(), [], Current(), All())]), 
   //   id)
   
-  nabl-import-site(|lang, elem*, task*, uri*, states) =
+  nabl-import-site(|lang, partition, elem*, uri*, states) =
     ?PartialClass(x, y, _);
-    PartialClass(id, nabl-import(|lang, elem*, task*, uri*, [
+    PartialClass(id, nabl-import(|lang, partition, elem*, uri*, [
       Import(lang, NablNsField()), 
       Import(lang, Imported(NablNsField())), 
       Import(lang, NablNsFunction()), 
@@ -179,32 +179,32 @@ rules // Classes
 
 
   // TypePart(x)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?TypePart(x);
-  //   TypePart(nabl-use(|lang, elem*, task*, uri*, [
+  //   TypePart(nabl-use(|lang, partition, elem*, uri*, [
   //     UseCandidate(NablNsNamespace(), [], Current(), All())
   //   , UseCandidate(NablNsClass(), [], Current(), All())
   //   ])) 
     
 
   // TypePart(q, x)
-  nabl-use-site(|lang, elem*, task*, uri*, states) =
+  nabl-use-site(|lang, partition, elem*, uri*, states) =
     ?TypePart(q, x);
     where (target-uri* := <nabl-collect-all-use; map(nabl-uri)> q);
-    TypePart(id, nabl-use(|lang, elem*, task*, uri*, [
+    TypePart(id, nabl-use(|lang, partition, elem*, uri*, [
       UseCandidate(NablNsNamespace(), [], target-uri*, One())
     , UseCandidate(NablNsClass(), [], target-uri*, One())
     ]))
 		
 		
   // This()
-  nabl-use-site(|lang, elem*, task*, uri*, states) =
+  nabl-use-site(|lang, partition, elem*, uri*, states) =
     ?This();
     //where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "this", [], All()));
-    where (result1 := <nabl-use-candidate(|lang, elem*, task*, uri*, "this")> UseCandidate(NablNsField(), [], Current(), All()));
-    where (result2 := <new-task(|task*)> PropCalc(Type(), result1));
-    where (result3 := <new-task(|task*)> Match("nabl-use-site_match_This_0", [], result2));
-    nabl-use(|lang, elem*, task*, uri*,
+    where (result1 := <nabl-use-candidate(|lang, partition, elem*, uri*, "this")> UseCandidate(NablNsField(), [], Current(), All()));
+    where (result2 := <new-task(|partition)> PropCalc(Type(), result1));
+    where (result3 := <new-task(|partition)> Match("nabl-use-site_match_This_0", [], result2));
+    nabl-use(|lang, partition, elem*, uri*,
      [UseCandidate(NablNsClass(), result3, [], Current(), One())]
     )
 
@@ -213,13 +213,13 @@ rules // Classes
   nabl-match: ("nabl-use-site_match_This_0", types, []) -> <fetch-elem(?Type(<id>))> types
   
   // Super()
-  nabl-use-site(|lang, elem*, task*, uri*, states) =
+  nabl-use-site(|lang, partition, elem*, uri*, states) =
     ?Super();
     //where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "super", [], All()));
-    where (result1 := <nabl-use-candidate(|lang, elem*, task*, uri*, "super")> UseCandidate(NablNsField(), [], Current(), All()));
-    where (result2 := <new-task(|task*)> PropCalc(Type(), result1));
-    where (result3 := <new-task(|task*)> Match("nabl-use-site_match_This_0", [], result2));
-    nabl-use(|lang, elem*, task*, uri*,
+    where (result1 := <nabl-use-candidate(|lang, partition, elem*, uri*, "super")> UseCandidate(NablNsField(), [], Current(), All()));
+    where (result2 := <new-task(|partition)> PropCalc(Type(), result1));
+    where (result3 := <new-task(|partition)> Match("nabl-use-site_match_This_0", [], result2));
+    nabl-use(|lang, partition, elem*, uri*,
       [UseCandidate(NablNsClass(), result3, [], Current(), One())]
     )
 	
@@ -232,7 +232,7 @@ rules // Fields
 	// 	  Field(), Unique(), Current(), []
 	//   ))
 		
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?FieldDef(t, x);
   //   FieldDef(id, nabl-props(|elem*, [
   //     Prop(Type(), t)
@@ -240,11 +240,11 @@ rules // Fields
 
     
   // FieldAccess(e, f)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?FieldAccess(e, f);
   //   where (result1 := <new-task(|task*)> PropCalc(Type(), e));
   //   where (result2 := <new-task(|task*)> Match("nabl-use-site_match_FieldAccess_2", [], result1));
-  //   FieldAccess(id, nabl-use(|lang, elem*, task*, uri*,
+  //   FieldAccess(id, nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Field(), [], [result2], One())]
   //   ))
     
@@ -259,7 +259,7 @@ rules // Functions
   //     Function(), Unique(), Current(), []), 
   //   id)
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?FunDef(t, x, p);
   //   where (result := <new-task(|task*)> PropCalc(Type(), p));
   //   FunDef(id, nabl-props(|elem*, [
@@ -275,7 +275,7 @@ rules // Functions
   //     Function(), Unique(), Current(), [Variable()]), 
   //   id, id)
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?FunDef(t, x, p, _);
   //   where (result := <new-task(|task*)> PropCalc(Type(), p));
   //   FunDef(id, nabl-props(|elem*, [
@@ -285,22 +285,22 @@ rules // Functions
     
   
   // FunCall(e, f, a)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?FunCall(e, x, a);
   //   where (result1 := <new-task(|task*)> PropCalc(Type(), e));
   //   where (result2 := <new-task(|task*)> Match("nabl-use-site_match_FunCall_3", [], result1));
   //   where (result3 := <new-task(|task*)> PropCalc(Type(), a));
-  //   FunCall(id, nabl-use(|lang, elem*, task*, uri*,
+  //   FunCall(id, nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Function(), [Prop(ParameterTypes(), result3)], [result2], One())]), 
   //   id)
   //   
   // nabl-match: ("nabl-use-site_match_FunCall_3", Type(t), []) -> t
   
   // FunCall(x, a)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?FunCall(x, a);
   //   where (result := <new-task(|task*)> PropCalc(Type(), a));
-  //   FunCall(nabl-use(|lang, elem*, task*, uri*,
+  //   FunCall(nabl-use(|lang, partition, elem*, uri*,
   //     [UseCandidate(Function(), [Prop(ParameterTypes(), result)], Current(), All())]), 
   //   id)
 
@@ -312,7 +312,7 @@ rules // Functions
   //     Variable(), Unique(), Current(), []
   //   ))
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?Param(t, x);
   //   Param(id, nabl-props(|elem*, [
   //   	Prop(Type(), t)
@@ -327,7 +327,7 @@ rules // Variable
   //     Variable(), Unique(), [Subsequent()], []), 
   //   id)
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?VarDef(t, x, _);
   //   VarDef(id, nabl-props(|elem*, [
   //   	Prop(Type(), t)
@@ -341,7 +341,7 @@ rules // Variable
   //     Variable(), Unique(), [Subsequent()], []
   //   ))
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?VarDef(t, x);
   //   VarDef(id, nabl-props(|elem*, [
   //   	Prop(Type(), t)
@@ -355,7 +355,7 @@ rules // Variable
   //     Variable(), Unique(), [Subsequent()], []
   //   ), id)
     
-  // nabl-prop-site(|elem*, task*, states) =
+  // nabl-prop-site(|elem*, states) =
   //   ?InferredVarDef(x, e);
   //   where (result := <new-task(|task*)> PropCalc(Type(), e));
   //   InferredVarDef(nabl-props(|elem*, [
@@ -363,9 +363,9 @@ rules // Variable
   //   ]), id)
     
   // VarRef(x)
-  // nabl-use-site(|lang, elem*, task*, uri*, states) =
+  // nabl-use-site(|lang, partition, elem*, uri*, states) =
   //   ?VarRef(x);
-  //   VarRef(nabl-use(|lang, elem*, task*, uri*, [
+  //   VarRef(nabl-use(|lang, partition, elem*, uri*, [
   //   	UseCandidate(NablNsVariable(), [], Current(), All()), 
   //   	UseCandidate(NablNsField(), [], Current(), All())
   // 	]))
@@ -381,7 +381,7 @@ rules // Control flow
   //     nabl-def-scope(|scope), nabl-def-scope(|scope)
   //   )
     
-  // nabl-prop-site(cpaths, spaths|elem*, task*, states) =   
+  // nabl-prop-site(cpaths, spaths|elem*, states) =   
   //   ?For(t, x, init, cond, stmt, body);
   //   For(id, nabl-props(|elem*, [
   //   	Prop(Type(), t)
@@ -396,7 +396,7 @@ rules // Control flow
   //     Variable(), Unique(), [scope], []), id, nabl-def-scope(|scope)
   //   )
     
-  // nabl-prop-site(cpaths, spaths|elem*, task*, states) =   
+  // nabl-prop-site(cpaths, spaths|elem*, states) =   
   //   ?ForEach(t, x, e, body);
   //   ForEach(id, nabl-props(|elem*, [
   //     Prop(Type(), t)

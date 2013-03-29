@@ -5,7 +5,8 @@ imports CSharp-Builders.generated
 builders
   
   provider : include/csharp-java.jar                                                                                                                          
-  provider : include/csharp.jar                                                                                        
+  provider : include/csharp.jar
+  provider : lib/task.jar                                                                                        
                                                                                                                             
   observer : editor-analyze (multifile)
                                                                                                                             
