@@ -7,6 +7,7 @@ builders
   provider : include/csharp-java.jar                                                                                                                          
   provider : include/csharp.jar
   provider : lib/task.jar                                                                                        
+  provider : lib/guava.jar
                                                                                                                             
   observer : editor-analyze (multifile)
                                                                                                                             
