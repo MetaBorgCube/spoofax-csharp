@@ -25,7 +25,7 @@ rules // Analysis
     (ast, path, project-path) -> (ast', errors, warnings, notes)
     with
       editor-init;
-      (ast', _, _, _)           := <desugar-all; nabl-analyze(|<language>, path, project-path)> ast;
+      (ast', error*)            := <desugar-all; nabl-analyze(|<language>, path, project-path)> ast;
       (errors, warnings, notes) := <analyze-markers> ast'
 
   editor-analyze:
@@ -68,15 +68,16 @@ rules // Analysis
       end
 
   analyze-multiple:
-    path* -> (task*, result'*)
+    path* -> (task*, error*, result'*)
     with
       nabl-analyze-multiple-work-units; set-total-work-units;
       measure-time(
-        (task*, result*) := <nabl-analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
-        result'*         := <filter(update-markers)> result*
+        (task*, error*, result*) := <nabl-analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
+        result'*                 := <filter(update-markers)> result*
       , vdebug(!"Analysis seconds: ")
-      )
-      //where(index-commit)
+      );
+      where(index-commit);
+      <map(debug(!"Error: "))> error*
       // TODO: update markers for partitions that have had a task executed.
       
   measure-time(s, log) =
@@ -92,7 +93,7 @@ rules // Editor services
     	task-setup(|project-path);
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
     	<nabl-has-reference> node;
-    	definition := <nabl-resolve-collect-one> node
+    	definition := <nabl-collect-one-resolved-def> node
 
   editor-hover:
     (target, position, ast, path, project-path) -> $[Type: [<print-type> type]]
