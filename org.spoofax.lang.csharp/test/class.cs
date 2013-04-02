@@ -4,7 +4,7 @@ namespace Simple {
 	  FancyA ab;
 	  FancyA abc;
 	   
-	  FancyA bla() { 
+	  FancyA bla() {
 	    return a.ab.abc.lol(); 
 	  }
 	}
@@ -14,4 +14,4 @@ namespace Simple {
       return a;
     }
 	}
-} 
+}

@@ -5,6 +5,7 @@ imports
 	include/CSharp
 	lib/task/core
 	lib/nbl/-
+	lib/task/-
 	types
 	old-names
 	
@@ -207,10 +208,8 @@ rules // Classes
     nabl-use(|lang, partition, elem*, uri*,
      [UseCandidate(NablNsClass(), result3, [], Current(), One())]
     )
-
-	// A resolve task returns a list of URI's (result1), so when the type is calculated (result2) a list of types is
-	// returned as well. So the first type in the list is taken.      
-  nabl-match: ("nabl-use-site_match_This_0", types, []) -> <fetch-elem(?Type(<id>))> types
+   
+  task-match: ("nabl-use-site_match_This_0", Type(t), []) -> t
   
   // Super()
   nabl-use-site(|lang, partition, elem*, uri*, states) =
@@ -218,10 +217,12 @@ rules // Classes
     //where (result1 := <new-task(|task*)> Resolve([<lookup-uri(|lang, NablNsField())> uri*], NablNsField(), "super", [], All()));
     where (result1 := <nabl-use-candidate(|lang, partition, elem*, uri*, "super")> UseCandidate(NablNsField(), [], Current(), All()));
     where (result2 := <new-task(|partition)> PropCalc(Type(), result1));
-    where (result3 := <new-task(|partition)> Match("nabl-use-site_match_This_0", [], result2));
+    where (result3 := <new-task(|partition)> Match("nabl-use-site_match_Super_0", [], result2));
     nabl-use(|lang, partition, elem*, uri*,
       [UseCandidate(NablNsClass(), result3, [], Current(), One())]
     )
+    
+  task-match: ("nabl-use-site_match_Super_0", Type(t), []) -> t
 	
 rules // Fields
 	
