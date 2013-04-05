@@ -24,7 +24,7 @@ rules // Analysis
     (ast, path, project-path) -> (ast', errors, warnings, notes)
     with
       editor-init;
-      (ast', error*)            := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
+      (ast', _, _)              := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
       (errors, warnings, notes) := <editor-analyze-markers> ast'
       // TODO: Update markers for partitions that have had a task executed.
 
@@ -66,12 +66,13 @@ rules // Analysis
       end
 
   editor-analyze-multiple:
-    path* -> (task*, error*, result'*)
+    path* -> (error*, result'*, evaluated-count)
     with
       nabl-analyze-multiple-work-units; set-total-work-units;
-      (task*, error*, result*) := <analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
-      result'*                 := <filter(editor-update-markers)> result*
-      where(index-commit)
+      (error*, result*, evaluated-count) := <analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
+      result'*                           := <filter(editor-update-markers)> result*;
+      index-commit;
+      task-persist
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Editor services
