@@ -25,6 +25,9 @@
                         -I &quot;${basedir}&quot;
                         -la stratego-lib -la stratego-parallel -la stratego-sglr -la stratego-gpp -la stratego-xtc -la stratego-aterm" />
 
+	<property name="externaljar" location="lib/task.jar" />
+	<property name="externaljarflags" value="-la org.metaborg.runtime.task.interop" />
+
 	<!-- Optional: external .def and .jar locations
         <property name="externaldef" location="syntax/${sdfmodule}.def"/>
         <property name="externaljar" value="../lib.jar"/>

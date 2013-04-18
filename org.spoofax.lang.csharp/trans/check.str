@@ -6,6 +6,7 @@ imports
   include/CSharp
   lib/editor-common.generated
   lib/nbl/-
+  lib/task/core
   new-names
   old-names
   types
@@ -24,8 +25,8 @@ rules // Name binding
       if NablNsFunction() := <Hd; nabl-uri; nabl-uri-namespace> duplicate* then
         // For functions, only cause a duplicate definition error if there are multiple functions with the same parameter types.
         definition  := <collect-one(?Def(_))> anno*;
-        paramTypes  := <nabl-get-property(|NablProp_parameter-types()); nabl-resolve> definition;
-        paramTypes* := <map(nabl-get-property(|NablProp_parameter-types())); nabl-resolve; collect-all(?paramTypes, conc)> duplicate*;
+        paramTypes  := <nabl-get-property(|NablProp_parameter-types()); insert-results> definition;
+        paramTypes* := <map(nabl-get-property(|NablProp_parameter-types())); insert-results; collect-all(?paramTypes, conc)> duplicate*;
         <gt> (<length> paramTypes*, 1)
       end
       

@@ -4,8 +4,12 @@ imports
 	
   include/CSharp
   lib/editor-common.generated
+  lib/nbl/resolve
+  lib/nbl/query
+  lib/nbl/entries
+  lib/nbl/query
+  lib/nbl/uri
   lib/task/core
-  lib/nbl/-
   new-names
   old-names
   
@@ -40,14 +44,14 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-    BoolType() -> <nabl-resolve> Type("Bool"{Use(URI(Language(<language>), [ID(NablNsClass(), "Bool", ())]))})
+    BoolType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Bool", ())])
   
   type-of:
-    IntType() -> <nabl-resolve> Type("Int"{Use(URI(Language(<language>), [ID(NablNsClass(), "Int", ())]))})
+    IntType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Int", ())])
     
   type-of:
-    StringType() -> <nabl-resolve> Type("String"{Use(URI(Language(<language>), [ID(NablNsClass(), "String", ())]))})
-    
+    StringType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "String", ())])
+
   type-of:
     VoidType() -> VoidType()
     
@@ -97,10 +101,10 @@ rules // Type projections
     TypeExp(t) -> <type-of> t
     
   type-of:
-    TypePart(t) -> <nabl-resolve-collect-one; type-of> t
+    TypePart(t) -> <nabl-collect-one-resolved-def; type-of> t
 
   type-of:
-    TypePart(_, t) -> <nabl-resolve-collect-one; type-of> t    
+    TypePart(_, t) -> <nabl-collect-one-resolved-def; type-of> t    
 
   
   // Expressions
@@ -108,22 +112,22 @@ rules // Type projections
     Return(e) -> <type-of> e
   
   type-of:
-    VarRef(f) -> <nabl-resolve-collect-one; type-of> f
+    VarRef(f) -> <nabl-collect-one-resolved-def; type-of> f
   
   type-of:
-    FieldAccess(e, f) -> <nabl-resolve-collect-one; type-of> f
+    FieldAccess(e, f) -> <nabl-collect-one-resolved-def; type-of> f
     
   type-of:
-    FunCall(e, m, _) -> <nabl-resolve-collect-one; type-of> m
+    FunCall(e, m, _) -> <nabl-collect-one-resolved-def; type-of> m
     
   type-of:
-    FunCall(m, _) -> <nabl-resolve-collect-one; type-of> m
+    FunCall(m, _) -> <nabl-collect-one-resolved-def; type-of> m
     
   type-of:
-    This() -> <nabl-resolve-collect-one; type-of> 
+    This() -> <nabl-collect-one-resolved-def; type-of> 
     
   type-of:
-    Super() -> <nabl-resolve-collect-one; type-of> 
+    Super() -> <nabl-collect-one-resolved-def; type-of> 
 
   type-of:
   	Add(_, _) -> <type-of> IntType()
@@ -147,15 +151,13 @@ rules // Type projections
   	
   type-of:
     Def(uri) -> <nabl-get-property(|Type()); type-of> uri
-    
+  
   type-of:
-    URI(_, _) -> <nabl-get-property(|Type()); type-of>
-   
+  	Dependency(_) -> <id>
+  
+  // TODO: are these two rules needed?
   type-of:
-    Result(_) -> <nabl-resolve-results>
-    
-  type-of:
-    Type(t@_{anno*}) -> <nabl-resolve-collect-one; type-of> t
+    Type(t@_{anno*}) -> <nabl-collect-one-resolved-def; type-of> t
     where
       not(<collect-one(?Def(_))> anno*)
     
@@ -163,7 +165,7 @@ rules // Type projections
     Type(t@_{anno*}) -> <id>
     where
       <collect-one(?Def(_))> anno*
-      
+
 rules // Comparison
 
   is-assignable-to:
@@ -181,6 +183,9 @@ rules // Utility
       case ?IntType() : !"int"
       case ?StringType() : !"string"
       case ?Type(t) : <print-type> t
+      case ?TypeExp(t) : <print-type> t
+      case ?TypePart(t) : <print-type> t
+      case ?TypePart(q, t) : <concat-strings> [<print-type> q, ".", <print-type> t]
       case ?[type|[]] : <print-type> type
       case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
       case is-string : strip-annos

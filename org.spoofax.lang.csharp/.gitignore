@@ -5,5 +5,5 @@
 /lib-refactoring
 /utils
 /editor/java/trans
-
+/trans/old-names.str
 *.aterm
