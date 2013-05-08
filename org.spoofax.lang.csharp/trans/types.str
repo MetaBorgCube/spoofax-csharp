@@ -10,8 +10,7 @@ imports
   lib/nbl/query
   lib/nbl/uri
   lib/task/core
-  new-names
-  old-names
+	names
   
 signature 
 
@@ -27,6 +26,11 @@ signature
 	  IntType    : Type
 	  StringType : Type
 	  VoidType   : Type
+
+rules // NaBL property
+	
+  calc-property: 
+  	(Type(), x) -> <type-of> x
 
 rules // Type projections
   

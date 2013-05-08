@@ -13,7 +13,7 @@ imports
   lib/nbl/-
   lib/task/-
   lib/index/partition
-  new-names
+  names
   check
   desugar
   types
@@ -21,11 +21,12 @@ imports
 rules // Analysis
   
   editor-analyze:
-    (ast, path, project-path) -> (ast', errors, warnings, notes)
+    (ast, path, project-path) -> (ast', error*, warning*, note*)
     with
       editor-init;
-      (ast', _, _)              := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
-      (errors, warnings, notes) := <editor-analyze-markers> ast'
+      <debug(!"Analyzing file: ")> path;
+      (ast', error-task*, _, (analyze-error*, analyze-warning*, analyze-note*)) := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
+      (error*, warning*, note*) := <editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*)> ast'
       // TODO: Update markers for partitions that have had a task executed.
 
   editor-analyze:
@@ -42,21 +43,21 @@ rules // Analysis
   		index-setup(|<language>, [project-path], $[[project-path]/[path]]);
   		index-commit
 
-  editor-analyze-markers:
-    ast -> (errors, warnings, notes)
+  editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*):
+    ast -> ([analyze-error*, error*], [analyze-warning*, warning*], [analyze-note*, note*])
     with
-      errors   := <collect-all(constraint-error, conc)> ast;
-      warnings := <collect-all(constraint-warning, conc)> ast;
-      notes    := <collect-all(constraint-note, conc)> ast
+      error*   := <collect-all(constraint-error, conc)> ast;
+      warning* := <collect-all(constraint-warning, conc)> ast;
+      note*    := <collect-all(constraint-note, conc)> ast
 
   editor-update-markers:
-    Result(partition, initial-ast, analyzed-ast, changed-read*, _, _, _) -> 
-    Result(partition, initial-ast, analyzed-ast, changed-read*, errors, warnings, notes)
+    Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*) -> 
+    Result(partition, initial-ast, analyzed-ast, changed-read*, error'*, warnings'*, notes'*)
     where
       not(() := initial-ast)
     with
-      (errors, warnings, notes) := <editor-analyze-markers> analyzed-ast;
-      <set-markers(|initial-ast)> (analyzed-ast, errors, warnings, notes)
+      (error'*, warnings'*, notes'*) := <editor-analyze-markers(|error*, warning*, note*)> analyzed-ast;
+      <set-markers(|initial-ast)> (analyzed-ast, error'*, warnings'*, notes'*)
 
   editor-queue-analyze-multiple:
     path* -> None()
@@ -69,7 +70,7 @@ rules // Analysis
     path* -> (error*, result'*, evaluated-count)
     with
       nabl-analyze-multiple-work-units; set-total-work-units;
-      (error*, result*, evaluated-count) := <analyze-multiple(parse-file; desugar-all, try, complete-work-unit|<language>, <project-path>)> path*;
+      (error*, result*, evaluated-count) := <analyze-multiple(parse-file; desugar-all <+ !(), complete-work-unit|<language>, <project-path>)> path*;
       result'*                           := <filter(editor-update-markers)> result*;
       index-commit;
       task-persist
