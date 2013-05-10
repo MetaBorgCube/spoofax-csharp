@@ -25,8 +25,9 @@ rules // Analysis
     with
       editor-init;
       <debug(!"Analyzing file: ")> path;
-      (ast', error-task*, _, (analyze-error*, analyze-warning*, analyze-note*)) := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
-      (error*, warning*, note*) := <editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*)> ast'
+      (ast', unevaluated-task*, evaluated-count, (analyze-error*, analyze-warning*, analyze-note*)) := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
+      (error*, warning*, note*) := <editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*)> ast';
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
       // TODO: Update markers for partitions that have had a task executed.
 
   editor-analyze:
@@ -67,13 +68,16 @@ rules // Analysis
       end
 
   editor-analyze-multiple:
-    path* -> (error*, result'*, evaluated-count)
+    path* -> (result'*, unevaluated-task*, evaluated-count)
     with
+    	debug(!"Analyzing files: ");
       nabl-analyze-multiple-work-units; set-total-work-units;
-      (error*, result*, evaluated-count) := <analyze-multiple(parse-file; desugar-all <+ !(), complete-work-unit|<language>, <project-path>)> path*;
-      result'*                           := <filter(editor-update-markers)> result*;
+      (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse-file; desugar-all <+ !(), 
+      	complete-work-unit|<language>, <project-path>)> path*;
+      result'* := <filter(editor-update-markers)> result*;
       index-commit;
-      task-persist
+      task-persist;
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Editor services
