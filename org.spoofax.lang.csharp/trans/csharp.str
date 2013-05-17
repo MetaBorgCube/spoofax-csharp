@@ -77,7 +77,8 @@ rules // Analysis
       result'* := <filter(editor-update-markers)> result*;
       index-commit;
       task-persist;
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
+      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
+      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task*
       // TODO: Update markers for partitions that have had a task executed.
       
 rules // Editor services
