@@ -6,8 +6,6 @@ builders
   
   provider : include/csharp-java.jar                                                                                                                          
   provider : include/csharp.jar
-  provider : lib/task.jar                                                                                        
-  provider : lib/guava.jar
                                                                                                                             
   observer : editor-analyze (multifile)
                                                                                                                             
@@ -15,9 +13,11 @@ builders
   builder  : "Show analyzed syntax"                    = debug-generate-analyzed (openeditor) (realtime) (meta)
   
   builder  : "Show current index partition" = debug-show-current-partition (openeditor) (realtime) (meta)
-  builder  : "Show all index partitions"    = debug-show-all-partitions (openeditor) (realtime) (meta)
+  builder  : "Show all index partitions"    = debug-show-all-partitions (openeditor) (meta)
+  builder  : "Show tasks for current partition"             = debug-show-tasks (openeditor) (meta)
   builder  : "Reset index"                  = debug-reset-index (meta)
   builder  : "Reset tasks"                  = debug-reset-task (meta)
-  builder  : "Reset and reanalyze"          = debug-reanalyze (meta)
+  builder  : "Reset and reanalyze"          = debug-reanalyze (meta)  
+  builder  : "Generate name warnings"       = debug-generate-name-warnings (meta)   
   
   on save  : editor-save

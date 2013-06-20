@@ -35,7 +35,7 @@ binding rules // Namespaces
     scopes Namespace, Class
     
   UsingPart(x) :
-    imports Class from Namespace x into subsequent scope
+    imports Class from Namespace x
     
   UsingPart(u, x) :
     refers to Namespace x in Namespace y

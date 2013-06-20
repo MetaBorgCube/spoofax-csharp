@@ -12,74 +12,22 @@ imports
   lib/analysis/-
   lib/nbl/-
   lib/task/-
-  lib/index/partition
+  lib/index/-
   names
   check
   desugar
   types
 
 rules // Analysis
+ 
+  editor-analyze = analysis-default-editor
   
-  editor-analyze:
-    (ast, path, project-path) -> (ast', error*, warning*, note*)
-    with
-      editor-init;
-      <debug(!"Analyzing file: ")> path;
-      (ast', unevaluated-task*, evaluated-count, (analyze-error*, analyze-warning*, analyze-note*)) := <desugar-all; analyze-one(|<language>, path, project-path)> ast;
-      (error*, warning*, note*) := <editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*)> ast';
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.]
-      // TODO: Update markers for partitions that have had a task executed.
-
-  editor-analyze:
-    path* -> None()
-    where
-      not(is-tuple)
-    with
-      map(\p -> $[[<project-path>]/[p]]\);
-      editor-queue-analyze-multiple
-      
-  editor-save:
-  	(_, _, _, path, project-path) -> None()
-  	with
-  		index-setup(|<language>, [project-path], $[[project-path]/[path]]);
-  		index-commit
-
-  editor-analyze-markers(|analyze-error*, analyze-warning*, analyze-note*):
-    ast -> ([analyze-error*, error*], [analyze-warning*, warning*], [analyze-note*, note*])
-    with
-      error*   := <collect-all(constraint-error, conc)> ast;
-      warning* := <collect-all(constraint-warning, conc)> ast;
-      note*    := <collect-all(constraint-note, conc)> ast
-
-  editor-update-markers:
-    Result(partition, initial-ast, analyzed-ast, changed-read*, error*, warning*, note*) -> 
-    Result(partition, initial-ast, analyzed-ast, changed-read*, error'*, warnings'*, notes'*)
-    where
-      not(() := initial-ast)
-    with
-      (error'*, warnings'*, notes'*) := <editor-analyze-markers(|error*, warning*, note*)> analyzed-ast;
-      <set-markers(|initial-ast)> (analyzed-ast, error'*, warnings'*, notes'*)
-
-  editor-queue-analyze-multiple:
-    path* -> None()
-    with
-      if not([] := path*) then
-        queue-strategy(|"editor-analyze-multiple", "Analyzing files")
-      end
-
-  editor-analyze-multiple:
-    path* -> (result'*, unevaluated-task*, evaluated-count)
-    with
-    	debug(!"Analyzing files: ");
-      nabl-analyze-multiple-work-units; set-total-work-units;
-      (result*, unevaluated-task*, evaluated-count) := <analyze-multiple(parse-file; desugar-all <+ !(), 
-      	complete-work-unit|<language>, <project-path>)> path*;
-      result'* := <filter(editor-update-markers)> result*;
-      index-commit;
-      task-persist;
-      <debug> $[[evaluated-count] task evaluated, [<length> unevaluated-task*] task unevaluated.];
-      <map(task-debug-info(|<id>); debug(!"Unevaluated: "))> unevaluated-task*
-      // TODO: Update markers for partitions that have had a task executed.
+  analysis-single-default-interface = 
+  	analysis-single-default(desugar-all, id|<language>)
+  analysis-multiple-default-interface = 
+  	analysis-multiple-default(parse-file; desugar-all <+ !(), id|<language>, <project-path>)
+  
+  editor-save = analysis-save-default(|<language>)
       
 rules // Editor services
 
@@ -89,17 +37,13 @@ rules // Editor services
     	task-setup(|project-path);
     	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
     	<nabl-has-reference> node;
-    	definition := <nabl-collect-one-resolved-def> node
+    	definition := <nabl-collect-one-resolved-def; index-get-all; Hd> node
 
   editor-hover:
-    (target, position, ast, path, project-path) -> $[Type: [<print-type> type]]
-    where
-      type := <type-of; print-type> target
+    (target, position, ast, path, project-path) -> $[Type: [<type-of; print-type> target]]
 
   editor-complete:
-    (node, position, ast, path, project-path) -> proposals
-    where
-     proposals := <nabl-propose-completions> ast
+    (node, position, ast, path, project-path) -> <nabl-propose-completions> ast
 
 rules // Debugging
   
@@ -120,6 +64,9 @@ rules // Debugging
      
   debug-show-all-partitions =
     analysis-debug-show-all-partitions(|<language>)
+
+  debug-show-tasks =
+  	analysis-debug-show-tasks(|<language>)
 
   debug-reset-index =
     analysis-debug-reset-index(|<language>)
