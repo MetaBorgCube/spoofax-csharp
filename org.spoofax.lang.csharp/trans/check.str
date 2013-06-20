@@ -5,7 +5,36 @@ imports
   libstratego-lib
   include/CSharp
   lib/editor-common.generated
+  lib/nbl/-
+  lib/task/core
+  names
   types
+
+rules // Name binding
+  
+  constraint-error:
+    node -> (node, "Unresolved reference.")
+    where
+      nabl-is-unresolved
+      
+  constraint-error:
+    node{anno*} -> (node, "Duplicate definition.")
+    where
+      duplicate*    := <nabl-get-duplicate-definitions> node;
+      if NablNsFunction() := <Hd; nabl-uri; nabl-uri-namespace> duplicate* then
+        // For functions, only cause a duplicate definition error if there are multiple functions with the same parameter types.
+        definition  := <collect-one(?Def(_))> anno*;
+        paramTypes  := <nabl-get-property(|NablProp_parameter-types()); insert-results> definition;
+        paramTypes* := <map(nabl-get-property(|NablProp_parameter-types())); insert-results; collect-all(?paramTypes, conc)> duplicate*;
+        <gt> (<length> paramTypes*, 1)
+      end
+      
+  constraint-error:
+    node -> (node, $[Ambiguous, could be from [<map(nabl-print-uri); separate-by(|", "); concat-strings> ambiguity'*]])
+    where
+      ambiguity*  := <nabl-get-ambiguities> node;
+      ambiguity'* := <filter(where(nabl-uri-namespace; ?NablNsNamespace()))> ambiguity*;
+      <gt> (<length> ambiguity'*, 1)
 
 rules // Types
   
@@ -26,6 +55,20 @@ rules // Types
     where
       not(<is-assignable-to> (type, <type-of> VoidType()));
       not(<collect-one(?Return(_))> statements)
+      
+  constraint-error:
+    e@Assign(exp1, exp2) -> (e, $[Cannot assign a value of type [<print-type> type2] to something of type [<print-type> type1].])
+    where
+      type1 := <type-of> exp1;
+      type2 := <type-of> exp2;
+      not(<is-assignable-to> (type1, type2))
+
+  constraint-error:
+    e@VarDef(t, _, exp) -> (e, $[Cannot assign a value of type [<print-type> type2] to a variable of type [<print-type> type1].])
+    where
+      type1 := <type-of> t;
+      type2 := <type-of> exp;
+      not(<is-assignable-to> (type1, type2))
     
 rules // Other
 

@@ -3,7 +3,7 @@
 namespace N {
   class C {
     C f;
-    void m() {}
+    void m(C c) {}
   }
   
   class D {
@@ -14,12 +14,14 @@ namespace N {
 
   class C2 {
     void m(int[] x) {
-      foreach(int x in x) 
-        print(x);
+      foreach(int x in x)
+        print(x+1);
+     
+      for(int i = 0; true; i = 1;)
+        print(i+1);
     }
-    
     void print(int x) {
       //System.Console.WriteLine(x);
     }
   }
-}
+} 

@@ -3,22 +3,38 @@ module types
 imports
 	
   include/CSharp
-  lib/index-library.generated
-  lib/analysis-library.generated
-  old-names
+  lib/editor-common.generated
+  lib/nbl/resolve
+  lib/nbl/query
+  lib/nbl/entries
+  lib/nbl/query
+  lib/nbl/uri
+  lib/task/core
+	names
+  
+signature 
 
-signature constructors
+  sorts
+    
+    Type
 
-  BoolType   : Type
-  IntType    : Type
-  StringType : Type
-  VoidType   : Type
+  constructors
+
+    Type : ID -> Type
+
+	  BoolType   : Type
+	  IntType    : Type
+	  StringType : Type
+	  VoidType   : Type
+
+rules // NaBL property
+	
+  calc-property: 
+  	(Type(), x) -> <type-of> x
 
 rules // Type projections
-    
-  type-of:
-    Return(e) -> <type-of> e  
-
+  
+  // Literals
   type-of:
     True() -> <type-of> BoolType()
     
@@ -32,62 +48,151 @@ rules // Type projections
     StrLit(_) -> <type-of> StringType()
   
   type-of:
-  	BoolType() -> Type("Bool"{[Class(), "Bool"]})
+    BoolType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Bool", ())])
   
   type-of:
-    IntType() -> Type("Int"{[Class(), "Int"]})
+    IntType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Int", ())])
     
   type-of:
-    StringType() -> Type("String"{[Class(), "String"]})
-    
+    StringType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "String", ())])
+
   type-of:
     VoidType() -> VoidType()
-  
-  type-of:
-    VarRef(f) -> <type-of> <index-lookup> f
-  
-  type-of:
-    FieldAccess(e, f) -> <type-of> <index-lookup> f
     
-  type-of:
-    FunCall(e, m, _) -> <type-of> <index-lookup> m
     
+  // Modifiers  
   type-of:
-    FunCall(m, _) -> <type-of> <index-lookup> m
-
-  // Lazy resolving of types because index-lookup during use analysis on data fails for imports.
-  type-of:
-    Type(t{[Unresolved(Class())|_]}) -> Type(name{uri})
-    where
-      Def(uri) := <index-lookup> t;
-      name := <strip-annos> t
+    ArrayType(t) -> ArrayType(<type-of> t)
       
+    
+  // Definitions
   type-of:
-    Type(t{[Class()|_]}) -> <id> 
+    Class(x, _) -> x
+    
+  type-of:
+    Class(x, _, _) -> x
+  
+  type-of:
+    PartialClass(x, _) -> x
+    
+  type-of:
+    PartialClass(x, _, _) -> x
+  
+  type-of:
+    FieldDef(t, _) -> <type-of> t
+  
+  type-of:
+    FunDef(t, _, _) -> <type-of> t
+  
+  type-of:
+    FunDef(t, _, _, _) -> <type-of> t
+  
+  type-of:
+    VarDef(t, _) -> <type-of> t
+    
+  type-of:
+    VarDef(t, _, _) -> <type-of> t
+    
+  type-of:
+    InferredVarDef(_, e) -> <type-of> e
+    
+  type-of:
+    Param(t, _) -> <type-of> t
+    
+ 
+  // Type expressions
+  type-of:
+    TypeExp(t) -> <type-of> t
+    
+  type-of:
+    TypePart(t) -> <nabl-collect-one-resolved-def; type-of> t
 
   type-of:
-    Def(uri) -> <type-of> <index-get-data(|Type())> Def(uri)
+    TypePart(_, t) -> <nabl-collect-one-resolved-def; type-of> t    
+
+  
+  // Expressions
+  type-of:
+    Return(e) -> <type-of> e
+  
+  type-of:
+    VarRef(f) -> <nabl-collect-one-resolved-def; type-of> f
+  
+  type-of:
+    FieldAccess(e, f) -> <nabl-collect-one-resolved-def; type-of> f
     
+  type-of:
+    FunCall(e, m, _) -> <nabl-collect-one-resolved-def; type-of> m
+    
+  type-of:
+    FunCall(m, _) -> <nabl-collect-one-resolved-def; type-of> m
+    
+  type-of:
+    This() -> <nabl-collect-one-resolved-def; type-of> 
+    
+  type-of:
+    Super() -> <nabl-collect-one-resolved-def; type-of> 
+
+  type-of:
+  	Add(_, _) -> <type-of> IntType()
+  	
+  type-of:
+    Sub(_, _) -> <type-of> IntType()
+    
+  type-of:
+    Mul(_, _) -> <type-of> IntType()
+    
+  type-of:
+    Div(_, _) -> <type-of> IntType()
+
+
+  // NBL
+  type-of:
+  	[_|_] -> <map(type-of)>
+  	
+  type-of:
+    [] -> []
+  	
+  type-of:
+    Def(uri) -> <nabl-get-property(|Type()); type-of> uri
+  
+  type-of:
+  	Dependency(_) -> <id>
+  
+  // TODO: are these two rules needed?
+  type-of:
+    Type(t@_{anno*}) -> <nabl-collect-one-resolved-def; type-of> t
+    where
+      not(<collect-one(?Def(_))> anno*)
+    
+  type-of:
+    Type(t@_{anno*}) -> <id>
+    where
+      <collect-one(?Def(_))> anno*
+
 rules // Comparison
 
   is-assignable-to:
     (to-type, from-type) -> to-type
     where
-      <eq> (from-type, to-type)
-    
+      <eq> (<type-of> from-type, <type-of> to-type)
+
 rules // Utility
 	
   print-type = 
     switch id
+      case ?"String" : !"string"
+      case ?"Int" : !"int"
       case ?VoidType() : !"void"
       case ?IntType() : !"int"
       case ?StringType() : !"string"
-      case ?Type("String") : !"string"
-      case ?Type("Int") : !"int"
-      case ?Type(t) : <strip-annos> t
+      case ?Type(t) : <print-type> t
+      case ?TypeExp(t) : <print-type> t
+      case ?TypePart(t) : <print-type> t
+      case ?TypePart(q, t) : <concat-strings> [<print-type> q, ".", <print-type> t]
       case ?[type|[]] : <print-type> type
       case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
-      case is-string : id
+      case is-string : strip-annos
       case ?name#(_) : !$[[name]]
       otherwise : id
     end

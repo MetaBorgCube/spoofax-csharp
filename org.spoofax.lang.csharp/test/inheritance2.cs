@@ -3,6 +3,10 @@ namespace I2 {
 	  int inherited() {
 	    return 1;
 	  }
+	  
+    int inherited(int x) { 
+      return x + 1;
+    }
 	} 
 	
 	partial class B : A {
@@ -10,12 +14,9 @@ namespace I2 {
 	    return inherited(); 
 	  }
 
-    // TODO: Fix overriding
-	  /*
 	  string inherited(string x) {
 	    return x;
 	  }
-	  */
 	  
     int inherited(int x) { 
       return x + 1;
@@ -31,8 +32,11 @@ namespace I2 {
 	partial class Foo {
 	  C c;
 	  
-	  int foo() {
-	    return c.inherited("x");
+	  string foo() {
+	    c.inherited();
+	    c.inherited(1);
+	    
+	    return c.inherited("x"); 
 	  }
 	}
-} 
+}

@@ -11,7 +11,7 @@ exports
   context-free syntax
     
     %% Constructs
-    Using* Definition*                                  -> Start {"Start"}
+    Definition*                                         -> Start {"Start"}
     "namespace" ID "{" Definition* "}"                  -> Definition {"Namespace"}
     "partial" "class" ID "{" ClassBodyDecl* "}"         -> Definition {"PartialClass"}
     "partial" "class" ID ":" ID  "{" ClassBodyDecl* "}" -> Definition {"PartialClass"}
@@ -23,6 +23,7 @@ exports
     "using" UsingPart ";" -> Using {"Using"}
     ID                    -> UsingPart {"UsingPart"}
     UsingPart "." ID      -> UsingPart {"UsingPart"}
+    Using                 -> Definition
     
     %% Class members
     Type ID ";"                                           -> ClassBodyDecl {"FieldDef"}
@@ -31,13 +32,17 @@ exports
     MethodReturnType ID "(" {Param ","}* ")" ";"					-> InterfaceBodyDecl {"FunDef"}
     
     %% Types
-    ID           -> Type {"Type"}
-    "void"       -> MethodReturnType {"VoidType", prefer}
-    "bool"       -> Type {ast("Type(\"Bool\")"), prefer}
-    "int"        -> Type {ast("Type(\"Int\")"), prefer}
-    "string"     -> Type {ast("Type(\"String\")"), prefer}
-    Type         -> MethodReturnType
+    TypePart        -> Type {"TypeExp"}
+    ID              -> TypePart {"TypePart"}
+    TypePart "." ID -> TypePart {"TypePart"}
+    
     Type "[" "]" -> Type {"ArrayType"}
+    "bool"       -> Type {ast("TypeExp(TypePart(\"Bool\"))"), prefer}
+    "int"        -> Type {ast("TypeExp(TypePart(\"Int\"))"), prefer}
+    "string"     -> Type {ast("TypeExp(TypePart(\"String\"))"), prefer}
+    
+    "void"       -> MethodReturnType {"VoidType", prefer}
+    Type         -> MethodReturnType
     
     %% Statements & Expressions
     ID "(" {Exp ","}* ")"         -> FunCall {"FunCall"}
@@ -48,23 +53,26 @@ exports
     "return" Exp ";"                                    -> Stm {"Return", prefer}
     Type ID ";"                                         -> Stm {"VarDef"}
     Type ID "=" Exp ";"                                 -> Stm {"VarDef"}
-    ID "=" Exp ";"                                      -> Stm {"Assign"}
+    "var" ID "=" Exp ";"                                -> Stm {"InferredVarDef", prefer}
+    VarRef "=" Exp ";"                                  -> Stm {"Assign"}
     "if" "(" Exp ")" Block                              -> Stm {"If"}
     "if" "(" Exp ")" Block "else" Block                 -> Stm {"IfElse"}
     "for" "(" Type ID "=" Exp ";" Exp ";" Stm ")" Block -> Stm {"For"}
     "foreach" "(" Type ID "in" Exp ")" Block            -> Stm {"ForEach"}
-    FunCall ";"                                         -> Stm
-    FieldAccess ";"                                     -> Stm
+    FunCall ";"                                         -> Stm {bracket}
+    FieldAccess ";"                                     -> Stm {bracket}
     
     %% Expessions
     "true"      -> Exp {"True", prefer}
     "false"     -> Exp {"False", prefer}
     INT         -> Exp {"IntLit"}
     STRING      -> Exp {"StrLit"}
-    ID          -> Exp {"VarRef"}
+    ID          -> VarRef {"VarRef"}
+    VarRef      -> Exp
     FunCall     -> Exp
     FieldAccess -> Exp
     "this" -> Exp {"This", prefer}
+    "super" -> Exp {"Super", prefer}
     
     Exp "+" Exp  -> Exp {"Add", prefer}
     Exp "-" Exp  -> Exp {"Sub", prefer}

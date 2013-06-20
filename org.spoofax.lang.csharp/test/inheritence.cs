@@ -1,19 +1,21 @@
-namespace Inheritance {
-	class C  {
-	  int inherited() {
-	    return 2;
-	  }  
-	} 
-	
-	class B : C {
-	  int inherited() {
-	    return 1;
+namespace I {
+	class FancyA {
+	  FancyA a;
+	  
+	  FancyA a() {
+	    return a;
 	  }
 	}
 	
-	class A : B {
-	  int test() {
-	    return inherited();
-	  }
+	class FancyB : FancyA {
+    FancyA b() {
+      return a;
+    }
+	} 
+	
+	class C : FancyB {
+    FancyA c() {
+      return a.a();
+    }
 	}
 }

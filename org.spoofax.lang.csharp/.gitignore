@@ -1,6 +1,9 @@
 /.cache
-/include/*
-!/include/Enfun-parenthesize.str
+/include
 /bin
-/lib/nbl
+/lib
 /lib-refactoring
+/utils
+/editor/java/trans
+/trans/names.str
+*.aterm
