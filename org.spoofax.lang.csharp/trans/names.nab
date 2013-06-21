@@ -26,7 +26,7 @@ namespaces
 
 properties 
 
-  parameter-types of Function: List(Type)
+  parameter-types of Function: List(Ty)
   
 binding rules // Namespaces 
 
@@ -44,29 +44,29 @@ binding rules // Namespaces
 binding rules // Classes
 	
   Class(x, _) :
-    defines unique Class x of type Type(x)
+    defines unique Class x of type Ty(x)
     scopes Field, Function
    
   Class(x, y, _) :
-    defines unique Class x of type Type(x)
+    defines unique Class x of type Ty(x)
     scopes Field, Function
     imports Field, imported Field, Function, imported Function from Class y
     
   Interface(x, _) :
-    defines unique Class x of type Type(x)
+    defines unique Class x of type Ty(x)
     scopes Function
     
   Interface(x, y, _) :
-    defines unique Class x of type Type(x)
+    defines unique Class x of type Ty(x)
     scopes Function
     imports Function, imported Function from Class y
     
   PartialClass(x, _) :
-    defines non-unique Class x of type Type(x)
+    defines non-unique Class x of type Ty(x)
     scopes Field, Function
     
   PartialClass(x, y, _) :
-    defines non-unique Class x of type Type(x)
+    defines non-unique Class x of type Ty(x)
     scopes Field, Function
     imports Field, imported Field, Function, imported Function from Class y
     
@@ -81,7 +81,7 @@ binding rules // Fields
     
   FieldAccess(exp, f) :
     refers to Field f in Class t
-    where exp has type Type(t)
+    where exp has type Ty(t)
 
 binding rules // Functions
 
@@ -102,7 +102,7 @@ binding rules // Functions
     
   FunCall(exp, f, args) :
     refers to Function f of parameter-types arg-types in Class e
-    where exp has type Type(e)
+    where exp has type Ty(e)
     where args has type arg-types
     
   FunCall(x, args) : 
