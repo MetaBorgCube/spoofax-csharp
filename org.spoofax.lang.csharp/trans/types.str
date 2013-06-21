@@ -3,196 +3,113 @@ module types
 imports
 	
   include/CSharp
-  lib/editor-common.generated
-  lib/nbl/resolve
-  lib/nbl/query
-  lib/nbl/entries
-  lib/nbl/query
-  lib/nbl/uri
-  lib/task/core
+  lib/types/-
+  lib/nbl/-
+  
 	names
   
 signature 
 
   sorts
     
-    Type
+    Ty
 
   constructors
 
-    Type : ID -> Type
+    Ty : ID -> Ty
 
-	  BoolType   : Type
-	  IntType    : Type
-	  StringType : Type
-	  VoidType   : Type
+	  BoolTy   : Ty
+	  IntTy    : Ty
+	  StringTy : Ty
+	  VoidTy   : Ty
 
-rules // NaBL property
-	
-  calc-property: 
-  	(Type(), x) -> <type-of> x
+signature constructors
 
-rules // Type projections
+  Coerce   : Relation
+  BinCoerce: Relation
+  
+rules // coercion
+  
+  
+  task-match: (Coerce(), [x, x])                    -> x
+  task-match: (Coerce(), [IntTy(), StringTy()]) -> StringTy()
+  
+  task-match: (BinCoerce(), [t1, t2]) -> <task-match> (Coerce(), [t1, t2])
+  task-match: (BinCoerce(), [t1, t2]) -> <task-match> (Coerce(), [t2, t1])
+  
+
+rules // literals
   
   // Literals
-  type-of:
-    True() -> <type-of> BoolType()
-    
-  type-of:
-    False() -> <type-of> BoolType()
-      
-  type-of:
-    IntLit(_) -> <type-of> IntType()
-    
-  type-of:
-    StrLit(_) -> <type-of> StringType()
+  type-of(|ctx): True()    -> <type-is(|ctx)> BoolTy()
+  type-of(|ctx): False()   -> <type-is(|ctx)> BoolTy()
+  type-of(|ctx): IntLit(_) -> <type-is(|ctx)> IntTy()
+  type-of(|ctx): StrLit(_) -> <type-is(|ctx)> StringTy()
   
-  type-of:
-    BoolType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Bool", ())])
+rules // adopted
   
-  type-of:
-    IntType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "Int", ())])
-    
-  type-of:
-    StringType() -> <nabl-get-all-definitions; Hd; type-of> URI(Language(<language>), [ID(NablNsClass(), "String", ())])
-
-  type-of:
-    VoidType() -> VoidType()
-    
-    
-  // Modifiers  
-  type-of:
-    ArrayType(t) -> ArrayType(<type-of> t)
-      
-    
-  // Definitions
-  type-of:
-    Class(x, _) -> x
-    
-  type-of:
-    Class(x, _, _) -> x
-  
-  type-of:
-    PartialClass(x, _) -> x
-    
-  type-of:
-    PartialClass(x, _, _) -> x
-  
-  type-of:
-    FieldDef(t, _) -> <type-of> t
-  
-  type-of:
-    FunDef(t, _, _) -> <type-of> t
-  
-  type-of:
-    FunDef(t, _, _, _) -> <type-of> t
-  
-  type-of:
-    VarDef(t, _) -> <type-of> t
-    
-  type-of:
-    VarDef(t, _, _) -> <type-of> t
-    
-  type-of:
-    InferredVarDef(_, e) -> <type-of> e
-    
-  type-of:
-    Param(t, _) -> <type-of> t
-    
- 
-  // Type expressions
-  type-of:
-    TypeExp(t) -> <type-of> t
-    
-  type-of:
-    TypePart(t) -> <nabl-collect-one-resolved-def; type-of> t
-
-  type-of:
-    TypePart(_, t) -> <nabl-collect-one-resolved-def; type-of> t    
-
-  
-  // Expressions
-  type-of:
-    Return(e) -> <type-of> e
-  
-  type-of:
-    VarRef(f) -> <nabl-collect-one-resolved-def; type-of> f
-  
-  type-of:
-    FieldAccess(e, f) -> <nabl-collect-one-resolved-def; type-of> f
-    
-  type-of:
-    FunCall(e, m, _) -> <nabl-collect-one-resolved-def; type-of> m
-    
-  type-of:
-    FunCall(m, _) -> <nabl-collect-one-resolved-def; type-of> m
-    
-  type-of:
-    This() -> <nabl-collect-one-resolved-def; type-of> 
-    
-  type-of:
-    Super() -> <nabl-collect-one-resolved-def; type-of> 
-
-  type-of:
-  	Add(_, _) -> <type-of> IntType()
-  	
-  type-of:
-    Sub(_, _) -> <type-of> IntType()
-    
-  type-of:
-    Mul(_, _) -> <type-of> IntType()
-    
-  type-of:
-    Div(_, _) -> <type-of> IntType()
-
-
-  // NBL
-  type-of:
-  	[_|_] -> <map(type-of)>
-  	
-  type-of:
-    [] -> []
-  	
-  type-of:
-    Def(uri) -> <nabl-get-property(|Type()); type-of> uri
-  
-  type-of:
-  	Dependency(_) -> <id>
-  
-  // TODO: are these two rules needed?
-  type-of:
-    Type(t@_{anno*}) -> <nabl-collect-one-resolved-def; type-of> t
+  type-of(|ctx):
+    Add(e1, e2) -> <type-match(|ctx, BinCoerce())> [t1, t2]
     where
-      not(<collect-one(?Def(_))> anno*)
-    
-  type-of:
-    Type(t@_{anno*}) -> <id>
+      t1 := <type-check(|ctx)> (e1, [IntTy(), StringTy()])
+    ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()])
+
+  type-of(|ctx):
+    _ -> <type-is(|ctx, [t1, t2])> IntTy()
     where
-      <collect-one(?Def(_))> anno*
-
-rules // Comparison
-
-  is-assignable-to:
-    (to-type, from-type) -> to-type
+    	?Sub(e1, e2)
+    + ?Mul(e1, e2)
+    + ?Div(e1, e2)
     where
-      <eq> (<type-of> from-type, <type-of> to-type)
+    	t1 := <type-check(|ctx)> (e1, [IntTy()])
+    ; t2 := <type-check(|ctx)> (e2, [IntTy()])
 
-rules // Utility
-	
-  print-type = 
-    switch id
-      case ?"String" : !"string"
-      case ?"Int" : !"int"
-      case ?VoidType() : !"void"
-      case ?IntType() : !"int"
-      case ?StringType() : !"string"
-      case ?Type(t) : <print-type> t
-      case ?TypeExp(t) : <print-type> t
-      case ?TypePart(t) : <print-type> t
-      case ?TypePart(q, t) : <concat-strings> [<print-type> q, ".", <print-type> t]
-      case ?[type|[]] : <print-type> type
-      case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
-      case is-string : strip-annos
-      case ?name#(_) : !$[[name]]
-      otherwise : id
-    end
+  type-of(|ctx):
+    _ -> <type-is(|ctx, [tc])> BoolTy()
+    where
+      ?Lt(e1, e2)
+    + ?Gt(e1, e2)
+    + ?Lte(e1, e2)
+    + ?Gte(e1, e2)
+    where
+      t1 := <type-check(|ctx)> (e1, [IntTy(), StringTy()])
+    ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()])
+    ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
+
+type-of(|ctx):
+    Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
+    where
+      t1 := <type-check(|ctx)> (e1, [BoolTy(), IntTy(), StringTy()])
+    ; t2 := <type-check(|ctx)> (e2, [BoolTy(), IntTy(), StringTy()])
+    ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
+
+rules // names
+	      
+  type-of(|ctx): VarRef(v)         -> <type-lookup(|ctx)> v
+  type-of(|ctx): FieldAccess(e, f) -> <type-lookup(|ctx)> f
+  type-of(|ctx): FunCall(e, m, _)  -> <type-lookup(|ctx)> m
+  type-of(|ctx): FunCall(m, _)     -> <type-lookup(|ctx)> m
+  type-of(|ctx): This()            -> <type-lookup(|ctx)> 
+  type-of(|ctx): Super()           -> <type-lookup(|ctx)> 
+
+  type-of(|ctx) = map(type-of(|ctx)); type-is(|ctx)
+  	
+// rules // Utility
+// 	
+//   print-type = 
+//     switch id
+//       case ?"String" : !"string"
+//       case ?"Int" : !"int"
+//       case ?VoidTy() : !"void"
+//       case ?IntTy() : !"int"
+//       case ?StringTy() : !"string"
+//       case ?Ty(t) : <print-type> t
+//       case ?TyExp(t) : <print-type> t
+//       case ?TyPart(t) : <print-type> t
+//       case ?TyPart(q, t) : <concat-strings> [<print-type> q, ".", <print-type> t]
+//       case ?[type|[]] : <print-type> type
+//       case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
+//       case is-string : strip-annos
+//       case ?name#(_) : !$[[name]]
+//       otherwise : id
+//     end
