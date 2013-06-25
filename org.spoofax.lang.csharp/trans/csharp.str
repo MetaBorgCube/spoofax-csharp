@@ -24,9 +24,9 @@ rules // Analysis
   editor-analyze = analysis-default-editor
   
   analysis-single-default-interface = 
-  	analysis-single-default(desugar-all, id|<language>)
+  	analysis-single-default(desugar-all, id, id|<language>)
   analysis-multiple-default-interface = 
-  	analysis-multiple-default(parse-file; desugar-all <+ !(), id|<language>, <project-path>)
+  	analysis-multiple-default(parse-file <+ !(), desugar-all, id, id|<language>, <project-path>)
   
   editor-save = analysis-save-default(|<language>)
       
@@ -72,7 +72,10 @@ rules // Debugging
 
   debug-show-tasks =
   	analysis-debug-show-tasks(|<language>)
-
+  	
+	debug-show-tasks-selection =
+		analysis-debug-show-tasks-selection(|<language>)
+  	
   debug-reset-index =
     analysis-debug-reset-index(|<language>)
     
