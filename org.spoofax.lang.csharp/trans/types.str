@@ -72,7 +72,7 @@ rules // binary operators
     ; t2 := <type-check(|ctx)> (e2, [IntTy()], INT_MSG())
 
   type-of(|ctx):
-    _ -> <type-is(|ctx, [tc])> BoolTy()
+    _ -> <type-is(|ctx, [t1, t2])> BoolTy()
     where
       ?Lt(e1, e2)
     + ?Gt(e1, e2)
@@ -81,8 +81,7 @@ rules // binary operators
     where
       t1 := <type-check(|ctx)> (e1, [IntTy(), StringTy()], COMPARE_MSG())
     ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()], COMPARE_MSG())
-    ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
-
+    
 type-of(|ctx):
     e@Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
     where
