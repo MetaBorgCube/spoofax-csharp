@@ -83,12 +83,12 @@ rules // binary operators
     ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()], COMPARE_MSG())
     
 type-of(|ctx):
-    e@Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
+    Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
     where
       t1 := <type-check(|ctx)> (e1, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
     ; t2 := <type-check(|ctx)> (e2, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
     ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
-    ; <task-create-error-on-failure(|ctx, tc, EQ_MSG())> e
+    ; <task-create-error-on-failure(|ctx, tc, EQ_MSG())> e2
 
 rules // names
 	      
