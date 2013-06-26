@@ -44,16 +44,18 @@ rules // Types
     where
       ty'  := <type-of(|ctx)> ty
     ; exp* :=  <collect-all(?Return(<id>))> st*
-    ; map(
-        task-create-error-on-failure(|
-	      ctx
-	    , <type-match(|ctx, Coerce())> [<type-of(|ctx)>, ty]
-	    , "incompatible with declared return type")     
-	    )
+    ; <map(return-error(|ctx, ty'))> exp*
     ; if [] := exp* then
         <type-check(|ctx)> (ty, VoidTy(), "Missing return expression")
       end
 
+  return-error(|ctx, ty) =
+    task-create-error-on-failure(|
+      ctx
+    , <type-match(|ctx, Coerce())> [<type-of(|ctx)>, ty]
+    , "incompatible with declared return type"
+    )     
+    
   type-of(|ctx):
     Assign(lhs, rhs) -> <fail>
     where
