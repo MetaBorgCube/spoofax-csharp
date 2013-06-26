@@ -5,6 +5,7 @@ imports
   include/CSharp
   lib/types/-
   lib/nbl/-
+  lib/task/-
   
 	names
   
@@ -83,11 +84,12 @@ rules // binary operators
     ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
 
 type-of(|ctx):
-    Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
+    e@Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
     where
       t1 := <type-check(|ctx)> (e1, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
     ; t2 := <type-check(|ctx)> (e2, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
     ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
+    ; <task-create-error-on-failure(|ctx, tc, EQ_MSG())> e
 
 rules // names
 	      
