@@ -18,18 +18,18 @@ signature
 
     Ty : ID -> Ty
 
-	  BoolTy   : Ty
-	  IntTy    : Ty
-	  StringTy : Ty
+    IntTy    : Ty
+    BoolTy   : Ty
+    StringTy : Ty
 	  VoidTy   : Ty
-
+  
 signature constructors
 
   Coerce   : Relation
   BinCoerce: Relation
   
 rules // coercion
-  
+      
   task-match: (Coerce(), [x, x])                -> x
   task-match: (Coerce(), [IntTy(), StringTy()]) -> StringTy()
   
@@ -52,7 +52,7 @@ overlays
   COMPARE_MSG()       = "incomparable"
   EQ_MSG()            = "incomparable"
   
-rules // adopted
+rules // binary operators
   
   type-of(|ctx):
     Add(e1, e2) -> <type-match(|ctx, BinCoerce())> [t1, t2]
@@ -99,7 +99,13 @@ rules // names
   type-of(|ctx): Super()           -> <type-lookup(|ctx)> 
 
   type-of(|ctx) = map(type-of(|ctx)); type-is(|ctx)
-  	
+
+rules // built-in types
+	
+  type-of(|ctx): TypeExp(TypePart("Bool"))   -> BoolTy()
+  type-of(|ctx): TypeExp(TypePart("Int"))    -> IntTy()
+  type-of(|ctx): TypeExp(TypePart("String")) -> StringTy()
+              
 // rules // Utility
 // 	
 //   print-type = 

@@ -7,6 +7,7 @@ imports
   lib/editor-common.generated
   lib/nbl/-
   lib/types/-
+  lib/task/-
   names
   types
 
@@ -41,12 +42,18 @@ rules // Types
   type-of(|ctx):
     FunDef(ty, _, _, st*) -> <fail>
     where
-      exp* :=  <collect-all(?Return(<id>))> st*
-    ; <map(type-of(|ctx); ![<id>, ty]; type-match(|ctx, Coerce()))> exp*
+      ty'  := <type-of(|ctx)> ty
+    ; exp* :=  <collect-all(?Return(<id>))> st*
+    ; map(
+        task-create-error-on-failure(|
+	      ctx
+	    , <type-match(|ctx, Coerce())> [<type-of(|ctx)>, ty]
+	    , "incompatible with declared return type")     
+	    )
     ; if [] := exp* then
         <type-check(|ctx)> (ty, VoidTy(), "Missing return expression")
       end
-  
+
   type-of(|ctx):
     Assign(lhs, rhs) -> <fail>
     where
