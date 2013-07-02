@@ -2,15 +2,11 @@ module csharp
 
 imports
   
-  libstratego-lib
-  libstratego-gpp
-  libstratego-aterm
-  libstratego-parallel
   include/CSharp
   lib/editor-common.generated
-  lib/index-library.generated
   lib/analysis/-
   lib/nabl/-
+  lib/properties/-
   lib/task/-
   lib/types/-
   lib/index/-
