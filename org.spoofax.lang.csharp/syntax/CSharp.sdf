@@ -55,12 +55,13 @@ exports
     Type ID "=" Exp ";"                                 -> Stm {"VarDef"}
     "var" ID "=" Exp ";"                                -> Stm {"InferredVarDef", prefer}
     VarRef "=" Exp ";"                                  -> Stm {"Assign"}
-    "if" "(" Exp ")" Block                              -> Stm {"If"}
-    "if" "(" Exp ")" Block "else" Block                 -> Stm {"IfElse"}
-    "for" "(" Type ID "=" Exp ";" Exp ";" Stm ")" Block -> Stm {"For"}
-    "foreach" "(" Type ID "in" Exp ")" Block            -> Stm {"ForEach"}
+    "if" "(" Exp ")" Stm                                -> Stm {"If"}
+    "if" "(" Exp ")" Stm "else" Stm                     -> Stm {"IfElse"}
+    "for" "(" Type ID "=" Exp ";" Exp ";" Stm ")" Stm   -> Stm {"For"}
+    "foreach" "(" Type ID "in" Exp ")" Stm              -> Stm {"ForEach"}
     FunCall ";"                                         -> Stm {bracket}
     FieldAccess ";"                                     -> Stm {bracket}
+    "{" Stm* "}"                                        -> Stm {"Block"}
     
     %% Expessions
     "true"      -> Exp {"True", prefer}
@@ -83,10 +84,6 @@ exports
     Exp "<=" Exp -> Exp {"Lte", prefer}
     Exp ">" Exp  -> Exp {"Gt", prefer}
     Exp ">=" Exp -> Exp {"Gte", prefer}
-    
-    %% Other
-    "{" Stm* "}" -> Block {"Block"}
-    Stm          -> Block
     
     Type ID -> Param {"Param"}
     
