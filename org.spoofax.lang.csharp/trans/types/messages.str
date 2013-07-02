@@ -1,0 +1,10 @@
+module types/messages
+
+overlays
+  
+  INT_OR_STRING_MSG() = "int or string expected"
+  INT_MSG()           = "int expected"
+  BOOL_MSG()          = "bool expected"
+  COMPARE_MSG()       = "incomparable"
+  EQ_MSG()            = "incomparable"
+

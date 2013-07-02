@@ -1,0 +1,19 @@
+module types/coerce
+
+imports
+  include/CSharp
+  types/-
+  
+signature constructors
+
+  Coerce   : Relation
+  BinCoerce: Relation
+  
+rules // coercion
+      
+  type-match: (Coerce(), x, x)                -> x
+  type-match: (Coerce(), IntTy(), StringTy()) -> StringTy()
+  
+  type-match: (BinCoerce(), t1, t2) -> <type-match> (Coerce(), t1, t2)
+  type-match: (BinCoerce(), t1, t2) -> <type-match> (Coerce(), t2, t1)
+  

@@ -1,0 +1,51 @@
+module types/types
+
+imports
+	
+  include/CSharp
+  lib/types/-
+  lib/nbl/-
+  lib/task/-
+  
+	names
+  
+signature 
+
+  sorts
+    
+    Ty
+
+  constructors
+
+    Ty : ID -> Ty
+
+    IntTy    : Ty
+    BoolTy   : Ty
+    StringTy : Ty
+	  VoidTy   : Ty
+    
+rules // built-in types
+	
+  type-of(|ctx): TypeExp(TypePart("Bool"))   -> BoolTy()
+  type-of(|ctx): TypeExp(TypePart("Int"))    -> IntTy()
+  type-of(|ctx): TypeExp(TypePart("String")) -> StringTy()
+              
+// rules // Utility
+// 	
+//   print-type = 
+//     switch id
+//       case ?"String" : !"string"
+//       case ?"Int" : !"int"
+//       case ?VoidTy() : !"void"
+//       case ?IntTy() : !"int"
+//       case ?StringTy() : !"string"
+//       case ?Ty(t) : <print-type> t
+//       case ?TyExp(t) : <print-type> t
+//       case ?TyPart(t) : <print-type> t
+//       case ?TyPart(q, t) : <concat-strings> [<print-type> q, ".", <print-type> t]
+//       case ?[type|[]] : <print-type> type
+//       case ?[type|types]; not(<?[]> types) : !$[[<print-type> type], [<print-type> types]]
+//       case is-string : strip-annos
+//       case ?name#(_) : !$[[name]]
+//       otherwise : id
+//     end

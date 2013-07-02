@@ -1,4 +1,4 @@
-module check
+module types/check
 
 imports
   
@@ -8,8 +8,7 @@ imports
   lib/nbl/-
   lib/types/-
   lib/task/-
-  names
-  types
+  types/-
 
 rules // Name binding
   
@@ -54,15 +53,19 @@ rules // Types
   ; task-create-error-on-failure(|ctx, tc, "incompatible with declared return type")     
     
   nabl-constraint(|ctx) =
-    ?Assign(lhs, rhs)
+  ( ?Assign(lhs, rhs)
   ; lty := <type-of(|ctx)> lhs
+  + ?VarDef(lty, lhs, rhs)
+  + ?For(lty, lhs, rhs, exp, _, _)
+  ; <type-check(|ctx)> (exp, BoolTy(), BOOL_MSG())
+  )
   ; rty := <type-of(|ctx)> rhs
   ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
   ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lhs
-    
+ 
   nabl-constraint(|ctx) =
-    ?VarDef(lty, _, rhs)
-  ; rty := <type-of(|ctx)> rhs
-  ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
-  ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lty
+  ( ?If(exp, _)
+  + ?IfElse(exp, _, _)
+  )
+  ; <type-check(|ctx)> (exp, BoolTy(), BOOL_MSG())
     
