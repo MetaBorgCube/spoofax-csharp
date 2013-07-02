@@ -3,33 +3,13 @@ module types/types
 imports
 	
   include/CSharp
-  lib/types/-
-  lib/nbl/-
-  lib/task/-
-  
-	names
-  
-signature 
-
-  sorts
     
-    Ty
-
-  constructors
-
-    Ty : ID -> Ty
-
-    IntTy    : Ty
-    BoolTy   : Ty
-    StringTy : Ty
-	  VoidTy   : Ty
-    
-rules // built-in types
+overlays // built-in types
 	
-  type-of(|ctx): TypeExp(TypePart("Bool"))   -> BoolTy()
-  type-of(|ctx): TypeExp(TypePart("Int"))    -> IntTy()
-  type-of(|ctx): TypeExp(TypePart("String")) -> StringTy()
-              
+  BoolTy()   = TypeExp(TypePart("Bool")) 
+  IntTy()    = TypeExp(TypePart("Int")) 
+  StringTy() = TypeExp(TypePart("String"))
+     
 // rules // Utility
 // 	
 //   print-type = 

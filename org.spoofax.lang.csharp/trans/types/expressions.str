@@ -3,8 +3,8 @@ module types/expressions
 imports
   include/CSharp
   types/-
-  runtime/types/-
-  runtime/task/-
+  lib/types/-
+  lib/task/-
   
 rules // literals
   
@@ -17,11 +17,14 @@ rules // literals
 rules // binary operators
   
   type-of(|ctx):
-    Add(e1, e2) -> <type-match(|ctx, BinCoerce())> [t1, t2]
+    Add(e1, e2) -> t
     where
-      t1 := <type-check(|ctx)> (e1, [IntTy(), StringTy()], INT_OR_STRING_MSG())
-    ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()], INT_OR_STRING_MSG())
-
+      t1 := <type-of(|ctx); type-match(|ctx, [IntTy(), StringTy()])> e1
+    ; t2 := <type-of(|ctx); type-match(|ctx, [IntTy(), StringTy()])> e2
+    ; t  := <type-match(|ctx, BinCoerce(), t2)> t1
+    ; <task-create-error-on-failure(|ctx, t1, INT_OR_STRING_MSG())> e1
+    ; <task-create-error-on-failure(|ctx, t2, INT_OR_STRING_MSG())> e2
+  
   type-of(|ctx):
     _ -> <type-is(|ctx, [t1, t2])> IntTy()
     where
@@ -29,9 +32,11 @@ rules // binary operators
     + ?Mul(e1, e2)
     + ?Div(e1, e2)
     where
-      t1 := <type-check(|ctx)> (e1, IntTy(), INT_MSG())
-    ; t2 := <type-check(|ctx)> (e2, IntTy(), INT_MSG())
-
+      t1 := <type-of(|ctx); type-match(|ctx, IntTy())> e1
+    ; t2 := <type-of(|ctx); type-match(|ctx, IntTy())> e2
+    ; <task-create-error-on-failure(|ctx, t1, INT_MSG())> e1
+    ; <task-create-error-on-failure(|ctx, t2, INT_MSG())> e2
+ 
   type-of(|ctx):
     _ -> <type-is(|ctx, [t1, t2])> BoolTy()
     where
@@ -40,15 +45,19 @@ rules // binary operators
     + ?Lte(e1, e2)
     + ?Gte(e1, e2)
     where
-      t1 := <type-check(|ctx)> (e1, [IntTy(), StringTy()], COMPARE_MSG())
-    ; t2 := <type-check(|ctx)> (e2, [IntTy(), StringTy()], COMPARE_MSG())
+      t1 := <type-of(|ctx); type-match(|ctx, [IntTy(), StringTy()])> e1
+    ; t2 := <type-of(|ctx); type-match(|ctx, [IntTy(), StringTy()])> e2
+    ; <task-create-error-on-failure(|ctx, t1, INT_OR_STRING_MSG())> e1
+    ; <task-create-error-on-failure(|ctx, t2, INT_OR_STRING_MSG())> e2
     
-type-of(|ctx):
+  type-of(|ctx):
     Eq(e1, e2) -> <type-is(|ctx, [tc])> BoolTy()
     where
-      t1 := <type-check(|ctx)> (e1, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
-    ; t2 := <type-check(|ctx)> (e2, [BoolTy(), IntTy(), StringTy()], EQ_MSG())
-    ; tc := <type-match(|ctx, BinCoerce())> [t1, t2]
+      t1 := <type-of(|ctx); type-match(|ctx, [BoolTy(), IntTy(), StringTy()])> e1
+    ; t2 := <type-of(|ctx); type-match(|ctx, [BoolTy(), IntTy(), StringTy()])> e2
+    ; tc := <type-match(|ctx, BinCoerce(), t2)> t1
+    ; <task-create-error-on-failure(|ctx, t1, COMPARE_MSG())> e1
+    ; <task-create-error-on-failure(|ctx, t2, COMPARE_MSG())> e2
     ; <task-create-error-on-failure(|ctx, tc, EQ_MSG())> e2
 
 rules // names

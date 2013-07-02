@@ -10,14 +10,13 @@ imports
   lib/editor-common.generated
   lib/index-library.generated
   lib/analysis/-
-  lib/nbl/-
+  lib/nabl/-
   lib/task/-
   lib/types/-
   lib/index/-
   names
-  check
   desugar
-  types
+  types/-
 
 rules // Analysis
  

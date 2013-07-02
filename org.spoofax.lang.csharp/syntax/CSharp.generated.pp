@@ -43,6 +43,8 @@
    IfElse                   -- KW["if"] KW["("] _1 KW[")"] _2 KW["else"] _3,
    For                      -- KW["for"] KW["("] _1 _2 KW["="] _3 KW[";"] _4 KW[";"] _5 KW[")"] _6,
    ForEach                  -- KW["foreach"] KW["("] _1 _2 KW["in"] _3 KW[")"] _4,
+   Block                    -- V  [V vs=2 [KW["{"] _1] KW["}"]],
+   Block.1:iter-star        -- _1,
    True                     -- KW["true"],
    False                    -- KW["false"],
    IntLit                   -- _1,
@@ -59,7 +61,5 @@
    Lte                      -- _1 KW["<="] _2,
    Gt                       -- _1 KW[">"] _2,
    Gte                      -- _1 KW[">="] _2,
-   Block                    -- V  [V vs=2 [KW["{"] _1] KW["}"]],
-   Block.1:iter-star        -- _1,
    Param                    -- _1 _2
 ]

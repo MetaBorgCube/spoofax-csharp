@@ -8,10 +8,9 @@ module names
   
 imports
 
-	nbl/-
-  include/CSharp
+	include/CSharp
   desugar
-  types
+  types/-
   
 namespaces
 
@@ -37,36 +36,36 @@ binding rules // Namespaces
   UsingPart(x) :
     imports Class from Namespace x
     
-  UsingPart(u, x) :
-    refers to Namespace x in Namespace y
-    where u refers to Namespace y
+  // UsingPart(u, x) :
+  //   refers to Namespace x in Namespace y
+  //   where u refers to Namespace y
   
 binding rules // Classes
 	
   Class(x, _) :
-    defines unique Class x of type Ty(x)
+    defines unique Class x
     scopes Field, Function
    
   Class(x, y, _) :
-    defines unique Class x of type Ty(x)
+    defines unique Class x
     scopes Field, Function
     imports Field, imported Field, Function, imported Function from Class y
     
   Interface(x, _) :
-    defines unique Class x of type Ty(x)
+    defines unique Class x
     scopes Function
     
   Interface(x, y, _) :
-    defines unique Class x of type Ty(x)
+    defines unique Class x
     scopes Function
     imports Function, imported Function from Class y
     
   PartialClass(x, _) :
-    defines non-unique Class x of type Ty(x)
+    defines non-unique Class x
     scopes Field, Function
     
   PartialClass(x, y, _) :
-    defines non-unique Class x of type Ty(x)
+    defines non-unique Class x 
     scopes Field, Function
     imports Field, imported Field, Function, imported Function from Class y
     
@@ -79,9 +78,9 @@ binding rules // Fields
   FieldDef(t, x) :
     defines Field x of type t 
     
-  FieldAccess(exp, f) :
-    refers to Field f in Class t
-    where exp has type Ty(t)
+  // FieldAccess(exp, f) :
+  //   refers to Field f in Class t
+  //   where exp has type Ty(t)
 
 binding rules // Functions
 
@@ -100,10 +99,10 @@ binding rules // Functions
       p* has type pt*
     scopes Variable
     
-  FunCall(exp, f, args) :
-    refers to Function f of parameter-types arg-types in Class e
-    where exp has type Ty(e)
-    where args has type arg-types
+  // FunCall(exp, f, args) :
+  //   refers to Function f of parameter-types arg-types in Class e
+  //   where exp has type Ty(e)
+  //   where args has type arg-types
     
   FunCall(x, args) : 
     refers to Function x of parameter-types arg-types

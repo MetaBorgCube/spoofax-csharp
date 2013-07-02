@@ -1,0 +1,23 @@
+module types/equality
+
+imports
+  include/CSharp
+  lib/types/-
+  types/-
+  properties/eq
+  
+signature constructors
+
+  Coerce   : Relation
+  BinCoerce: Relation
+  
+rules // interface
+  
+  nabl-property-eq = ?(Type(), Coerce(), <eq + coerce>)
+  nabl-property-eq = ?(Type(), BinCoerce(), <eq + coerce + Swap ; coerce>)
+  
+rules // coercion
+	
+  coerce: (IntTy(), StringTy()) -> StringTy()
+  
+  

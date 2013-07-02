@@ -4,8 +4,7 @@ imports
   
   libstratego-lib
   include/CSharp
-  lib/editor-common.generated
-  lib/nbl/-
+  lib/nabl/-
   lib/types/-
   lib/task/-
   types/-
@@ -40,32 +39,35 @@ rules // Types
   
   nabl-constraint(|ctx) =
     ?FunDef(ty, _, _, st*)
-  ; ty'  := <type-of(|ctx)> ty
-  ; exp* := <collect-all(where(return-error(|ctx, ty')))> st*
+  ; exp* := <collect-all(where(return-error(|ctx, ty)))> st*
   ; if [] := exp* then
-      <type-check(|ctx)> (ty, VoidTy(), "Missing return expression")
+      tc := <type-match(|ctx, VoidType())> ty
+    ; <task-create-error-on-failure(|ctx, tc, "Missing return expression")> ty
     end
-
+  
   return-error(|ctx, rty) =
     ?Return(exp)
   ; ty := <type-of(|ctx)> exp
-  ; tc := <type-match(|ctx, Coerce())> [ty, rty]
-  ; task-create-error-on-failure(|ctx, tc, "incompatible with declared return type")     
+  ; tc := <type-match(|ctx, Coerce(), rty)> ty
+  ; <task-create-error-on-failure(|ctx, tc, "incompatible with declared return type")> exp    
     
   nabl-constraint(|ctx) =
   ( ?Assign(lhs, rhs)
   ; lty := <type-of(|ctx)> lhs
   + ?VarDef(lty, lhs, rhs)
   + ?For(lty, lhs, rhs, exp, _, _)
-  ; <type-check(|ctx)> (exp, BoolTy(), BOOL_MSG())
-  )
+  ; ety := <type-of(|ctx)> exp
+  ; bc := <type-match(|ctx, BoolTy())> ety
+  ; <task-create-error-on-failure(|ctx, bc, BOOL_MSG())> exp
+ )
   ; rty := <type-of(|ctx)> rhs
-  ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
+  ; tc  := <type-match(|ctx, Coerce(), rty)> lty
   ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lhs
  
   nabl-constraint(|ctx) =
   ( ?If(exp, _)
   + ?IfElse(exp, _, _)
   )
-  ; <type-check(|ctx)> (exp, BoolTy(), BOOL_MSG())
-    
+  ; tc := <type-of(|ctx); type-match(|ctx, BoolTy())> exp
+  ; <task-create-error-on-failure(|ctx, tc, BOOL_MSG())> exp
+ 
