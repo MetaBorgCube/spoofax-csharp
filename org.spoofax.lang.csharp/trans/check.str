@@ -39,33 +39,30 @@ rules // Name binding
 
 rules // Types
   
-  type-of(|ctx):
-    FunDef(ty, _, _, st*) -> <fail>
-    where
-      ty'  := <type-of(|ctx)> ty
-    ; exp* :=  <collect-all(?Return(<id>))> st*
-    ; <map(return-error(|ctx, ty'))> exp*
-    ; if [] := exp* then
-        <type-check(|ctx)> (ty, VoidTy(), "Missing return expression")
-      end
+  nabl-constraint(|ctx) =
+    ?FunDef(ty, _, _, st*)
+  ; ty'  := <type-of(|ctx)> ty
+  ; exp* := <collect-all(where(return-error(|ctx, ty')))> st*
+  ; if [] := exp* then
+      <type-check(|ctx)> (ty, VoidTy(), "Missing return expression")
+    end
 
-  return-error(|ctx, ty) =
-    task-create-error-on-failure(|
-      ctx
-    , <type-match(|ctx, Coerce())> [<type-of(|ctx)>, ty]
-    , "incompatible with declared return type"
-    )     
+  return-error(|ctx, rty) =
+    ?Return(exp)
+  ; ty := <type-of(|ctx)> exp
+  ; tc := <type-match(|ctx, Coerce())> [ty, rty]
+  ; task-create-error-on-failure(|ctx, tc, "incompatible with declared return type")     
     
-  type-of(|ctx):
-    Assign(lhs, rhs) -> <fail>
-    where
-      lty := <type-of(|ctx)> lhs
-    ; rty := <type-of(|ctx)> rhs
-    ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
-  
-  type-of(|ctx):
-    VarDef(lty, _, rhs) -> <fail>
-    where
-      rty := <type-of(|ctx)> rhs
-    ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
-  
+  nabl-constraint(|ctx) =
+    ?Assign(lhs, rhs)
+  ; lty := <type-of(|ctx)> lhs
+  ; rty := <type-of(|ctx)> rhs
+  ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
+  ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lhs
+    
+  nabl-constraint(|ctx) =
+    ?VarDef(lty, _, rhs)
+  ; rty := <type-of(|ctx)> rhs
+  ; tc  := <type-match(|ctx, Coerce())> [rty, lty]
+  ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lty
+    
