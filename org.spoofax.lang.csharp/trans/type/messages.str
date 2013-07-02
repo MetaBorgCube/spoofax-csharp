@@ -1,4 +1,4 @@
-module types/messages
+module type/messages
 
 overlays
   

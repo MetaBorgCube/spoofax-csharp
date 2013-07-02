@@ -10,7 +10,7 @@ imports
 
 	include/CSharp
   desugar
-  types/-
+  type/-
   
 namespaces
 

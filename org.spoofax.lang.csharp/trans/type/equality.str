@@ -1,9 +1,9 @@
-module types/equality
+module type/equality
 
 imports
   include/CSharp
-  lib/types/-
   types/-
+  type/-
   properties/eq
   
 signature constructors

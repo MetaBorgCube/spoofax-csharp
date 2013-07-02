@@ -1,10 +1,10 @@
-module types/expressions
+module type/expressions
 
 imports
   include/CSharp
+  type/-
   types/-
-  lib/types/-
-  lib/task/-
+  task/-
   
 rules // literals
   

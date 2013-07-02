@@ -3,16 +3,16 @@ module csharp
 imports
   
   include/CSharp
-  lib/editor-common.generated
-  lib/analysis/-
-  lib/nabl/-
-  lib/properties/-
-  lib/task/-
-  lib/types/-
-  lib/index/-
+  editor-common.generated
+  analysis/-
+  nabl/-
+  properties/-
+  task/-
+  types/-
+  index/-
   names
   desugar
-  types/-
+  type/-
 
 rules // Analysis
  

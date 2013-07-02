@@ -4,10 +4,10 @@ imports
   
   libstratego-lib
   include/CSharp
-  lib/nabl/-
-  lib/types/-
-  lib/task/-
+  nabl/-
   types/-
+  task/-
+  type/-
 
 rules // Name binding
   
