@@ -17,8 +17,6 @@ outliner Default outliner
   ClassBodyDecl.FunDef
   FunCall.FunCall
   FunCall.FunCall
-  Definition.PartialClass
-  Definition.Class
   Definition.Class
   Definition.Interface
   InterfaceBodyDecl.FunDef

@@ -23,8 +23,6 @@ folding Default folding definitions
   Start.Start
   Definition.PartialClass
   ClassBodyDecl.FunDef
-  Definition.PartialClass
-  Definition.Class
   Definition.Class
   Definition.Interface
   InterfaceBodyDecl.FunDef

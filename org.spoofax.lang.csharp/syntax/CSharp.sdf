@@ -13,12 +13,13 @@ exports
     %% Constructs
     Definition*                                         -> Start {"Start"}
     "namespace" ID "{" Definition* "}"                  -> Definition {"Namespace"}
-    "partial" "class" ID "{" ClassBodyDecl* "}"         -> Definition {"PartialClass"}
-    "partial" "class" ID ":" ID  "{" ClassBodyDecl* "}" -> Definition {"PartialClass"}
-    "class" ID "{" ClassBodyDecl* "}"                   -> Definition {"Class"}
-    "class" ID ":" ID "{" ClassBodyDecl* "}"            -> Definition {"Class"}
+    "partial" "class" ID Parent "{" ClassBodyDecl* "}"  -> Definition {"PartialClass"}
+    "class" ID Parent "{" ClassBodyDecl* "}"            -> Definition {"Class"}
     "interface" ID "{" InterfaceBodyDecl* "}"           -> Definition {"Interface"}
     "interface" ID ":" ID "{" InterfaceBodyDecl* "}"    -> Definition {"Interface"}
+    
+                                                        -> Parent {"None"}
+    ":" ID                                              -> Parent {"Super"}
     
     "using" UsingPart ";" -> Using {"Using"}
     ID                    -> UsingPart {"UsingPart"}

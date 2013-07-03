@@ -20,7 +20,6 @@ namespaces
 
   Function
   Field
-  IField
   
   Variable
 
@@ -43,17 +42,19 @@ binding rules // Namespaces
   
 binding rules // Classes
 	
-  Class(c, _) :
+  Class(c, _, _) :
     defines unique Class c
-    scopes Field, IField, Function
-    implicitly defines IField This() of type ClassTy(c)
-   
-  Class(c, p, _) :
-    defines unique Class c
-    scopes Field, IField, Function
-    imports Field, imported Field, Function, imported Function from Class p
-    implicitly defines IField This() of type ClassTy(c)
-    implicitly defines IField Super() of type ClassTy(p)
+    scopes Field, Function
+    implicitly defines Field This() of type ClassTy(c)
+
+  PartialClass(c, _, _) :
+    defines non-unique Class c 
+    scopes Field, Function
+    implicitly defines Field This() of type ClassTy(c)
+
+  Super(c):
+    imports Field, imported Field, Function, imported Function from Class c
+    implicitly defines Field Super() of type ClassTy(c)
    
   Interface(x, _) :
     defines unique Class x
@@ -63,19 +64,7 @@ binding rules // Classes
     defines unique Class x
     scopes Function
     imports Function, imported Function from Class y
-    
-  PartialClass(c, _) :
-    defines non-unique Class c
-    scopes Field, IField, Function
-    implicitly defines IField This() of type ClassTy(c)
-    
-  PartialClass(c, p, _) :
-    defines non-unique Class c 
-    scopes Field, IField, Function
-    imports Field, imported Field, Function, imported Function from Class p
-    implicitly defines IField This() of type ClassTy(c)
-    implicitly defines IField Super() of type ClassTy(p)
-   
+       
   TypePart(c) :
   	refers to Namespace c
   	otherwise refers to Class c
@@ -94,8 +83,8 @@ binding rules // Fields
     refers to Field f in Class c
     where exp has type ClassTy(c)
 
-  This() : refers to IField This()
-  Super(): refers to IField Super()
+  This() : refers to Field This()
+  Super(): refers to Field Super()
   
 binding rules // Functions
 
