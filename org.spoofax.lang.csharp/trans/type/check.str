@@ -59,7 +59,7 @@ rules // Types
   ; ety := <type-of(|ctx)> exp
   ; bc := <type-match(|ctx, BoolTy())> ety
   ; <task-create-error-on-failure(|ctx, bc, BOOL_MSG())> exp
- )
+  )
   ; rty := <type-of(|ctx)> rhs
   ; tc  := <type-match(|ctx, Coerce(), lty)> rty
   ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lhs
