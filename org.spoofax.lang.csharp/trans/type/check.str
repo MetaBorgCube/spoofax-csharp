@@ -61,7 +61,7 @@ rules // Types
   ; <task-create-error-on-failure(|ctx, bc, BOOL_MSG())> exp
  )
   ; rty := <type-of(|ctx)> rhs
-  ; tc  := <type-match(|ctx, Coerce(), rty)> lty
+  ; tc  := <type-match(|ctx, Coerce(), lty)> rty
   ; <task-create-error-on-failure(|ctx, tc, "type mismatch")> lhs
  
   nabl-constraint(|ctx) =
