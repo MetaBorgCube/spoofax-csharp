@@ -72,7 +72,12 @@ binding rules // Classes
   TypePart(c) :
   	refers to Namespace c
   	otherwise refers to Class c
-  	
+  
+  TypePart(ns, c):
+    refers to Namespace c	in Namespace ns'
+    otherwise refers to Class c in Namespace ns'
+    where ns refers to Namespace ns'
+    
 binding rules // Fields
 
   FieldDef(t, x) :
