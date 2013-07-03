@@ -9,6 +9,7 @@ overlays // built-in types
   BoolTy()   = TypeExp(TypePart("Bool")) 
   IntTy()    = TypeExp(TypePart("Int")) 
   StringTy() = TypeExp(TypePart("String"))
+  ClassTy(t) = TypeExp(TypePart(t))
      
 // rules // Utility
 // 	

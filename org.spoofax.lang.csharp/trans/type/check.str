@@ -37,6 +37,13 @@ rules // Name binding
 
 rules // Types
   
+  type-of(|ctx): 
+    Assign(lhs, rhs) -> c
+    where
+      lty := <type-of(|ctx)> lhs
+    ; rty := <type-of(|ctx)> rhs
+    ; c   := <type-match(|ctx, Coerce(), lty)> rty
+      
   nabl-constraint(|ctx) =
     ?FunDef(ty, _, _, st*)
   ; exp* := <collect-all(where(return-error(|ctx, ty)))> st*

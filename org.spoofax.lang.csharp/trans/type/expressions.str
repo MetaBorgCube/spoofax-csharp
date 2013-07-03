@@ -60,7 +60,10 @@ rules // binary operators
     ; <task-create-error-on-failure(|ctx, t2, COMPARE_MSG())> e2
     ; <task-create-error-on-failure(|ctx, tc, EQ_MSG())> e2
 
-rules // names
+rules
+  
+  
+rules // references
         
   type-of(|ctx): VarRef(v)         -> <type-lookup(|ctx)> v
   type-of(|ctx): FieldAccess(e, f) -> <type-lookup(|ctx)> f

@@ -20,6 +20,7 @@ namespaces
 
   Function
   Field
+  IField
   
   Variable
 
@@ -42,15 +43,18 @@ binding rules // Namespaces
   
 binding rules // Classes
 	
-  Class(x, _) :
-    defines unique Class x
-    scopes Field, Function
+  Class(c, _) :
+    defines unique Class c
+    scopes Field, IField, Function
+    implicitly defines IField This() of type ClassTy(c)
    
-  Class(x, y, _) :
-    defines unique Class x
-    scopes Field, Function
-    imports Field, imported Field, Function, imported Function from Class y
-    
+  Class(c, p, _) :
+    defines unique Class c
+    scopes Field, IField, Function
+    imports Field, imported Field, Function, imported Function from Class p
+    implicitly defines IField This() of type ClassTy(c)
+    implicitly defines IField Super() of type ClassTy(p)
+   
   Interface(x, _) :
     defines unique Class x
     scopes Function
@@ -60,15 +64,18 @@ binding rules // Classes
     scopes Function
     imports Function, imported Function from Class y
     
-  PartialClass(x, _) :
-    defines non-unique Class x
-    scopes Field, Function
+  PartialClass(c, _) :
+    defines non-unique Class c
+    scopes Field, IField, Function
+    implicitly defines IField This() of type ClassTy(c)
     
-  PartialClass(x, y, _) :
-    defines non-unique Class x 
-    scopes Field, Function
-    imports Field, imported Field, Function, imported Function from Class y
-    
+  PartialClass(c, p, _) :
+    defines non-unique Class c 
+    scopes Field, IField, Function
+    imports Field, imported Field, Function, imported Function from Class p
+    implicitly defines IField This() of type ClassTy(c)
+    implicitly defines IField Super() of type ClassTy(p)
+   
   TypePart(c) :
   	refers to Namespace c
   	otherwise refers to Class c
@@ -83,10 +90,13 @@ binding rules // Fields
   FieldDef(t, x) :
     defines Field x of type t 
     
-  // FieldAccess(exp, f) :
-  //   refers to Field f in Class t
-  //   where exp has type Ty(t)
+  FieldAccess(exp, f) :
+    refers to Field f in Class c
+    where exp has type ClassTy(c)
 
+  This() : refers to IField This()
+  Super(): refers to IField Super()
+  
 binding rules // Functions
 
   // FunDef(t, x, p*) :
