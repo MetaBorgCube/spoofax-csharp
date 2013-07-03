@@ -16,6 +16,9 @@ imports
 
 rules // Analysis
  
+  analysis-default-debug-interface(msg) = debug(msg)
+  analysis-default-debug-interface = debug
+  
   editor-analyze = analysis-default-editor
   
   analysis-single-default-interface = 
