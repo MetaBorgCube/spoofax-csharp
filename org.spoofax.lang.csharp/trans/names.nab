@@ -33,8 +33,8 @@ binding rules // Namespaces
     defines non-unique Namespace x
     scopes Namespace, Class
     
-  UsingPart(x) :
-    imports Class from Namespace x
+  // UsingPart(x) :
+  //   imports Class from Namespace x
     
   // UsingPart(u, x) :
   //   refers to Namespace x in Namespace y
@@ -84,12 +84,12 @@ binding rules // Fields
 
 binding rules // Functions
 
-  FunDef(t, x, p*) :
-    defines Function x 
-      of type t
-      of parameter-types pt*
-    where
-      p* has type pt*
+  // FunDef(t, x, p*) :
+  //   defines Function x 
+  //     of type t
+  //     of parameter-types pt*
+  //   where
+  //     p* has type pt*
       
   FunDef(t, x, p*, _) :
     defines Function x 
