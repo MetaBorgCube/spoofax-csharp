@@ -2,6 +2,7 @@ module type/equality
 
 imports
   include/CSharp
+  nabl/-
   types/-
   type/-
   properties/eq
@@ -13,9 +14,21 @@ signature constructors
   
 rules // interface
   
-  nabl-property-eq = ?(Type(), Coerce(), <eq + coerce>)
-  nabl-property-eq = ?(Type(), BinCoerce(), <eq + coerce + Swap ; coerce>)
+  nabl-property-eq = ?(Type(), Eq(), <all(try(stdlib)); eq; Fst>)
+  nabl-property-eq = ?(Type(), Coerce(), <all(try(stdlib)); (eq; Fst + coerce)>)
+  nabl-property-eq = ?(Type(), BinCoerce(), <all(try(stdlib)); (eq; Fst + coerce + Swap ; coerce)>)
   
+rules // standard library
+  
+  stdlib: IntTy()    -> IntTy()    where top-level-def
+  stdlib: BoolTy()   -> BoolTy()   where top-level-def
+  stdlib: StringTy() -> StringTy() where top-level-def
+   
+  top-level-def = 
+    nabl-collect-one-resolved-def
+    ; nabl-uri
+    ; nabl-uri-path => [_]
+
 rules // coercion
 	
   coerce: (IntTy(), StringTy()) -> StringTy()
