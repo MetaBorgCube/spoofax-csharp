@@ -10,6 +10,10 @@ imports
   names
   types
 
+rules // NaBL
+	
+	nabl-check-disable-hiding(|uri, ns) = <?NablNsVariable()> ns
+
 rules // Types
   
   constraint-error:
