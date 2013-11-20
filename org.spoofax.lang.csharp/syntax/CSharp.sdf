@@ -39,6 +39,7 @@ exports
     Type "[" "]" -> Type {"ArrayType"}
     "bool"       -> Type {ast("TypeExp(TypePart(\"Bool\"))"), prefer}
     "int"        -> Type {ast("TypeExp(TypePart(\"Int\"))"), prefer}
+    "float"      -> Type {ast("TypeExp(TypePart(\"Float\"))"), prefer}
     "string"     -> Type {ast("TypeExp(TypePart(\"String\"))"), prefer}
     
     "void"       -> MethodReturnType {"VoidType", prefer}
